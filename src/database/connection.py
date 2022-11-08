@@ -1,7 +1,8 @@
 import databases
 
 import sqlalchemy
-from sqlalchemy.ext.declarative import declarative_base
+
+from sqlalchemy.engine import Engine
 
 
 from extensions.env_var import get_env_var
@@ -15,7 +16,7 @@ DATABASE_URL = (
     f'{get_env_var("DB_DATABASE")}'
 )
 database = databases.Database(DATABASE_URL)
-metadata = sqlalchemy.MetaData()
-engine = sqlalchemy.create_engine(DATABASE_URL)
-metadata.create_all(engine)
-Base = declarative_base()
+
+
+def get_engine() -> Engine:
+    return sqlalchemy.create_engine(DATABASE_URL)
