@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
-from database.base import database
+
+from api.routes import user
+
+from database.connection import database
 
 app = FastAPI()
 
@@ -13,3 +16,11 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await database.disconnect()
+
+
+app.include_router(
+    user.router,
+    prefix='/user',
+    tags=['user'],
+    responses={404: {'description': 'not found!'}}
+)
