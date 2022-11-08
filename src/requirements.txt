@@ -1,0 +1,9 @@
+fastapi==0.86.0
+python-multipart==0.0.5
+python-dotenv==0.21.0
+uvicorn==0.19.0
+SQLAlchemy==1.4.43
+pydantic==1.10.2
+databases==0.6.2
+asyncpg==0.27.0
+psycopg2==2.9.5
