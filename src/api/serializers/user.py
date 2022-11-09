@@ -1,15 +1,15 @@
 from pydantic import BaseModel, Field
 
 
-class UserInSerializer(BaseModel):
+class CreateUserSerializer(BaseModel):
     name: str
     username: str
     email: str
-    password: str = Field(..., alias='password_hash')
+    password_hash: str = Field(..., alias='password')
 
     class Config:
         allow_population_by_field_name = True
 
 
-class UserOutSerializer(UserInSerializer):
+class GetUserSerializer(CreateUserSerializer):
     id: int
