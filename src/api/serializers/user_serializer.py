@@ -1,6 +1,9 @@
 from pydantic import BaseModel, Field, validator
 
 
+from ..utils.auth_util import get_password_hash
+
+
 class BaseUserSerializer(BaseModel):
     name: str
     username: str
@@ -12,6 +15,11 @@ class BaseUserSerializer(BaseModel):
 
 class CreateUserSerializer(BaseUserSerializer):
     password_hash: str = Field(..., alias='password')
+
+    @validator('password_hash')
+    @classmethod
+    def hash_password(cls, value: str) -> str:
+        return get_password_hash(value)
 
 
 class GetUserSerializer(CreateUserSerializer):
