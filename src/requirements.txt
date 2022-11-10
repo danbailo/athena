@@ -8,3 +8,7 @@ databases==0.6.2
 asyncpg==0.27.0
 psycopg2==2.9.5
 regex==2022.10.31
+cryptography==38.0.3
+python-jose==3.3.0
+bcrypt==4.0.1
+passlib==1.7.4
