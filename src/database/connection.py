@@ -1,4 +1,4 @@
-import databases
+from databases import Database
 
 import sqlalchemy
 
@@ -15,7 +15,7 @@ DATABASE_URL = (
     f'{get_env_var("DB_HOST")}/'
     f'{get_env_var("DB_DATABASE")}'
 )
-database = databases.Database(DATABASE_URL)
+database = Database(DATABASE_URL)
 
 
 def get_engine() -> Engine:
