@@ -10,7 +10,7 @@ from .auth_router import get_current_active_user
 
 from ..serializers.user_serializer import CreateUserSerializer, GetUserSerializer, BaseUserSerializer
 
-from extensions.exceptions import UserNotFound
+from extensions.exceptions import UserNotFoundError
 
 router = APIRouter()
 
@@ -36,3 +36,12 @@ async def read_users_me(current_user: UserModel = Depends(get_current_active_use
 @router.get("/me/items/")
 async def read_own_items(current_user: UserModel = Depends(get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
+
+
+@router.patch('/{username}', status_code=status.HTTP_204_NO_CONTENT)
+async def active_or_inactive_user(username: str, active: bool):
+    query = select(UserModel).where(UserModel.username == username)
+    if not (user := await database.fetch_one(query)):
+        raise UserNotFoundError()
+    query = update(UserModel).where(UserModel.id == user.id).values({'is_active': active})
+    await database.execute(query)
