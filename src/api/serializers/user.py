@@ -1,15 +1,19 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
-class CreateUserSerializer(BaseModel):
+class BaseUserSerializer(BaseModel):
     name: str
     username: str
     email: str
-    password_hash: str = Field(..., alias='password')
 
     class Config:
         allow_population_by_field_name = True
 
 
+class CreateUserSerializer(BaseUserSerializer):
+    password_hash: str = Field(..., alias='password')
+
+
 class GetUserSerializer(CreateUserSerializer):
     id: int
+    is_active: bool | None
