@@ -22,6 +22,6 @@ class CreateUserSerializer(BaseUserSerializer):
         return get_password_hash(value)
 
 
-class GetUserSerializer(CreateUserSerializer):
+class GetUserSerializer(BaseUserSerializer):
     id: int
     is_active: bool | None
