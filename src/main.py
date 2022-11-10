@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 
 
-from api.routes import user
+from api.constants.mapped_prefix import MAPPED_ENDPOINT_PREFIX
+from api.routes import auth_router, user_router
 
 from database.connection import database
 
@@ -19,8 +20,13 @@ async def shutdown():
 
 
 app.include_router(
-    user.router,
-    prefix='/user',
+    user_router.router,
+    prefix=MAPPED_ENDPOINT_PREFIX['user'],
     tags=['user'],
+    responses={404: {'description': 'not found!'}}
+)
+app.include_router(
+    auth_router.router,
+    tags=['auth'],
     responses={404: {'description': 'not found!'}}
 )
