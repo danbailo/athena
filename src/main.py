@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 
 from api.constants.mapped_prefix import MAPPED_ENDPOINT_PREFIX
-from api.routes import auth_router, user_router
+from api.routers import auth_router, user_router
 
 from database.connection import database
 
