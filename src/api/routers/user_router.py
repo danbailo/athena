@@ -10,7 +10,7 @@ from .auth_router import get_current_active_user
 
 from ..serializers.user_serializer import CreateUserBody, GetUserBody, BaseUserBody, PatchUserBody
 
-from extensions.exceptions import UserNotFoundError
+from extensions.exceptions import UserNotFoundError, NothingToPatchError
 
 router = APIRouter()
 
@@ -43,8 +43,10 @@ async def patch_user(username: str, user_body: PatchUserBody):
     query = select(UserModel).where(UserModel.username == username)
     if not (user := await database.fetch_one(query)):
         raise UserNotFoundError()
-    request_data = user_body.dict(exclude_none=True)
-    user_data = dict(user)
-    user_data.update(request_data)
-    query = update(UserModel).where(UserModel.id == user.id).values(**user_data)
+    data = user_body.dict(exclude_none=True)
+    if not data:
+        raise NothingToPatchError()
+    query = update(UserModel)\
+        .where(UserModel.id == user.id)\
+        .values(**data)
     await database.execute(query)
