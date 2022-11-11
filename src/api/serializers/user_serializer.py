@@ -4,16 +4,17 @@ from pydantic import BaseModel, Field, validator
 from ..utils.auth_util import get_password_hash
 
 
-class BaseUserSerializer(BaseModel):
+class BaseUserBody(BaseModel):
     name: str
     username: str
     email: str
+    is_active: bool | None
 
     class Config:
         allow_population_by_field_name = True
 
 
-class CreateUserSerializer(BaseUserSerializer):
+class CreateUserBody(BaseUserBody):
     password_hash: str = Field(..., alias='password')
 
     @validator('password_hash')
@@ -22,6 +23,11 @@ class CreateUserSerializer(BaseUserSerializer):
         return get_password_hash(value)
 
 
-class GetUserSerializer(BaseUserSerializer):
+class GetUserBody(BaseUserBody):
     id: int
+
+
+class PatchUserBody(BaseModel):
+    name: str | None
+    email: str | None
     is_active: bool | None
