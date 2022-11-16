@@ -1,11 +1,10 @@
 import logging
 import logging.config
 
+from os import path
 
-logging.config.fileConfig(
-    fname='./logger.conf',
-    disable_existing_loggers=False
-)
+path_to_file = path.join(path.dirname(path.abspath(__file__)), './logger.conf')
+logging.config.fileConfig(path_to_file, disable_existing_loggers=False)
 
 logger = logging.getLogger()
 
