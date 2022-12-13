@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.ext.declarative import declared_attr
 
+
 import regex
 
 

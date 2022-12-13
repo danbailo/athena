@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 
 
-from api.constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
-from api.routers import auth_router, user_router
+from .constants.mapped_prefix import EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
 
-from database.connection import database
+from .database.connection import database
+
+from .routers import auth_router, user_router
+
 
 api = FastAPI()
 
@@ -20,13 +22,14 @@ async def shutdown():
 
 
 api.include_router(
-    user_router.router,
-    prefix=MAPPED_API_ENDPOINT_PREFIX['user'],
-    tags=['user'],
+    auth_router.router,
+    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.auth],
+    tags=['auth'],
     responses={404: {'description': 'not found!'}}
 )
 api.include_router(
-    auth_router.router,
-    tags=['auth'],
+    user_router.router,
+    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.user],
+    tags=['user'],
     responses={404: {'description': 'not found!'}}
 )

@@ -3,12 +3,14 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import select, insert, update
 
 
-from database.connection import database
-from database.models.user import UserModel
-
 from .auth_router import get_current_active_user
 
-from ..serializers.user_serializer import CreateUserBody, GetUserBody, BaseUserBody, PatchUserBody
+from ..database.connection import database
+from ..database.models.user import UserModel
+
+from ..serializers.user_serializer import (
+    CreateUserBody, GetUserBody, PatchUserBody
+)
 
 from extensions.exceptions import UserNotFoundError, NothingToPatchError
 
@@ -29,12 +31,16 @@ async def create_user(user: CreateUserBody):
 
 
 @router.get("/me", response_model=GetUserBody)
-async def read_users_me(current_user: UserModel = Depends(get_current_active_user)):
+async def read_users_me(
+    current_user: UserModel = Depends(get_current_active_user)
+):
     return current_user
 
 
 @router.get("/me/items/")
-async def read_own_items(current_user: UserModel = Depends(get_current_active_user)):
+async def read_own_items(
+    current_user: UserModel = Depends(get_current_active_user)
+):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 

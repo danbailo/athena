@@ -11,13 +11,11 @@ from jose import JWTError, jwt
 from sqlalchemy import select
 
 
-from database.connection import database
-from database.models.user import UserModel
-
-from extensions.exceptions import GetUserError, LoginError, InactiveUserError
 from extensions.env_var import get_env_var
+from extensions.exceptions import GetUserError, LoginError, InactiveUserError
 
-from ..constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
+from ..database.connection import database
+from ..database.models.user import UserModel
 
 from ..serializers.auth_serializer import (
     TokenResponseSerializer, TokenDataSerializer
@@ -30,7 +28,7 @@ SECRET_KEY = get_env_var('SECRET_KEY')
 ALGORITHM = get_env_var('ALGORITHM')
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-router = APIRouter(prefix=MAPPED_API_ENDPOINT_PREFIX['auth'])
+router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=router.prefix + '/token')
 

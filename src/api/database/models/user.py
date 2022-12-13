@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, String
 from sqlalchemy.sql import false
 
+
 from .base import AtenaBase
 
 
