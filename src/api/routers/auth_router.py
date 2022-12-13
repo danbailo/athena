@@ -17,10 +17,11 @@ from database.models.user import UserModel
 from extensions.exceptions import GetUserError, LoginError, InactiveUserError
 from extensions.env_var import get_env_var
 
-from ..constants.mapped_prefix import MAPPED_ENDPOINT_PREFIX
+from ..constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
 
-from ..serializers.user_serializer import BaseUserSerializer, GetUserSerializer
-from ..serializers.auth_serializer import TokenResponseSerializer, TokenDataSerializer
+from ..serializers.auth_serializer import (
+    TokenResponseSerializer, TokenDataSerializer
+)
 
 from ..utils.auth_util import verify_password
 
@@ -29,7 +30,7 @@ SECRET_KEY = get_env_var('SECRET_KEY')
 ALGORITHM = get_env_var('ALGORITHM')
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-router = APIRouter(prefix=MAPPED_ENDPOINT_PREFIX['auth'])
+router = APIRouter(prefix=MAPPED_API_ENDPOINT_PREFIX['auth'])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=router.prefix + '/token')
 
@@ -40,12 +41,15 @@ async def get_user_in_db(db: Database, username: str) -> UserModel | None:
 
 
 async def authenticate_user(db: Database, username: str, password: str):
-    if not (user := await get_user_in_db(db, username)) or not verify_password(password, user.password_hash):
+    if not (user := await get_user_in_db(db, username))\
+       or not verify_password(password, user.password_hash):
         return None
     return user
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+def create_access_token(
+    data: dict, expires_delta: timedelta | None = None
+) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
