@@ -6,7 +6,7 @@ class EndPointEnum(str, Enum):
     auth = 'auth'
 
 
-MAPPED_ENDPOINT_PREFIX = {
+MAPPED_API_ENDPOINT_PREFIX = {
     EndPointEnum.user: '/user',
     EndPointEnum.auth: '/auth'
 }
