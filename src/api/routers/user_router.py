@@ -6,7 +6,7 @@ from sqlalchemy import select, insert, update
 from .auth_router import get_current_active_user
 
 from ..database.connection import database
-from ..database.models.user import UserModel
+from ..database.models.user_model import UserModel
 
 from ..serializers.user_serializer import (
     CreateUserBody, GetUserBody, PatchUserBody

@@ -15,7 +15,7 @@ from extensions.env_var import get_env_var
 from extensions.exceptions import GetUserError, LoginError, InactiveUserError
 
 from ..database.connection import database
-from ..database.models.user import UserModel
+from ..database.models.user_model import UserModel
 
 from ..serializers.auth_serializer import (
     TokenResponseSerializer, TokenDataSerializer
