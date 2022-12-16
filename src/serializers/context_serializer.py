@@ -18,5 +18,5 @@ class AlertTypeEnum(StrEnum):
 
 class ContextSerializer(BaseModel):
     request: Any
-    msg: str
-    alert_type: AlertTypeEnum = AlertTypeEnum.info
+    msg: str | None
+    alert_type: AlertTypeEnum | None
