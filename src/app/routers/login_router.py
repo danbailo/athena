@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse, Response
 from httpx import HTTPStatusError
 
 
-from extensions.requests import async_fetch, MethodEnum
+from extensions.base_requests import async_fetch, MethodEnum
 
 from serializers.context_serializer import AlertTypeEnum
 
