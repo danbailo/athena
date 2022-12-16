@@ -154,3 +154,6 @@ fixed_calls.sql
 
 # vscode
 .vscode/
+
+# bootstrap
+bootstrap-*examples/
