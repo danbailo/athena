@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 
-from .constants.mapped_prefix import EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
+from constants.mapped_prefix import EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
 
 from .database.connection import database
 
