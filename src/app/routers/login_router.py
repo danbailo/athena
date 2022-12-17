@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, Response, RedirectResponse
 
 from httpx import HTTPStatusError
 
@@ -17,7 +17,7 @@ from ..forms.login_form import LoginForm
 router = APIRouter()
 
 
-@router.get('', response_class=HTMLResponse)
+@router.get('/login', response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse(
         'login_template.html',
@@ -25,7 +25,7 @@ async def login_page(request: Request):
     )
 
 
-@router.post('', response_class=HTMLResponse)
+@router.post('/login', response_class=HTMLResponse)
 async def login_user(
     request: Request,
     response: Response,
@@ -51,7 +51,15 @@ async def login_user(
         key="access_token", value=user_token['access_token'],
         httponly=True
     )
-    return await render_template(
-        'home_template.html', request, 302, 'Successfully logged in!',
-        AlertTypeEnum.success, headers=response.headers
+    return RedirectResponse(
+        '/home', 302, response.headers
     )
+
+
+@router.get('/logout')
+async def logout():
+    response = RedirectResponse(
+        '/login', 302
+    )
+    response.delete_cookie(key='access_token')
+    return response
