@@ -2,7 +2,9 @@ from typing import Any
 
 from enum import StrEnum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
+
+from fastapi import Request
 
 
 class AlertTypeEnum(StrEnum):
@@ -20,3 +22,10 @@ class ContextSerializer(BaseModel):
     request: Any
     msg: str | None
     alert_type: AlertTypeEnum | None
+
+    @validator('request', pre=True)
+    @classmethod
+    def validate_request_field_type(cls, value: Request):
+        if not isinstance(value, Request):
+            return ValueError('Invalid type for "request"!')
+        return value
