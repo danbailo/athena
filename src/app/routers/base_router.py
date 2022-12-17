@@ -25,13 +25,16 @@ async def render_template(
 
 
 async def render_404_error_template(
-    context_request: Request, err: Exception
+    context_request: Request, err: Exception | None = None
 ):
+    msg = 'Unexpected error'
+    if err:
+        msg += f' - {err}'
     return templates.TemplateResponse(
         '404_template.html',
         ContextSerializer(
             request=context_request,
-            msg=f'Unexpected error - {err}',
+            msg=msg,
             alert_type=AlertTypeEnum.danger
         ).dict(),
         status_code=404
