@@ -7,7 +7,6 @@ from .database.connection import database
 
 from .routers import auth_router, user_router
 
-
 api = FastAPI()
 
 

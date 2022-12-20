@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from fastapi import HTTPException, status, Request
 from fastapi.responses import RedirectResponse
 
-from app.routers.base_router import render_template
+from app.routers.base_router import async_render_template
 
 from serializers.context_serializer import AlertTypeEnum
 
@@ -54,13 +54,13 @@ class NothingToPatchError(HTTPException):
 
 
 async def handle_403_http_error(request: Request, exc: HTTPException):
-    response = RedirectResponse('/user/login')
-    response.headers['X-Unauthorized'] = 'Login before!'
+    response = RedirectResponse('/user/login', 302)
+    response.headers['X-Unauthenticated'] = 'User must be authenticated!'
     return response
 
 
 async def handle_404_http_error(request: Request, exc: HTTPException):
-    return await render_template(
+    return await async_render_template(
         'errors/404_error.html', request, exc.status_code,
         alert_type=AlertTypeEnum.danger, exc=exc
     )
