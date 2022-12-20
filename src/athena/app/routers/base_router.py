@@ -24,16 +24,3 @@ async def async_render_template(
         status_code=status_code,
         headers=headers
     )
-
-
-async def handle_403_http_error(request: Request, exc: HTTPException):
-    response = RedirectResponse('/user/login', 302)
-    response.headers['X-Unauthenticated'] = 'User must be authenticated!'
-    return response
-
-
-async def handle_404_http_error(request: Request, exc: HTTPException):
-    return await async_render_template(
-        'errors/404_error.html', request, exc.status_code,
-        alert_type=AlertTypeEnum.danger, exc=exc
-    )
