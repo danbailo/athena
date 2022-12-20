@@ -73,7 +73,7 @@ async def login_user(
 
 
 @router.get('/logout')
-@requires('authenticated', redirect='login_user')
+@requires('authenticated')
 async def logout_user(request: Request):
     response = RedirectResponse(
         router.url_path_for('login_user'), 302
