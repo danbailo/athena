@@ -31,7 +31,7 @@ async def user_page(request: Request):
 
 
 @router.get('/login', response_class=HTMLResponse)
-async def login_page(request: Request):
+async def user_login_page(request: Request):
     if request.user.is_authenticated:
         return RedirectResponse(
             request.base_url, 302,
@@ -43,7 +43,7 @@ async def login_page(request: Request):
 
 
 @router.post('/login', response_class=RedirectResponse)
-async def login_user(
+async def user_login(
     request: Request,
     response: Response,
     form_data: LoginForm = Depends(LoginForm.as_form)
@@ -79,9 +79,9 @@ async def login_user(
 
 @router.get('/logout')
 @requires('authenticated')
-async def logout_user(request: Request):
+async def user_logout(request: Request):
     response = RedirectResponse(
-        router.url_path_for('login_user'), 302
+        router.url_path_for('user_login'), 302
     )
     response.delete_cookie(key='access_token')
     return response
