@@ -8,7 +8,7 @@ import regex
 
 
 @as_declarative()
-class AtenaBase:
+class AthenaBase:
 
     @declared_attr
     def __tablename__(cls):

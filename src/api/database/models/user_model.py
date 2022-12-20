@@ -2,10 +2,10 @@ from sqlalchemy import Boolean, Column, String
 from sqlalchemy.sql import false
 
 
-from .base import AtenaBase
+from .base import AthenaBase
 
 
-class UserModel(AtenaBase):
+class UserModel(AthenaBase):
     name = Column(String, nullable=False)
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)

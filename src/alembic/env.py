@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 
 
-from database.connection import get_engine
-from database.models.base import AtenaBase
-from database.models.user import *
+from api.database.connection import get_engine
+from api.database.models.base import AthenaBase
+from api.database.models.user_model import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -19,7 +19,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = AtenaBase.metadata
+target_metadata = AthenaBase.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
