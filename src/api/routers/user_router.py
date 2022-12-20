@@ -8,7 +8,7 @@ from .auth_router import get_current_active_user
 from ..database.connection import database
 from ..database.models.user_model import UserModel
 
-from ..serializers.user_serializer import (
+from serializers.user_serializer import (
     CreateUserBody, GetUserBody, PatchUserBody
 )
 
@@ -17,13 +17,16 @@ from extensions.exceptions import UserNotFoundError, NothingToPatchError
 router = APIRouter()
 
 
-@router.get('/', response_model=list[GetUserBody])
-async def get_users():
-    query = select(UserModel)
+@router.get('', response_model=list[GetUserBody])
+async def get_users(username: str | None = None):
+    if username:
+        query = select(UserModel).where(UserModel.username == username)
+    else:
+        query = select(UserModel)
     return await database.fetch_all(query)
 
 
-@router.post('/', response_model=CreateUserBody)
+@router.post('', response_model=CreateUserBody)
 async def create_user(user: CreateUserBody):
     query = insert(UserModel).values(**user.dict(by_alias=False))
     await database.execute(query)
