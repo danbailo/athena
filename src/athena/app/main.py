@@ -4,11 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.authentication import AuthenticationMiddleware
 
 
-from extensions.exceptions import handle_403_http_error, handle_404_http_error
-
 from serializers.auth_serializer import OAuth2Backend
 
 from .routers import home_router, user_router
+
+from .utils.handle_exceptions_util import (
+    handle_403_http_error, handle_404_http_error
+)
 
 app = FastAPI(docs_url=None, redoc_url=None)
 

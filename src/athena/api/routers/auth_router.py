@@ -15,7 +15,6 @@ from constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
 
 from extensions.env_var import get_env_var
 from extensions.exceptions import GetUserError, LoginError, InactiveUserError
-from extensions.utils.auth_util import verify_password
 
 from serializers.auth_serializer import (
     TokenResponseSerializer, TokenDataSerializer
@@ -24,6 +23,7 @@ from serializers.auth_serializer import (
 from ..database.connection import database
 from ..database.models.user_model import UserModel
 
+from ..utils.auth_util import verify_password
 
 SECRET_KEY = get_env_var('SECRET_KEY')
 ALGORITHM = get_env_var('ALGORITHM')
