@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, validator
 
 
-from utils.auth_util import get_password_hash
+from extensions.utils.auth_util import get_password_hash
 
 
 class BaseUserBody(BaseModel):
