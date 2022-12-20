@@ -3,7 +3,7 @@ from jose import jwt, ExpiredSignatureError, JWTError
 from pydantic import BaseModel
 
 from starlette.authentication import (
-    AuthCredentials, AuthenticationBackend, SimpleUser, UnauthenticatedUser
+    AuthCredentials, AuthenticationBackend, SimpleUser
 )
 
 
@@ -30,10 +30,7 @@ class OAuth2Backend(AuthenticationBackend):
                 token, get_env_var('SECRET_KEY'),
                 algorithms=[get_env_var('ALGORITHM')]
             )
-        except ExpiredSignatureError:
-            return\
-                AuthCredentials(["not_authenticated"]), UnauthenticatedUser()
-        except JWTError:
+        except (ExpiredSignatureError, JWTError):
             return
-        username = payload.get("sub")
-        return AuthCredentials(["authenticated"]), SimpleUser(username)
+        username = payload.get('sub')
+        return AuthCredentials(['authenticated']), SimpleUser(username)
