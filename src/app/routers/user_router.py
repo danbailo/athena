@@ -3,18 +3,18 @@ from fastapi.responses import HTMLResponse, Response, RedirectResponse
 
 from httpx import HTTPStatusError
 
-from constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
+from starlette.authentication import requires
 
+
+from constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
 
 from extensions.base_requests import async_fetch, MethodEnum
 
 from serializers.context_serializer import AlertTypeEnum
 
-from .base_router import render_template
+from .base_router import async_render_template
 
 from ..forms.login_form import LoginForm
-
-from starlette.authentication import requires
 
 
 router = APIRouter(
@@ -25,14 +25,19 @@ router = APIRouter(
 @router.get('')
 @requires('authenticated')
 async def user_page(request: Request):
-    return await render_template(
+    return await async_render_template(
         'user_template.html', request, 200
     )
 
 
 @router.get('/login', response_class=HTMLResponse)
 async def login_page(request: Request):
-    return await render_template(
+    if request.user.is_authenticated:
+        return RedirectResponse(
+            request.base_url, 302,
+            headers={'X-Authenticated': 'User already been logged!'}
+        )
+    return await async_render_template(
         'login_template.html', request, 200
     )
 
@@ -53,13 +58,13 @@ async def login_user(
             data=form_data.dict(by_alias=True)
         )
     except HTTPStatusError:
-        return await render_template(
+        return await async_render_template(
             'login_template.html', request, 401,
             'Incorrect Username or Password', AlertTypeEnum.warning,
         )
     except Exception as exc:
-        return await render_template(
-            '404_error.html', request, 404,
+        return await async_render_template(
+            'errors/404_error.html', request, 404,
             'Unexpected error', AlertTypeEnum.danger, exc
         )
     response.set_cookie(
