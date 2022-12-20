@@ -5,8 +5,7 @@
 {% block content %}
     {% include 'components/flash_message_component.html' %}
     <main class="form-signin w-100 m-auto">
-        <form method="POST" action="/login">
-            <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
+        <form method="POST" action="{{ url_for('login_user') }}">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
             <div class="form-floating">

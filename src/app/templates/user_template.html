@@ -1,7 +1,8 @@
 {% extends "base_template.html" %}
 
-{% block title %} Login {% endblock title %}
+{% block title %} User {% endblock title %}
 
 {% block content %}
     {% include 'components/flash_message_component.html' %}
+    <h1>Welcome {{ request.user.display_name }}!</h1>
 {% endblock content %}
