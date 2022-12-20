@@ -2,6 +2,12 @@ from logging.config import fileConfig
 
 from alembic import context
 
+import os
+import sys
+
+parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                            os.path.pardir))
+sys.path.append(parentdir + '/athena')
 
 from athena.api.database.connection import get_engine
 from athena.api.database.models.base import AthenaBase
