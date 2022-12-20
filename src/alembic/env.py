@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 
 
-from api.database.connection import get_engine
-from api.database.models.base import AthenaBase
-from api.database.models.user_model import *
+from athena.api.database.connection import get_engine
+from athena.api.database.models.base import AthenaBase
+from athena.api.database.models.user_model import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
