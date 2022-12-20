@@ -19,11 +19,5 @@ app.add_exception_handler(404, handle_404_http_error)
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-app.include_router(
-    home_router.router,
-    responses={404: {'description': 'not found!'}}
-)
-app.include_router(
-    user_router.router,
-    responses={404: {'description': 'not found!'}}
-)
+app.include_router(home_router.router)
+app.include_router(user_router.router)

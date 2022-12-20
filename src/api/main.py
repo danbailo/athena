@@ -24,12 +24,10 @@ async def shutdown():
 api.include_router(
     auth_router.router,
     prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.auth],
-    tags=['auth'],
-    responses={404: {'description': 'not found!'}}
+    tags=['auth']
 )
 api.include_router(
     user_router.router,
     prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.user],
-    tags=['user'],
-    responses={404: {'description': 'not found!'}}
+    tags=['user']
 )
