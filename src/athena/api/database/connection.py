@@ -6,14 +6,11 @@ from sqlalchemy.engine import Engine
 
 from extensions.env_var import get_env_var
 
-
-DATABASE_URL = (
-    'postgresql://'
-    f'{get_env_var("DB_USER")}:'
-    f'{get_env_var("DB_PASSWORD")}@'
-    f'{get_env_var("DB_HOST")}/'
-    f'{get_env_var("DB_DATABASE")}'
+# TODO: IMPROVE IT
+conn_string = (
+    get_env_var('DOCKER_CONN_STRING') or get_env_var('DB_CONN_STRING')
 )
+DATABASE_URL = f'postgresql://{conn_string}'
 database = Database(DATABASE_URL)
 
 
