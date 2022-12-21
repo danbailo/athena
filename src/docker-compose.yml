@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+
+  database:
+    image: postgres:12
+    restart: always
+    command: postgres -c 'max_connections=300'
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  alembic:
+    build:
+      context: .
+      dockerfile: Dockerfile-api  
+    env_file:
+      - docker-compose.env
+    depends_on:
+      - database
+    image: athena-api
+    command: bash -c "
+      sleep 6 &&
+      alembic upgrade head &&
+      touch /wait/alembic-finished"
+    volumes_from:
+      - database
+    volumes:
+      - /wait
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile-api
+    # restart: on-failure
+    env_file:
+      - docker-compose.env
+    depends_on:
+      - database
+      - alembic
+    image: athena-api
+    ports:
+      - "8000:8000"
+    volumes:
+    - ./athena:/project
+    command: uvicorn api.main:api --reload --workers 1 --host 0.0.0.0 --port 8000

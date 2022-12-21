@@ -1,0 +1,25 @@
+FROM python:3.11.0-slim-buster
+
+RUN apt-get update && apt-get install \
+        --no-install-recommends -qq -y \
+    build-essential \
+    gcc \
+    g++ \
+    libpoppler-cpp-dev \
+    poppler-utils \
+    pkg-config \
+    libpq-dev
+
+WORKDIR /project
+
+COPY ./requirements.txt /project/requirements.txt
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir --upgrade -r /project/requirements.txt
+
+COPY ./alembic.ini /project/alembic.ini
+COPY ./alembic /project/alembic
+COPY ./athena/constants /project/athena/constants
+COPY ./athena/extensions /project/athena/extensions
+COPY ./athena/serializers /project/athena/serializers
+COPY ./athena/api /project/athena/api
