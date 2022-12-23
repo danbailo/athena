@@ -9,6 +9,7 @@ from starlette.authentication import requires
 from constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
 
 from extensions.base_requests import async_fetch, MethodEnum
+from extensions.env_var import get_env_var
 
 from serializers.context_serializer import AlertTypeEnum
 
@@ -48,9 +49,11 @@ async def user_login(
     response: Response,
     form_data: LoginForm = Depends(LoginForm.as_form)
 ):
+    url = get_env_var("ATHENA_API_BASE_URL", raise_exception=True)
     try:
         data = await async_fetch(
-            MethodEnum.post, 'http://localhost:8000/auth/token',
+            MethodEnum.post,
+            f'{url}/auth/token',
             headers={
                 'accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
