@@ -15,11 +15,17 @@ WORKDIR /project
 COPY ./requirements.txt /project/requirements.txt
 
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir --upgrade -r /project/requirements.txt
+RUN pip install -r /project/requirements.txt
 
 COPY ./alembic.ini /project/alembic.ini
 COPY ./alembic /project/alembic
+
 COPY ./athena/constants /project/athena/constants
 COPY ./athena/extensions /project/athena/extensions
 COPY ./athena/serializers /project/athena/serializers
 COPY ./athena/api /project/athena/api
+
+COPY ./athena/constants /project/athena/constants
+COPY ./athena/extensions /project/athena/extensions
+COPY ./athena/serializers /project/athena/serializers
+COPY ./athena/app /project/athena/app
