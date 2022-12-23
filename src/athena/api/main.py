@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 
 from constants.mapped_prefix import EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
@@ -19,6 +20,18 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
+api.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost",
+        "http://localhost:8001",
+        "https://localhost",
+        "https://localhost:8001",
+    ],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*']
+)
 
 api.include_router(
     auth_router.router,
