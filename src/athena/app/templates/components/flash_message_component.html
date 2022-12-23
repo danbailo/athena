@@ -1,5 +1,7 @@
-{% if msg %}
+{% set flash_message = msg or request.scope.athena_flash_message %}
+
+{% if flash_message %}
 <div class="w-50 m-auto">
-    <p class="alert alert-{{ alert_type }}" role="alert">{{ msg }}</p>
+    <p class="alert alert-{{ alert_type or 'warning' }}" role="alert">{{ flash_message }}</p>
 </div>
 {% endif %}
