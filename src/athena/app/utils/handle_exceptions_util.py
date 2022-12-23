@@ -9,7 +9,8 @@ from ..routers.base_router import async_render_template
 async def handle_403_http_error(request: Request, exc: HTTPException):
     return RedirectResponse(
         '/user/login', 302,
-        headers={'X-Athena-Unauthenticated': 'User must be authenticated!'}
+        headers={'X-Athena-Flash-Message-Unauthenticated':
+                 'User must be authenticated!'}
     )
 
 

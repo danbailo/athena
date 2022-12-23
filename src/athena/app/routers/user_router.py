@@ -36,7 +36,8 @@ async def user_login_page(request: Request):
     if request.user.is_authenticated:
         return RedirectResponse(
             request.base_url, 302,
-            headers={'X-Athena-Authenticated': 'User already been logged!'}
+            headers={'X-Athena-Flash-Message-Authenticated':
+                     'User already been logged!'}
         )
     return await async_render_template(
         'login_template.html', request, 200

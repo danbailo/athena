@@ -12,7 +12,8 @@ class FlashMessageMiddleware:
                 return await send(message)
 
             if flash_messages := list(filter(
-                lambda x: x[0].decode('utf-8').lower().startswith('x-athena-'),
+                lambda x: x[0].decode('utf-8').lower()
+                .startswith('x-athena-flash-message'),
                 message.get('headers', []))
             ):
                 self._flash_message = flash_messages[0][1].decode('utf-8')
