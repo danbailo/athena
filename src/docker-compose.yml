@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-       - ./data:/var/lib/postgresql/data
+       - postgres:/var/lib/postgresql/data
 
   alembic:
     build:
@@ -69,3 +69,5 @@ services:
       sleep 4 &&\
       uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
              
+volumes:
+  postgres:
