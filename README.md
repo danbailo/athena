@@ -1,4 +1,18 @@
-## Using [pyenv](https://github.com/pyenv/pyenv-installer)
+## Using [Docker Compose](https://docs.docker.com/compose/)
+```bash
+$ cd src
+
+# by steps
+$ docker compose down --remove-orphans # if needed to stop all running containers
+$ docker compose build
+$ docker compose up --no-build
+
+# single line
+$ docker compose down --remove-orphans && docker compose build && docker compose up --no-build
+```
+## Local config - unix-like
+
+### Using [pyenv](https://github.com/pyenv/pyenv-installer)
 
 ```bash
 $ pyenv install 3.11.0
@@ -9,18 +23,7 @@ $ pip install --upgrade pip
 $ pip install -r requirements.txt -r requirements-dev.txt
 ```
 
-## Enviroment variables
-
-
-* `DB_USER`=`<your_db_user>`
-* `DB_PASSWORD`=`<your_db_password>`
-* `DB_HOST`=`<your_db_host>`
-* `DB_DATABASE`=`<your_database_name>`
-* `SECRET_KEY`=`<your_key>` - recommended generate a key with - `openssl rand -hex 32`
-* `ALGORITHM`=HS256
-* `PYTHONBREAKPOINT`=ipdb.set_trace # optional/recommended
-
-## Creating user/database
+### Creating database/user
 
 ```bash
 $ sudo su postgres
@@ -30,8 +33,18 @@ $ psql
 > GRANT ALL ON SCHEMA public TO <your_db_user>;
 > \q
 $ exit
+```
 
-# running alembic
-cd source/
-alembic upgrade head
+### Enviroment variables
+*Obs: If database is in localhost, this does not need to set port.*
+
+* `DATABASE_CONN_STRING`=`<your_db_user>`:`<your_db_password>`@`<host:port>`/`<your_database_name>`
+* `SECRET_KEY`=`<your_key>` - recommended generate a key with - `openssl rand -hex 32`
+* `ALGORITHM`=HS256
+* `PYTHONBREAKPOINT`=ipdb.set_trace # optional/recommended
+
+### running alembic
+```bash
+$ cd src/
+$ alembic upgrade head
 ```
