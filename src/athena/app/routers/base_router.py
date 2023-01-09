@@ -20,7 +20,7 @@ async def async_render_template(
             request=context_request,
             msg=alert_msg,
             alert_type=alert_type
-        ).dict(),
+        ).dict(exclude_none=True),
         status_code=status_code,
         headers=headers
     )
