@@ -44,10 +44,37 @@ services:
       - "8000:8000"
     volumes:
     - ./athena:/project
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.api-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.api.entrypoints=api"
+      - "traefik.http.routers.api.service=api"
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.api.middlewares=api-stripprefix"
+      - "traefik.http.routers.api.rule=Host(`localhost`)"
+      - "traefik.http.services.api.loadbalancer.server.port=8000"
     command: bash -c "
       sleep 3 &&\
       uvicorn api.main:api --reload --workers 1 --host 0.0.0.0 --port 8000"
-             
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  reverse-proxy:
+    image: "traefik:v2.9"
+    container_name: "athena-reverse-proxy"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.api.address=:8001"
+    ports:
+      - "8001:8001"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   app:
     build:
       context: .
@@ -60,14 +87,14 @@ services:
       - api
     image: athena-app
     ports:
-      - "8001:8001"
+      - "8002:8002"
     volumes:
     - ./athena:/project
     extra_hosts:
-      - "host.docker.internal:host-gateway"    
+      - "host.docker.internal:host-gateway"
     command: bash -c "
       sleep 4 &&\
-      uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
-             
+      uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8002"
+
 volumes:
   postgres:
