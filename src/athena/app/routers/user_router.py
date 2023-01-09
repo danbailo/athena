@@ -54,7 +54,7 @@ async def user_login(
     try:
         data = await async_fetch(
             MethodEnum.post,
-            f'{url}/auth/token',
+            f'{url}/api/auth/token',
             headers={
                 'accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
