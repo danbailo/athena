@@ -8,25 +8,25 @@ from .database.connection import database
 
 from .routers import auth_router, user_router
 
-api = FastAPI()
+api = FastAPI(root_path='/api')
 
 
-@api.on_event("startup")
+@api.on_event('startup')
 async def startup():
     await database.connect()
 
 
-@api.on_event("shutdown")
+@api.on_event('shutdown')
 async def shutdown():
     await database.disconnect()
 
 api.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost",
-        "http://localhost:8001",
-        "https://localhost",
-        "https://localhost:8001",
+        'http://localhost',
+        'http://localhost:8001',
+        'https://localhost',
+        'https://localhost:8001',
     ],
     allow_credentials=True,
     allow_methods=['*'],
