@@ -9,7 +9,8 @@ from .middlewares.flash_message_middleware import FlashMessageMiddleware
 from .routers import home_router, user_router
 
 from .utils.handle_exceptions_util import (
-    handle_403_http_error, handle_404_http_error
+    async_403_http_error_exception_handler,
+    async_404_http_error_exception_handler,
 )
 
 app = FastAPI(docs_url=None, redoc_url=None)
@@ -17,8 +18,8 @@ app = FastAPI(docs_url=None, redoc_url=None)
 app.add_middleware(FlashMessageMiddleware)
 app.add_middleware(AuthenticationMiddleware, backend=OAuth2Backend())
 
-app.add_exception_handler(403, handle_403_http_error)
-app.add_exception_handler(404, handle_404_http_error)
+app.add_exception_handler(403, async_403_http_error_exception_handler)
+app.add_exception_handler(404, async_404_http_error_exception_handler)
 
 app.mount('/static', StaticFiles(directory='app/static'), name='static')
 
