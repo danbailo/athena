@@ -8,7 +8,7 @@ from .middlewares.flash_message_middleware import FlashMessageMiddleware
 
 from .routers import home_router, user_router
 
-from .utils.handle_exceptions_util import (
+from .utils.exception_handler_util import (
     async_403_http_error_exception_handler,
     async_404_http_error_exception_handler,
 )
