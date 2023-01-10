@@ -1,6 +1,6 @@
 ## Using [Docker Compose](https://docs.docker.com/compose/)
 ```bash
-$ cd src
+$ cd src/
 
 # by steps
 $ docker compose down --remove-orphans # if needed to stop all running containers
@@ -10,15 +10,16 @@ $ docker compose up --no-build
 # single line
 $ docker compose down --remove-orphans && docker compose build && docker compose up --no-build
 ```
-## Local config - unix-like
+## Local config/unix-like
 
 ### Using [pyenv](https://github.com/pyenv/pyenv-installer)
 
 ```bash
+$ cd src/
 $ pyenv install 3.11.0
-$ pyenv virtualenv 3.11.0 atena-env
-$ pyenv local atena-env # optional/recommended (auto active env)
-$ pyenv activate atena-env
+$ pyenv virtualenv 3.11.0 athena-env
+$ pyenv local athena-env # optional/recommended (auto active env)
+$ pyenv activate athena-env
 $ pip install --upgrade pip
 $ pip install -r requirements.txt -r requirements-dev.txt
 ```
@@ -47,4 +48,13 @@ $ exit
 ```bash
 $ cd src/
 $ alembic upgrade head
+```
+
+## To run
+
+```bash
+cd src/athena
+
+uvicorn api.main:api --reload
+uvicorn app.main:app --reload --port 8001
 ```
