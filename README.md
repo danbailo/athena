@@ -26,6 +26,8 @@ $ pip install -r requirements.txt -r requirements-dev.txt
 
 ### Creating database/user
 
+*Obs: tested with PostgreSQL v12*
+
 ```bash
 $ sudo su postgres
 $ psql
