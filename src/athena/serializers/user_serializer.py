@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, validator
 
 
+from api.database.models.user_model import RoleEnum
 from api.utils.auth_util import get_password_hash
 
 
@@ -9,6 +10,7 @@ class BaseUserBody(BaseModel):
     username: str
     email: str
     is_active: bool | None
+    role: RoleEnum
 
     class Config:
         allow_population_by_field_name = True

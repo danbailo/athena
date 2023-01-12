@@ -1,8 +1,17 @@
-from sqlalchemy import Boolean, Column, String
+from enum import StrEnum
+
+
+from sqlalchemy import Boolean, Column, String, Enum
 from sqlalchemy.sql import false
 
 
 from .base import AthenaBase
+
+
+class RoleEnum(StrEnum):
+    admin = 'admin'
+    user = 'user'
+    superuser = 'superuser'
 
 
 class UserModel(AthenaBase):
@@ -11,3 +20,4 @@ class UserModel(AthenaBase):
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
     is_active = Column(Boolean, server_default=false(), nullable=False)
+    role = Column(Enum(RoleEnum), nullable=False, server_default=RoleEnum.user)
