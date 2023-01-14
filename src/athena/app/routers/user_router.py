@@ -6,7 +6,7 @@ from httpx import HTTPStatusError
 from starlette.authentication import requires
 
 
-from constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
+from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
 
 from extensions.base_requests import async_fetch, MethodEnum
 from extensions.env_var import get_env_var
@@ -51,7 +51,7 @@ async def user_login(
     try:
         data = await async_fetch(
             MethodEnum.post,
-            f'{base_url}/auth/token',
+            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["auth"]}/token',
             headers={
                 'accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -99,7 +99,8 @@ async def user_admin(request: Request):
     base_url = get_env_var('ATHENA_API_BASE_URL')
     try:
         response = await async_fetch(
-            MethodEnum.get, f'{base_url}/admin/admin',
+            MethodEnum.get,
+            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["admin"]}/admin',
             headers=TokenRequestHeaders(
                 access_token=request.headers['cookie']
             )

@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from sqlalchemy import select
 
 
-from constants.mapped_prefix import MAPPED_API_ENDPOINT_PREFIX
+from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
 
 from extensions.env_var import get_env_var
 

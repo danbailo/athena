@@ -2,7 +2,9 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 
 
-from constants.mapped_prefix import EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
+from constants.mapped_api_prefix import (
+    EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
+)
 
 from .base_router import async_render_template
 

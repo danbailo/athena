@@ -11,7 +11,7 @@ async def async_403_http_error_exception_handler(
 ):
     return RedirectResponse(
         '/', 302,
-        headers={'X-Athena-Flash-Message-Unauthenticated':
+        headers={'X-Athena-Flash-Message-Unauthorized':
                  'Not authorized!'}
     )
 
