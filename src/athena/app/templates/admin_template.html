@@ -1,0 +1,10 @@
+{% extends "base_template.html" %}
+
+{% block title %} Admin {% endblock title %}
+
+{% block content %}
+    {% include 'components/flash_message_component.html' %}
+    <h1>You are an admin! User: {{ request.user.name }}</h1>
+
+    <p>Response: {{ response }}</p>
+{% endblock content %}
