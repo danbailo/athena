@@ -19,11 +19,11 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 {{ navbar_link('home_page', 'Home') }}
-                {{ navbar_link('user_page', 'User') }}
                 {% if not request.user.is_authenticated %}
                     {{ navbar_link('user_login', 'Login') }}
                 {% endif %}
                 {% if request.user.is_authenticated %}
+                    {{ navbar_link('user_page', 'User') }}
                     {{ navbar_link('user_logout', 'Logout') }}
                 {% endif %}
                 {% if user_is_admin %}
