@@ -6,7 +6,7 @@ from constants.mapped_prefix import EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
 
 from .database.connection import database
 
-from .routers import auth_router, user_router
+from .routers import auth_router, admin_router, user_router
 
 api = FastAPI()
 
@@ -33,6 +33,11 @@ api.add_middleware(
     allow_headers=['*']
 )
 
+api.include_router(
+    admin_router.router,
+    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.admin],
+    tags=['admin']
+)
 api.include_router(
     auth_router.router,
     prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.auth],
