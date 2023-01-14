@@ -9,14 +9,12 @@ class BaseUserBody(BaseModel):
     name: str
     username: str
     email: str
-    is_active: bool | None
-    role: RoleEnum
 
     class Config:
         allow_population_by_field_name = True
 
 
-class CreateUserBody(BaseUserBody):
+class CreateUserRequestBody(BaseUserBody):
     password_hash: str = Field(..., alias='password')
 
     @validator('password_hash')
@@ -25,11 +23,16 @@ class CreateUserBody(BaseUserBody):
         return get_password_hash(value)
 
 
-class GetUserBody(BaseUserBody):
-    id: int
-
-
-class PatchUserBody(BaseModel):
+class PatchUserRequestBody(BaseModel):
     name: str | None
     email: str | None
-    is_active: bool | None
+    password_hash: str = Field(..., alias='password')
+
+    @validator('password_hash')
+    @classmethod
+    def hash_password(cls, value: str) -> str:
+        return get_password_hash(value)
+
+
+class UserResponseBody(BaseUserBody):
+    role: RoleEnum

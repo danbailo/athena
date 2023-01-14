@@ -3,13 +3,9 @@ from pydantic import BaseModel, Field, validator
 import regex
 
 
-class TokenResponseSerializer(BaseModel):
+class TokenResponseBody(BaseModel):
     access_token: str
     token_type: str = 'bearer'
-
-
-class TokenDataSerializer(BaseModel):
-    username: str | None = None
 
 
 class TokenRequestHeaders(BaseModel):
