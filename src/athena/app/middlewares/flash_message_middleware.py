@@ -1,7 +1,15 @@
 class FlashMessageMiddleware:
     def __init__(self, app):
         self.app = app
-        self._flash_message = None
+        self._flash_message: str | None = None
+
+    @property
+    def flash_message(self):
+        return self._flash_message
+
+    @flash_message.setter
+    def flash_message(self, value):
+        self._flash_message = value
 
     async def __call__(self, scope, receive, send):
         if scope['type'] != 'http':
@@ -16,12 +24,10 @@ class FlashMessageMiddleware:
                 .startswith('x-athena-flash-message'),
                 message.get('headers', []))
             ):
-                self._flash_message = flash_messages[0][1].decode('utf-8')
+                self.flash_message = flash_messages[0][1].decode('utf-8')
             else:
-                self._flash_message = None
-
+                self.flash_message = None
             await send(message)
 
-        scope['athena_flash_message'] = self._flash_message
-
+        scope['athena_flash_message'] = self.flash_message
         await self.app(scope, receive, get_flash_message_from_headers)
