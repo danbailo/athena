@@ -3,18 +3,36 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import select, insert, update
 
 
-from .auth_router import async_get_current_active_user
-
-from ..database.connection import database
-from ..database.models.user_model import UserModel
+from extensions.exceptions import (
+    NotAuthorizedError, NothingToPatchError, UserNotFoundError
+)
+from extensions.logger import logger
 
 from serializers.user_serializer import (
     CreateUserBody, GetUserBody, PatchUserBody
 )
 
-from extensions.exceptions import UserNotFoundError, NothingToPatchError
+from .auth_router import async_get_current_active_user
+
+from ..database.connection import database
+from ..database.models.user_model import UserModel
+
 
 router = APIRouter()
+
+
+class RoleChecker:
+    def __init__(self, allowed_roles):
+        self.allowed_roles = allowed_roles
+
+    def __call__(
+        self, user: UserModel = Depends(async_get_current_active_user)
+    ):
+        if user.role not in self.allowed_roles:
+            logger.debug(
+                f'User with role {user.role} not in {self.allowed_roles}'
+            )
+            raise NotAuthorizedError()
 
 
 @router.get('', response_model=list[GetUserBody])
@@ -59,3 +77,8 @@ async def patch_user(username: str, user_body: PatchUserBody):
         .where(UserModel.id == user.id)\
         .values(**data)
     await database.execute(query)
+
+
+@router.get('/admin', dependencies=[Depends(RoleChecker(['admin']))])
+async def only_admin(user: UserModel = Depends(async_get_current_active_user)):
+    return {'message': f'{user.name} is admin!'}
