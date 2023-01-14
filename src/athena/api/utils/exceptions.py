@@ -38,17 +38,17 @@ class InactiveUserError(BaseAuthHTTPException):
 
 @dataclass
 class UserNotFoundError(HTTPException):
-    detail: str = field(default='User not found!', init=True)
+    detail: str = field(default='User not found', init=True)
     status_code: status = status.HTTP_404_NOT_FOUND
 
 
 @dataclass
 class NothingToPatchError(HTTPException):
-    detail: str = field(default='Nothing to patch!', init=True)
+    detail: str = field(default='Nothing to patch', init=True)
     status_code: status = status.HTTP_400_BAD_REQUEST
 
 
 @dataclass
 class NotAuthorizedError(HTTPException):
-    detail: str = field(default='Not authorized!', init=True)
+    detail: str = field(default='Not authorized', init=True)
     status_code: status = status.HTTP_403_FORBIDDEN
