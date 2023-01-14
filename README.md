@@ -39,7 +39,6 @@ $ exit
 ```
 
 ### Enviroment variables
-*Obs: If database is in localhost, this does not need to set port.*
 
 * `DATABASE_CONN_STRING`=`<your_db_user>`:`<your_db_password>`@`<host:port>`/`<your_database_name>`
 * `SECRET_KEY`=`<your_key>` - recommended generate a key with - `openssl rand -hex 32`
@@ -57,6 +56,6 @@ $ alembic upgrade head
 ```bash
 cd src/athena
 
-uvicorn api.main:api --reload
-uvicorn app.main:app --reload --port 8001
+dotenv run uvicorn api.main:api --reload --port 8001
+dotenv run uvicorn app.main:app --reload --port 8002
 ```
