@@ -1,44 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    {% block head %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <title>{% block title %}{% endblock title %} - Athena Project</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="Daniel Bailo" />
+        <title>Athena Project{% block title %}{% endblock title %}</title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', path='img/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='img/favicon.ico') }}"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', path='img/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', path='img/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', path='img/site.webmanifest') }}">
+        <!-- Favicon-->
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', path='img/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='img/favicon.ico') }}"/>
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', path='img/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', path='img/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ url_for('static', path='img/site.webmanifest') }}">
 
-    <link href="{{ url_for('static', path='css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <link href="{{ url_for('static', path='css/styles.css') }}" type="text/css" rel="stylesheet">
-    <link href="{{ url_for('static', path='css/form.css') }}" type="text/css" rel="stylesheet">
-    <link href="{{ url_for('static', path='css/navbar.css') }}" type="text/css" rel="stylesheet">
+        <!-- Font Awesome icons (free version)-->
+        <script src="{{ url_for('static', path='js/all.js') }}" crossorigin="anonymous"></script>
 
-    {% endblock head %}
-  </head>
-  <body class="text-center">
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
 
-    {% include 'components/navbar_component.html' %}
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet" />
+    </head>
+    <body id="page-top">
 
-    <main class="w-100 m-auto">
-        <img class="mb-4" src="{{ url_for('static', path='img/athena.jpeg') }}" alt="" width="100" height="100">
+        {% include 'components/navbar_component.html' %}
+
         {% block content %}
         {% endblock content %}
 
-        {% block footer %}
-        <p class="mt-5 mb-3 text-muted">
-            &copy; Copyright 2022 by <a href="https://www.github.com/danbailo">Daniel Bailo</a>.
-        </p>
-        {% endblock footer %}
-    </main>
-
-    <!-- TODO: qnd for avançando com o projeto, testar js local -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', path='js/bootstrap.bundle.min.js') }}"></script>
-
-  </body>
+        <!-- Bootstrap core JS-->
+        <script src="{{ url_for('static', path='js/bootstrap.bundle.min.js') }}"></script>
+        <!-- Core theme JS-->
+        <script src="{{ url_for('static', path='js/scripts.js') }}"></script>
+    </body>
 </html>
