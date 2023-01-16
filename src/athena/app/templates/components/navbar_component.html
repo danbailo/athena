@@ -19,9 +19,14 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
                 {{ navbar_link('#services', 'Services') }}
-                {{ navbar_link('#modalLoginForm', 'Login', 'data-bs-toggle=modal data-target=#modalLoginForm') }}
+                {% if not request.user.is_authenticated %}
+                    {{ navbar_link('#modalLoginForm', 'Login', 'data-bs-toggle=modal data-target=#modalLoginForm') }}
+                {% else %}
+                    {{ navbar_link('#features', 'Features') }}
+                    {{ navbar_link(url_for('user_logout'), 'Logout') }}
+                {% endif %}
                 {% if user_is_admin %}
-                    {{ navbar_link('Admin') }}
+                    {{ navbar_link(url_for('user_admin'), 'Admin') }}
                 {% endif %}
             </ul>
         </div>        

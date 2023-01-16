@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse, Response, RedirectResponse
+from fastapi.responses import Response, RedirectResponse
 
 from httpx import HTTPStatusError
 
@@ -18,27 +18,18 @@ from .base_router import async_render_template
 
 from ..forms.login_form import LoginForm
 
-
 router = APIRouter(
     prefix=MAPPED_API_ENDPOINT_PREFIX['user']
 )
 
 
-@router.get('')
-@requires('authenticated')
-async def user_page(request: Request):
-    return await async_render_template('user_template.html', request)
-
-
-@router.get('/login', response_class=HTMLResponse)
+@router.get('/login', response_class=RedirectResponse)
 async def user_login_page(request: Request):
+    response = RedirectResponse(request.base_url, 304)
     if request.user.is_authenticated:
-        return RedirectResponse(
-            request.base_url, 302,
-            headers={'X-Athena-Flash-Message-Authenticated':
-                     'User already been logged!'}
-        )
-    return await async_render_template('login_template.html', request)
+        response.headers['X-Athena-Flash-Message-Authenticated'] =\
+            'User already been logged!'
+    return response
 
 
 @router.post('/login', response_class=RedirectResponse)
@@ -59,9 +50,10 @@ async def user_login(
             data=form_data
         )
     except HTTPStatusError:
-        return await async_render_template(
-            'login_template.html', request, 401,
-            'Incorrect Username or Password', AlertTypeEnum.warning,
+        response.headers['X-Athena-Flash-Message-Authenticated'] =\
+            'Incorrect Username or Password'
+        return RedirectResponse(
+            request.base_url, 304, response.headers
         )
     except Exception as exc:
         return await async_render_template(
@@ -87,7 +79,7 @@ async def user_logout(request: Request):
                      'User must be authenticated!'}
         )
     response = RedirectResponse(
-        router.url_path_for('user_login'), 302
+        request.base_url, 302
     )
     response.delete_cookie(key='access_token')
     return response
