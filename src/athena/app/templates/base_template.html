@@ -22,6 +22,9 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
 
+        <!-- Common CSS -->
+        <link href="{{ url_for('static', path='css/common.css') }}" rel="stylesheet" />
+
         <!-- Bootstrap v5.2.3 -->
         <link href="{{ url_for('static', path='css/bootstrap.min.css') }}" rel="stylesheet" />
 
@@ -33,7 +36,6 @@
     </head>
     <body id="page-top">
 
-        {# {% include 'components/flash_message_component.html' %} #}
         {% include 'components/navbar_component.html' %}
 
         {% block content %}
@@ -45,5 +47,9 @@
         <script src="{{ url_for('static', path='js/bootstrap.bundle.min.js') }}"></script>
         <!-- Core theme JS-->
         <script src="{{ url_for('static', path='js/scripts.js') }}"></script>
+
+        {% block script %}
+        {% endblock script %}
+
     </body>
 </html>
