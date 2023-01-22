@@ -1,28 +1,40 @@
-{% extends "base_template.html" %}
+{% extends 'base_template.html' %}
 
 {% block title %} Login {% endblock title %}
 
 {% block content %}
-    {% include 'components/flash_message_component.html' %}
-    <main class="form-signin w-100 m-auto">
-        <form method="POST" action="{{ url_for('user_login') }}">
-            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <main class="body">
 
-            <div class="form-floating">
-                <input type="text" class="form-control" id="floatingInput" placeholder="user" name="username" required>
-                <label for="floatingInput">User</label>
-            </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
-                <label for="floatingPassword">Password</label>
-            </div>
+        {% include 'components/flash_message_component.html' %}
 
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" value=1 name="remember_me"> Remember me
-                </label>
+        <div class="container d-flex">
+            <div class="card mx-auto">
+                <div class="card-body">
+                    <main class="form-signin w-100 m-auto">
+                        <form method="POST" action="{{ url_for('user_login') }}">
+                            <h1 class="h3 mb-3 fw-bold text-center">Please sign in</h1>
+                
+                            <div class="form-floating mb-1">
+                                <input type="username" class="form-control" id="floatingInput" placeholder="user" name="username" required>
+                                <label for="floatingInput">User</label>
+                            </div>
+                            <div class="form-floating mb-1">
+                                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" required>
+                                <label for="floatingPassword">Password</label>
+                            </div>
+                
+                            <!-- <div class="checkbox mb-3">
+                                <label>
+                                    <input type="checkbox" value=1 name="remember_me"> Remember me
+                                </label>
+                            </div> -->
+                            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                        </form>
+                    </main>
+                    <p>Does not have account? <a href="{{ url_for('user_register') }}">Create here!</a></p>
+                </div>
             </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-        </form>
+        </div>
     </main>
+
 {% endblock content %}
