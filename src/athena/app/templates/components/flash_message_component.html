@@ -1,5 +1,9 @@
-<div class="w-50 m-auto">
-    {% for flash in get_flash_messages(request) %}
-        <p class="alert alert-{{ flash.alert_type }}" role="alert">{{ flash.message }}</p>
-    {% endfor%}
-</div>
+{% set flash_messages = get_flash_messages(request) %}
+
+{% if flash_messages %}
+    <div class="d-inline-flex mx-auto">
+        {% for flash in flash_messages %}
+            <p class="alert alert-{{ flash.alert_type }}" role="alert">{{ flash.message }}</p>
+        {% endfor%}
+    </div>
+{% endif %}
