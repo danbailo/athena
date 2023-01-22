@@ -16,7 +16,7 @@ main.body {
   padding-bottom: 6rem;
   text-align: center;
   /* color: #fff; */
-  background-image: url('../img/bw-greek-statue-image-torn-paper-style-remixed-media.jpg');
+  background-image: url('../img/background.jpg');
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;
@@ -64,7 +64,7 @@ main.body .body-heading {
   main.body {
     /* The file size of this background image is 93% smaller
      * to improve page load speed on mobile internet connections */
-    background-image: url("../img/bw-greek-statue-image-torn-paper-style-remixed-media.jpg");
+    background-image: url("../img/background.jpg");
     /* text-align: center; */
     /* color: #fff; */
     background-repeat: no-repeat;
