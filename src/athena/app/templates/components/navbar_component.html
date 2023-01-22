@@ -1,34 +1,36 @@
 {% macro navbar_link(href, value, modal) -%}
-    <li class="nav-item">
-        <a class="nav-link" href="{{ href }}" {{ modal }}>{{ value }}</a>
-    </li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ href }}" {{ modal }}>{{ value }}</a>
+</li>
 {%- endmacro %}
 
 {% set user_is_admin = request.scope.athena_user_is_admin %}
 
-{% include 'components/login_modal_component.html' %}
 
 <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-shrink" id="mainNav">
     <div class="container">
-        <a class="navbar-brand" href="#page-top"><img src="{{ url_for('static', path='img/navbar-logo.svg') }}" alt="..." /></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', path='img/navbar-logo.svg') }}"
+                alt="..." /></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
             <i class="fas fa-bars ms-1"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                {{ navbar_link('#services', 'Services') }}
+                {{ navbar_link('#services' if request.url.path == '/' else '/#services', 'Services') }}
                 {% if not request.user.is_authenticated %}
-                    {{ navbar_link('#modalLoginForm', 'Login', 'data-bs-toggle=modal data-target=#modalLoginForm') }}
+                    {{ navbar_link(url_for('user_login_page'), 'Login') }}
                 {% else %}
-                    {{ navbar_link('#features', 'Features') }}
+                    {{ navbar_link(url_for('user_features_page'), 'Features') }}
+                    {{ navbar_link(url_for('user_page'), 'User') }}
                     {{ navbar_link(url_for('user_logout'), 'Logout') }}
-                {% endif %}
-                {% if user_is_admin %}
-                    {{ navbar_link(url_for('user_admin'), 'Admin') }}
-                {% endif %}
+                    {% if user_is_admin %}
+                        {{ navbar_link(url_for('user_admin_page'), 'Admin') }}
+                    {% endif %}
+                {% endif%}
             </ul>
-        </div>        
+        </div>
     </div>
 </nav>
