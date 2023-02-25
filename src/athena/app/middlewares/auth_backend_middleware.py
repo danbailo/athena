@@ -53,8 +53,10 @@ class OAuth2Backend(AuthenticationBackend):
             MethodEnum.post,
             f'{url}{MAPPED_API_ENDPOINT_PREFIX["user"]}/detail', headers=auth
         )
-        conn.scope["athena_user_is_admin"] = response['role'] == 'admin'
+        response.raise_for_status()
+        data = response.json()
+        conn.scope["athena_user_is_admin"] = data['role'] == 'admin'
         return (
-            AuthCredentials(['authenticated', response['role']]),
-            AthenaUser(**response)
+            AuthCredentials(['authenticated', data['role']]),
+            AthenaUser(**data)
         )
