@@ -1,9 +1,12 @@
+
 from fastapi import Form
 
-from pydantic import BaseModel, Field
+from pydantic import Field, root_validator
+
+from .base import BaseForm, FormType
 
 
-class LoginForm(BaseModel):
+class LoginForm(BaseForm):
     """Is mandatory to return this fields.
 
     OAuth2PasswordRequestForm
@@ -15,8 +18,8 @@ class LoginForm(BaseModel):
         * client_secret
     """
 
-    username: str = Field(..., alias='username')
-    password: str = Field(..., alias='password')
+    username: FormType[str] = Field(..., alias='username')
+    password: FormType[str] = Field(..., alias='password')
     remember_me: bool
 
     @classmethod
@@ -27,8 +30,41 @@ class LoginForm(BaseModel):
         remember_me: bool = Form(False)
     ) -> 'LoginForm':
         return cls(
-            username=username, password=password, remember_me=remember_me
+            username=username,
+            password=password,
+            remember_me=remember_me
         )
 
-    class Config:
-        allow_population_by_field_name = True
+
+class RegisterForm(BaseForm):
+    name: FormType[str] = Field(...,)
+    email: FormType[str] = Field(...,)
+    username: FormType[str] = Field(...,)
+    password: FormType[str] = Field(...,)
+    password2: FormType[str] = Field(
+        ..., title='Repeat password', type='password'
+    )
+
+    @root_validator
+    @classmethod
+    def check_if_passwords_are_equal(cls, root):
+        if root['password'] != root['password2']:
+            raise ValueError('Passwords must be equal!')
+        return root
+
+    @classmethod
+    def as_form(
+        cls,
+        name: str = Form(),
+        email: str = Form(),
+        username: str = Form(),
+        password: str = Form(),
+        password2: str = Form()
+    ) -> 'RegisterForm':
+        return cls(
+            name=name,
+            email=email,
+            username=username,
+            password=password,
+            password2=password2
+        )
