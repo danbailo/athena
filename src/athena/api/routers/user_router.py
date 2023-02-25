@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 
 from sqlalchemy import insert, update
+from asyncpg.exceptions import UniqueViolationError
 
 
 from serializers.user_serializer import (
@@ -27,7 +28,15 @@ async def user_detail(
 @router.post('', response_model=CreateUserRequestBody)
 async def create_user(user: CreateUserRequestBody):
     query = insert(UserModel).values(**user.dict(by_alias=False))
-    await database.execute(query)
+    try:
+        await database.execute(query)
+    except UniqueViolationError as err:
+        msg = "The {field} - {value} is already in use!"
+        if 'username' in str(err):
+            msg = msg.format(value=user.username, field='username')
+        if 'email' in str(err):
+            msg = msg.format(value=user.email, field='email')
+        raise HTTPException(status_code=400, detail=msg)
     return user
 
 

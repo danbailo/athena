@@ -11,37 +11,29 @@ from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
 from extensions.base_requests import async_fetch, MethodEnum
 from extensions.env_var import get_env_var
 
-from serializers.auth_serializer import TokenRequestHeaders
-from serializers.context_serializer import AlertTypeEnum
+from .base_router import async_render_template, flash
 
-from .base_router import async_render_template
-
-from ..forms.login_form import LoginForm
-
+from ..forms.user_form import LoginForm, RegisterForm
 
 router = APIRouter(
     prefix=MAPPED_API_ENDPOINT_PREFIX['user']
 )
 
 
-@router.get('')
-@requires('authenticated')
-async def user_page(request: Request):
-    return await async_render_template('user_template.html', request)
-
-
-@router.get('/login', response_class=HTMLResponse)
+@router.get('/login', response_class=HTMLResponse | RedirectResponse)
 async def user_login_page(request: Request):
     if request.user.is_authenticated:
-        return RedirectResponse(
-            request.base_url, 302,
-            headers={'X-Athena-Flash-Message-Authenticated':
-                     'User already been logged!'}
-        )
-    return await async_render_template('login_template.html', request)
+        return RedirectResponse(router.url_path_for('user_page'), 302)
+    return await async_render_template('login_template.html', request, 200)
 
 
-@router.post('/login', response_class=RedirectResponse)
+@router.get('', response_class=HTMLResponse)
+@requires('authenticated', redirect='user_login_page')
+async def user_page(request: Request):
+    return await async_render_template('user_template.html', request, 200)
+
+
+@router.post('/login', response_class=RedirectResponse | HTMLResponse)
 async def user_login(
     request: Request,
     response: Response,
@@ -49,7 +41,7 @@ async def user_login(
 ):
     base_url = get_env_var('ATHENA_API_BASE_URL', raise_exception=True)
     try:
-        data = await async_fetch(
+        _response = await async_fetch(
             MethodEnum.post,
             f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["auth"]}/token',
             headers={
@@ -58,15 +50,17 @@ async def user_login(
             },
             data=form_data
         )
+        data = _response.json()
+        _response.raise_for_status()
     except HTTPStatusError:
+        await flash(request, data['detail'], 'danger')
         return await async_render_template(
-            'login_template.html', request, 401,
-            'Incorrect Username or Password', AlertTypeEnum.warning,
+            'login_template.html', request, 401
         )
     except Exception as exc:
+        await flash(request, f'Unexpected error! - {str(exc)}', 'danger')
         return await async_render_template(
-            'errors/404_error.html', request, 404,
-            'Unexpected error', AlertTypeEnum.danger, exc
+            'errors/404_error.html', request, 404
         )
     response.set_cookie(
         key='access_token',
@@ -74,11 +68,11 @@ async def user_login(
         httponly=True
     )
     return RedirectResponse(
-        request.base_url, 302, response.headers
+        router.url_path_for('user_page'), 302, response.headers
     )
 
 
-@router.get('/logout')
+@router.get('/logout', response_class=RedirectResponse)
 async def user_logout(request: Request):
     if not request.user.is_authenticated:
         return RedirectResponse(
@@ -87,31 +81,61 @@ async def user_logout(request: Request):
                      'User must be authenticated!'}
         )
     response = RedirectResponse(
-        router.url_path_for('user_login'), 302
+        request.base_url, 302
     )
     response.delete_cookie(key='access_token')
     return response
 
 
-@router.get('/admin')
-@requires('admin')
-async def user_admin(request: Request):
+@router.get('/register', response_class=HTMLResponse | RedirectResponse)
+async def user_register_page(request: Request):
+    if request.user.is_authenticated:
+        return RedirectResponse(router.url_path_for('user_page'), 302)
+    return await async_render_template(
+        'register_template.html', request, 200,
+        {'form': RegisterForm.get_form_values()}
+    )
+
+
+@router.post('/register', response_class=HTMLResponse | RedirectResponse)
+async def user_register(
+    request: Request,
+    form_data: RegisterForm = Depends(RegisterForm.as_form)
+):
     base_url = get_env_var('ATHENA_API_BASE_URL')
     try:
-        response = await async_fetch(
-            MethodEnum.get,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["admin"]}/admin',
-            headers=TokenRequestHeaders(
-                access_token=request.headers['cookie']
-            )
+        _response = await async_fetch(
+            MethodEnum.post, f'{base_url}/user',
+            json=form_data
         )
+        _response.raise_for_status()
     except HTTPStatusError:
+        await flash(request, _response.json()['detail'], 'danger')
         return await async_render_template(
-            'errors/403_error.html', request, 403,
-            'Not authorized!', AlertTypeEnum.danger
+            'register_template.html', request, 401,
+            {'form': form_data.get_form_values()}
         )
-
+    except Exception as exc:
+        await flash(request, f'Unexpected error! - {str(exc)}', 'danger')
+        return await async_render_template(
+            'errors/404_error.html', request, 404
+        )
+    await flash(request, 'User registered!', 'success')
     return await async_render_template(
-        'admin_template.html', request,
-        context_request={'response': response}
+        'register_template.html', request, 200,
+        {'form': RegisterForm.get_form_values()}
     )
+
+
+@router.get('/features', response_class=HTMLResponse | RedirectResponse)
+async def user_features_page(request: Request):
+    if request.user.is_authenticated:
+        return RedirectResponse(router.url_path_for('user_page'), 302)
+    return await async_render_template('features_template.html', request, 200)
+
+
+@router.post('/features')
+async def user_features(
+    request: Request
+):
+    raise NotImplementedError()

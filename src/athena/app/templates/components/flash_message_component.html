@@ -1,7 +1,9 @@
-{% set flash_message = msg or request.scope.athena_flash_message %}
+{% set flash_messages = get_flash_messages(request) %}
 
-{% if flash_message %}
-<div class="w-50 m-auto">
-    <p class="alert alert-{{ alert_type or 'warning' }}" role="alert">{{ flash_message }}</p>
-</div>
+{% if flash_messages %}
+    <div class="d-inline-flex mx-auto">
+        {% for flash in flash_messages %}
+            <p class="alert alert-{{ flash.alert_type }}" role="alert">{{ flash.message }}</p>
+        {% endfor%}
+    </div>
 {% endif %}

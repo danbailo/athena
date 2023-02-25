@@ -44,8 +44,3 @@ async def get_users(username: str | None = None):
     else:
         query = select(UserModel)
     return await database.fetch_all(query)
-
-
-@router.get('/admin', dependencies=[Depends(RoleChecker(['admin']))])
-async def only_admin(user: UserModel = Depends(async_get_current_user)):
-    return {'message': f'{user.name} is admin!'}

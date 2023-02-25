@@ -1,35 +1,35 @@
-{% macro navbar_link(route, name) -%}
-    <li class="nav-item">
-        <a class="nav-link{{ ' active' if request.url == url_for(route) else ''}}"
-           {{'aria-current=page' if request.url == url_for(route) else ''}}
-           href="{{ url_for(route) }}">{{ name }}
-        </a>
-    </li>
+{% macro navbar_link(href, value, modal) -%}
+<li class="nav-item">
+    <a class="nav-link" href="{{ href }}" {{ modal }}>{{ value }}</a>
+</li>
 {%- endmacro %}
 
 {% set user_is_admin = request.scope.athena_user_is_admin %}
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Athena Project</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                {{ navbar_link('home_page', 'Home') }}
-                {% if not request.user.is_authenticated %}
-                    {{ navbar_link('user_login', 'Login') }}
-                {% endif %}
-                {% if request.user.is_authenticated %}
-                    {{ navbar_link('user_page', 'User') }}
-                    {{ navbar_link('user_logout', 'Logout') }}
-                {% endif %}
-                {% if user_is_admin %}
-                    {{ navbar_link('user_admin', 'Admin')}}
-                {% endif %}
 
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-shrink" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="/"><img src="{{ url_for('static', path='img/navbar-logo.svg') }}"
+                alt="..." /></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            Menu
+            <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                {{ navbar_link('#services' if request.url.path == '/' else '/#services', 'Services') }}
+                {% if not request.user.is_authenticated %}
+                    {{ navbar_link(url_for('user_login_page'), 'Login') }}
+                {% else %}
+                    {{ navbar_link(url_for('user_features_page'), 'Features') }}
+                    {{ navbar_link(url_for('user_page'), 'User') }}
+                    {{ navbar_link(url_for('user_logout'), 'Logout') }}
+                    {% if user_is_admin %}
+                        {{ navbar_link(url_for('user_admin_page'), 'Admin') }}
+                    {% endif %}
+                {% endif%}
             </ul>
         </div>
     </div>

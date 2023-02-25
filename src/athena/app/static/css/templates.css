@@ -1,0 +1,48 @@
+body{
+    /* color: #fff; */
+    background-image: url('../img/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    /* width: 100vh; */
+}
+
+/* For mobile devices */
+@media only screen and (max-width: 768px) {
+    body {
+      /* The file size of this background image is 93% smaller
+       * to improve page load speed on mobile internet connections */
+      background-image: url("../img/background.jpg");
+      /* text-align: center; */
+      /* color: #fff; */
+      background-repeat: no-repeat;
+      /* background-position: center; */
+      /* background-attachment: scroll; */
+      /* background-attachment: fixed; */
+      /* background-size: cover; */
+      /* height: 100vh; */
+    }
+  }
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-signin input[type="username"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}

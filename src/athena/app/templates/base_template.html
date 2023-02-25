@@ -1,44 +1,15 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    {% block head %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-    <title>{% block title %}{% endblock title %} - Athena Project</title>
+{% extends 'base.html' %}
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', path='img/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='img/favicon.ico') }}"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', path='img/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', path='img/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', path='img/site.webmanifest') }}">
 
-    <link href="{{ url_for('static', path='css/bootstrap.min.css') }}" rel="stylesheet">
+{% macro render_form_fields(form) -%}
+    {% for field, infos in form.items() %}
+        <div class="form-floating mb-1">
+            <input type="{{ infos.type }}" class="form-control" id="floatingInput" placeholder="{{ infos.title }}" name="{{ infos.name }}" required>
+            <label for="floatingInput">{{ infos.title }}</label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
 
-    <link href="{{ url_for('static', path='css/styles.css') }}" type="text/css" rel="stylesheet">
-    <link href="{{ url_for('static', path='css/form.css') }}" type="text/css" rel="stylesheet">
-    <link href="{{ url_for('static', path='css/navbar.css') }}" type="text/css" rel="stylesheet">
-
-    {% endblock head %}
-  </head>
-  <body class="text-center">
-
-    {% include 'components/navbar_component.html' %}
-
-    <main class="w-100 m-auto">
-        <img class="mb-4" src="{{ url_for('static', path='img/athena.jpeg') }}" alt="" width="100" height="100">
-        {% block content %}
-        {% endblock content %}
-
-        {% block footer %}
-        <p class="mt-5 mb-3 text-muted">
-            &copy; Copyright 2022 by <a href="https://www.github.com/danbailo">Daniel Bailo</a>.
-        </p>
-        {% endblock footer %}
-    </main>
-
-    <!-- TODO: qnd for avançando com o projeto, testar js local -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', path='js/bootstrap.bundle.min.js') }}"></script>
-
-  </body>
-</html>
+{% block style %}
+    <link href="{{ url_for('static', path='css/templates.css') }}" rel="stylesheet" />
+{% endblock style %}
