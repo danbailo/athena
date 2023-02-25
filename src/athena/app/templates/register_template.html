@@ -1,0 +1,26 @@
+{% extends "base_template.html" %}
+
+{% block title %} - Login {% endblock title %}
+
+{% block content %}
+
+    <main class="body">
+
+        {% include 'components/flash_message_component.html' %}
+
+        <div class="container d-flex pb-5">
+            <div class="card mx-auto">
+                <div class="card-body">
+                    <div class="form-signin w-100 m-auto">
+                        <form method="POST" action="{{ url_for('user_register') }}">
+                            <h1 class="h3 mb-3 fw-bold text-center">Please fill the infos</h1>
+                            {{ render_form_fields(form) }}
+                            <button class="w-100 btn btn-lg btn-primary" type="submit">Create account</button>
+                        </form>
+                    </div>
+                    <p>Do you already have account? <a href="{{ url_for('user_login') }}">Login here!</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock content %}
