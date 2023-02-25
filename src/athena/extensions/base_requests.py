@@ -3,7 +3,7 @@ from enum import StrEnum
 from typing import Any
 
 
-from httpx import AsyncClient
+from httpx import AsyncClient, Response
 
 from pydantic import BaseModel
 
@@ -23,7 +23,7 @@ async def async_fetch(
     headers: dict[str, Any] | BaseModel = {'Content-Type': 'application/json'},
     json: dict[str, Any] | BaseModel | None = None,
     *args, **kwargs
-):
+) -> Response:
     if isinstance(cookies, BaseModel):
         cookies = cookies.dict(by_alias=True)
     if isinstance(data, BaseModel):
@@ -38,5 +38,4 @@ async def async_fetch(
             json=json, cookies=cookies,
             headers=headers, *args, **kwargs
         )
-        response.raise_for_status()
-    return response.json()
+    return response
