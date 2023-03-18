@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% macro render_form_fields(form) -%}
     {% for field, infos in form.items() %}
         <div class="form-floating mb-1">
@@ -9,6 +8,66 @@
         </div>
     {% endfor %}
 {%- endmacro %}
+
+{% macro render_table_row_input(field_name, value, id_item, is_editable) -%}
+    <tr>
+        <td>
+            <strong>{{ field_name }}</strong>
+            {% if is_editable %}
+            <button class="btn btn-primary btn-sm" type="button" onclick=editItem('{{ id_item }}')>
+            <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            {% endif %}
+        </td>
+        <td class="text-primary">
+            <input id={{ id_item }} class="form-control" type="text" value="{{ value }}" readonly>
+        </td>
+    </tr>
+{%- endmacro %}
+
+{% macro render_table_row_text_area(field_name, value, id_item, is_editable) -%}
+    <tr>
+        <td>
+            <strong>{{ field_name }}</strong>
+            {% if is_editable %}
+            <button class="btn btn-primary btn-sm" type="button" onclick=editItem('{{ id_item }}')>
+            <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            {% endif %}
+        </td>
+        <td class="text-primary">
+            <textarea id={{ id_item }} class="form-control" rows="3" readonly>{{ value }}</textarea>
+        </td>
+    </tr>
+{%- endmacro %}
+
+{% macro render_list_row_input(field_name, value, id_item, is_editable, is_last) %}
+    <div class="row mb-3">
+        <div class="col-sm-3">
+            <strong>{{ field_name }}</strong>
+            {% if is_editable %}
+            <button class="btn btn-primary btn-sm mb-1" type="button" onclick=editItem('{{ id_item }}')>
+            <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            {% endif %}
+        </div>
+        <div class="col-sm-9">
+            <p class="text-muted mb-0"><input id={{ id_item }} class="form-control" type="text" value="{{ value }}" readonly></p>
+        </div>
+    </div>
+    {% if not is_last %}
+    <hr>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro delete_item_form(method, action) %}
+<div class="d-flex justify-content-right">
+    <form method={{ method }} action={{ action }}>
+        <button class="btn btn-danger text-uppercase mx-1" type="submit"><i class="fa-solid fa-trash"></i> Delete</a>
+    </form>
+</div>
+{% endmacro %}
 
 {% block style %}
     <link href="{{ url_for('static', path='css/templates.css') }}" rel="stylesheet" />

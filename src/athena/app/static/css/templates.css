@@ -1,6 +1,7 @@
 body{
     /* color: #fff; */
-    background-image: url('../img/background.jpg');
+    /* background-image: url('../img/background.jpg'); */
+    background-color: gainsboro;
     background-repeat: no-repeat;
     background-attachment: scroll;
     background-position: center center;
@@ -14,7 +15,8 @@ body{
     body {
       /* The file size of this background image is 93% smaller
        * to improve page load speed on mobile internet connections */
-      background-image: url("../img/background.jpg");
+      /* background-image: url("../img/background.jpg"); */
+      background-color: gainsboro;
       /* text-align: center; */
       /* color: #fff; */
       background-repeat: no-repeat;
@@ -45,4 +47,14 @@ body{
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+.menu ul {
+    text-align:right;
+}
+.menu li {
+    display:inline-block;
+}
+.menu li:first-child {
+    float:left;  
 }
