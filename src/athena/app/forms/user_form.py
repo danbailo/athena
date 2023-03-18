@@ -1,4 +1,3 @@
-
 from fastapi import Form
 
 from pydantic import Field, root_validator
@@ -20,19 +19,19 @@ class LoginForm(BaseForm):
 
     username: FormType[str] = Field(..., alias='username')
     password: FormType[str] = Field(..., alias='password')
-    remember_me: bool
+    # remember_me: bool
 
     @classmethod
     def as_form(
         cls,
         username: str = Form(),
         password: str = Form(),
-        remember_me: bool = Form(False)
+        # remember_me: bool = Form(False)
     ) -> 'LoginForm':
         return cls(
             username=username,
             password=password,
-            remember_me=remember_me
+            # remember_me=remember_me
         )
 
 
@@ -67,4 +66,23 @@ class RegisterForm(BaseForm):
             username=username,
             password=password,
             password2=password2
+        )
+
+
+class UpdateUserForm(BaseForm):
+    name: FormType[str] | None
+    email: FormType[str] | None
+    username: FormType[str] | None
+
+    @classmethod
+    def as_form(
+        cls,
+        name: str | None = Form(None),
+        email: str | None = Form(None),
+        username: str | None = Form(None),
+    ) -> 'UpdateUserForm':
+        return cls(
+            name=name,
+            email=email,
+            username=username,
         )

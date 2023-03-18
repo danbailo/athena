@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 from pydantic import BaseModel, Field, validator
 
 
@@ -26,13 +29,16 @@ class CreateUserRequestBody(BaseUserBody):
 class PatchUserRequestBody(BaseModel):
     name: str | None
     email: str | None
-    password_hash: str = Field(..., alias='password')
+    password_hash: str | None = Field(None, alias='password')
 
     @validator('password_hash')
     @classmethod
     def hash_password(cls, value: str) -> str:
-        return get_password_hash(value)
+        if value:
+            return get_password_hash(value)
 
 
 class UserResponseBody(BaseUserBody):
+    id: int
     role: RoleEnum
+    created_at: datetime

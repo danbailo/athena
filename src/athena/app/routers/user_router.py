@@ -11,9 +11,11 @@ from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
 from extensions.base_requests import async_fetch, MethodEnum
 from extensions.env_var import get_env_var
 
-from .base_router import async_render_template, flash
+from .base_router import async_render_template, flash, AlertTypeEnum
 
-from ..forms.user_form import LoginForm, RegisterForm
+from ..forms.user_form import LoginForm, RegisterForm, UpdateUserForm
+
+from serializers.auth_serializer import TokenRequestHeaders
 
 router = APIRouter(
     prefix=MAPPED_API_ENDPOINT_PREFIX['user']
@@ -24,13 +26,20 @@ router = APIRouter(
 async def user_login_page(request: Request):
     if request.user.is_authenticated:
         return RedirectResponse(router.url_path_for('user_page'), 302)
-    return await async_render_template('login_template.html', request, 200)
+    return await async_render_template(
+        'login_template.html', request, 200,
+        {'form': LoginForm.get_form_values()}
+    )
 
 
 @router.get('', response_class=HTMLResponse)
 @requires('authenticated', redirect='user_login_page')
 async def user_page(request: Request):
-    return await async_render_template('user_template.html', request, 200)
+    return await async_render_template(
+        'user_template.html', request, 200, context_request={
+            'user': request.user
+        }
+    )
 
 
 @router.post('/login', response_class=RedirectResponse | HTMLResponse)
@@ -55,12 +64,14 @@ async def user_login(
     except HTTPStatusError:
         await flash(request, data['detail'], 'danger')
         return await async_render_template(
-            'login_template.html', request, 401
+            'login_template.html', request, 401,
+            {'form': form_data.get_form_values()}
         )
     except Exception as exc:
         await flash(request, f'Unexpected error! - {str(exc)}', 'danger')
         return await async_render_template(
-            'errors/404_error.html', request, 404
+            'errors/404_error.html', request, 404,
+            {'form': form_data.get_form_values()}
         )
     response.set_cookie(
         key='access_token',
@@ -125,6 +136,39 @@ async def user_register(
         'register_template.html', request, 200,
         {'form': RegisterForm.get_form_values()}
     )
+
+
+@router.post('/patch')
+@requires('authenticated', redirect='user_page')
+async def user_patch(
+    request: Request,
+    form_data: UpdateUserForm = Depends(UpdateUserForm.as_form)
+):
+    data = {}
+    base_url = get_env_var('ATHENA_API_BASE_URL')
+    try:
+        response = await async_fetch(
+            MethodEnum.patch,
+            f'{base_url}/user',
+            headers=TokenRequestHeaders(
+                access_token=request.headers['cookie']
+            ),
+            json=form_data
+        )
+        response.raise_for_status()
+    except HTTPStatusError:
+        if response.content.decode():
+            data = response.json()
+        await flash(request, data.get('detail') or '', AlertTypeEnum.danger)
+        return RedirectResponse(request.url_for('user_page'),
+                                status_code=302)
+    except Exception as exc:
+        await flash(request, f'Unexpected error! - {str(exc)}', 'danger')
+        return await async_render_template(
+            'errors/404_error.html', request, 404,
+        )
+    return RedirectResponse(
+        request.url_for('user_page'), status_code=302)
 
 
 @router.get('/features', response_class=HTMLResponse | RedirectResponse)
