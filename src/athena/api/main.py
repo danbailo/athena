@@ -8,7 +8,7 @@ from constants.mapped_api_prefix import (
 
 from .database.connection import database
 
-from .routers import auth_router, admin_router, user_router
+from .routers import auth_router, admin_router, user_router, section_router
 
 api = FastAPI()
 
@@ -50,3 +50,10 @@ api.include_router(
     prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.user],
     tags=['user']
 )
+api.include_router(
+    section_router.router,
+    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.section],
+    tags=['section']
+)
+# api.add_exception_handler(ValidationError, validation_error_handler)
+# TODO: rollback transactions

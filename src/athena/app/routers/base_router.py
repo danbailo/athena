@@ -1,13 +1,19 @@
 from enum import StrEnum
 
+from math import ceil
+
 from typing import Any
 
 
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
+import regex
+
 
 from extensions.logger import logger
+
+import urllib
 
 
 class AlertTypeEnum(StrEnum):
@@ -55,4 +61,25 @@ async def async_render_template(
         headers=headers
     )
 
+
+def get_endpoint(request: Request):
+    if match := regex.search(r'(\b\/\w+)', str(request.url), regex.I):
+        return match[0]
+    return ''
+
+
+def url_for_query(request: Request, name: str, **params: str) -> str:
+    url = request.url_for(name)
+    parsed = urllib.parse.urlparse(url)
+    return f'{parsed.geturl()}?{urllib.parse.urlencode(params)}'
+
+
+def get_last_page(total_itens: int, limit: int):
+    return ceil(total_itens/limit)
+
+
 templates.env.globals['get_flash_messages'] = get_flash_messages
+templates.env.globals['get_endpoint'] = get_endpoint
+templates.env.globals['get_last_page'] = get_last_page
+templates.env.globals['url_for_query'] = url_for_query
+templates.env.globals['dir'] = dir
