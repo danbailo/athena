@@ -16,10 +16,14 @@ router = APIRouter(prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.home])
 
 @router.get('/', response_class=HTMLResponse)
 async def home_page(request: Request):
-    section = await async_fetch(
+    if (section := await async_fetch(
         MethodEnum.get, f'{get_env_var("ATHENA_API_BASE_URL")}/section',
-        params={'title_slug': 'my-first-section'})
+        params={'title_slug': 'my-first-section'}
+    )) and section.json():
+        section = section.json()[0]
+    else:
+        section = {'title': 'My First Section', 'body': 'lorem ipsum'}
     return await async_render_template(
         'index_template.html', request,
-        context_request={'section': section.json()[0]}
+        context_request={'section': section}
     )
