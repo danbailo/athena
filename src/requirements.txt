@@ -16,3 +16,4 @@ passlib==1.7.4
 Jinja2==3.1.2
 httpx==0.23.1
 python-slugify==8.0.1
+itsdangerous==2.1.2
