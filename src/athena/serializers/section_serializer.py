@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-from pydantic import BaseModel, root_validator
+from pydantic import BaseModel, root_validator, Field
 
 from slugify import slugify
 
@@ -43,21 +43,27 @@ class PatchSectionRequestBody(BaseModel):
         return root
 
 
-class CreateSubSectionRequestBody(BaseModel):
-    sub_title: str
-    sub_link_image: str | None
-    sub_body: str
-
-    @root_validator
-    def set_sub_title_slug(cls, root: dict[str, str]):
-        root['sub_title_slug'] = slugify(root['sub_title'])
-        return root
-
-
 class SectionResponseBody(CreateSectionRequestBody):
     id: int
     created_at: datetime
     last_updated: datetime
+
+
+class CreateSubSectionRequestBody(BaseModel):
+    sub_title: str = Field(..., alias='sub_section_title')
+    sub_link_image: str | None = Field(None, alias='sub_section_link_image')
+    sub_body: str = Field(..., alias='sub_section_body')
+
+    @root_validator
+    @classmethod
+    def set_sub_title_slug(cls, root: dict[str, str]):
+        if not root.get('sub_title'):
+            return root
+        root['sub_title_slug'] = slugify(root['sub_title'])
+        return root
+
+    class Config:
+        allow_population_by_field_name = True
 
 
 class SubSectionResponseBody(CreateSubSectionRequestBody):

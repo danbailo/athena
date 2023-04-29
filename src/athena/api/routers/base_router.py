@@ -11,6 +11,8 @@ class CommonQueryParams:
 
     @property
     def page(self):
+        if self._page < 1:
+            self._page = 1
         return self._page
 
     @page.setter

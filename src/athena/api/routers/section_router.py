@@ -46,18 +46,15 @@ async def get_list_sections(
 
 
 @router.get(
-    '/{title_slug}/subsections',
+    '/{title_slug}/subsection',
     response_model=list[SubSectionResponseBody])
 async def get_list_subsections(
     title_slug: str,
-    page: int = 0,
-    limit: int = 30
+    common: CommonQuery = None,
 ):
     query = select(SectionModel).where(SectionModel.title_slug == title_slug)
-    if not (section := await database.fetch_all(query)):
-        return []
-    query = select(
-        SubSectionModel
-    ).where(SubSectionModel.section_id == section.id)
-    result = await database.fetch_all(query)
-    return result[page: page+limit]
+    if not (section := await database.fetch_one(query)):
+        raise ItemNotFoundError()
+    query = select_database(SubSectionModel, [{'section_id': section.id}],
+                            page=common.page, limit=common.limit)
+    return await database.fetch_all(query)

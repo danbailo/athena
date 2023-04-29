@@ -108,7 +108,7 @@ async def patch_section(id: int, body: PatchSectionRequestBody):
 
 
 @router.post(
-    '/section/{title_slug}/subsections',
+    '/section/{title_slug}/subsection',
     response_model=CreateSubSectionRequestBody,
     dependencies=[CheckAdmin])
 async def create_subsection(
@@ -118,8 +118,8 @@ async def create_subsection(
     if not (section := await database.fetch_one(query)):
         raise HTTPException(
             400, detail=f'Section `{title_slug}` does not exists!')
-    values = body.dict()
+    values = body.dict(by_alias=False)
     values.update({'section_id': section.id})
-    query = insert(SubSectionModel)
-    await database.execute(query, values=values)
+    query = insert(SubSectionModel).values(**values)
+    await database.execute(query)
     return body

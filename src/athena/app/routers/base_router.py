@@ -13,8 +13,6 @@ import regex
 
 from extensions.logger import logger
 
-import urllib
-
 
 class AlertTypeEnum(StrEnum):
     primary = 'primary'
@@ -70,8 +68,7 @@ def get_endpoint(request: Request):
 
 def url_for_query(request: Request, name: str, **params: str) -> str:
     url = request.url_for(name)
-    parsed = urllib.parse.urlparse(url)
-    return f'{parsed.geturl()}?{urllib.parse.urlencode(params)}'
+    return url.include_query_params(**params)
 
 
 def get_last_page(total_itens: int, limit: int):

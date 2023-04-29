@@ -31,14 +31,16 @@ class AthenaBase:
 
 
 def select_database(
-    model: AthenaBase,
-    query_params: list[dict[str, any]],
-    page: int,
-    limit: int
+    model: type[AthenaBase],
+    query_params: list[dict[str, any]] | None = None,
+    page: int = 1,
+    limit: int = 30
 ):
     """select onde sempre compara igualdade"""
     offset = (page-1) * limit
     # last_page = ceil(total/limit)
+    if query_params is None:
+        query_params = []
     filter_args = [
         getattr(model, key) == value for param in query_params
         for key, value in param.items()

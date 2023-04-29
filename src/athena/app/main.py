@@ -34,5 +34,3 @@ app.mount('/static', StaticFiles(directory='app/static'), name='static')
 app.include_router(admin_router.router)
 app.include_router(home_router.router)
 app.include_router(user_router.router)
-
-# TODO: implementar a propria sessao pra manipular o usuario
