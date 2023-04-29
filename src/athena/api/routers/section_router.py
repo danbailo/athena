@@ -1,14 +1,18 @@
 from fastapi import APIRouter
 
+from sqlalchemy import select, func
+
+
 from serializers.section_serializer import (
     SectionResponseBody, SubSectionResponseBody, CountSectionResponseBody
 )
+
+from .base_router import CommonQuery
 
 from ..database.connection import database
 from ..database.models.section_model import SectionModel, SubSectionModel
 from ..database.models.base import select_database
 
-from sqlalchemy import select, func
 
 from ..utils.exceptions import ItemNotFoundError
 
@@ -33,14 +37,11 @@ async def get_section(id: int):
 async def get_list_sections(
     title: str | None = None,
     title_slug: str | None = None,
-    page: int = 1,
-    limit: int = 30
+    common: CommonQuery = None,
 ):
-    if page < 1:
-        return []
     query = select_database(SectionModel, [
         {'title': title, 'title_slug': title_slug}
-    ], page, limit)
+    ], common.page, common.limit)
     return await database.fetch_all(query)
 
 

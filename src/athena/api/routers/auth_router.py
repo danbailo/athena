@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+from typing import Annotated
+
 
 from fastapi import Depends, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -41,6 +43,24 @@ async def async_get_user_in_db(
     return await db.fetch_one(query)
 
 
+async def async_get_current_user(
+    token: str = Depends(oauth2_scheme)
+) -> UserModel:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get('sub')
+        if username is None:
+            raise GetUserError()
+    except JWTError:
+        raise GetUserError()
+
+    if not (user := await async_get_user_in_db(database, username)):
+        raise GetUserError()
+    return user
+
+CurrentUser = Annotated[UserModel, Depends(async_get_current_user)]
+
+
 async def async_authenticate_user(
     db: Database, username: str, password: str
 ) -> UserModel | None:
@@ -61,22 +81,6 @@ def create_access_token(
     to_encode.update({'exp': expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
-
-async def async_get_current_user(
-    token: str = Depends(oauth2_scheme)
-) -> UserModel:
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get('sub')
-        if username is None:
-            raise GetUserError()
-    except JWTError:
-        raise GetUserError()
-
-    if not (user := await async_get_user_in_db(database, username)):
-        raise GetUserError()
-    return user
 
 
 @router.post('/token', response_model=TokenResponseBody)

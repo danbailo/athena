@@ -14,7 +14,9 @@ from serializers.section_serializer import (
 )
 from serializers.user_serializer import UserResponseBody
 
-from .auth_router import async_get_current_user
+from .auth_router import CurrentUser
+
+from .base_router import CommonQuery
 
 
 from ..database.connection import database
@@ -28,12 +30,12 @@ from ..utils.exceptions import (
 
 
 class RoleChecker:
-    def __init__(self, allowed_roles):
+    def __init__(self, allowed_roles: str | list[str]):
+        if isinstance(allowed_roles, str):
+            allowed_roles = [allowed_roles]
         self.allowed_roles = allowed_roles
 
-    def __call__(
-        self, user: UserModel = Depends(async_get_current_user)
-    ):
+    def __call__(self, user: CurrentUser):
         if user.role not in self.allowed_roles:
             logger.debug(
                 f'User with role {user.role} not in {self.allowed_roles}'
@@ -43,22 +45,24 @@ class RoleChecker:
 
 router = APIRouter()
 
+CheckAdmin = Depends(RoleChecker(['admin']))
+
 
 @router.get(
     '/user',
     response_model=list[UserResponseBody],
-    dependencies=[Depends(RoleChecker(['admin']))]
+    dependencies=[CheckAdmin]
 )
 async def get_list_users(
     username: str | None = None,
-    page: int = 0, limit: int = 30
+    common: CommonQuery = None
 ):
     if username:
         query = select(UserModel).where(UserModel.username == username)
     else:
         query = select(UserModel)
     result = await database.fetch_all(query)
-    return result[page: page+limit]
+    return result
 
 
 @router.get('/user/{id}', response_model=UserResponseBody)
@@ -81,8 +85,7 @@ async def delete_user(id: int):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.post('/section', status_code=204,
-             dependencies=[Depends(RoleChecker('admin'))])
+@router.post('/section', status_code=204, dependencies=[CheckAdmin])
 async def create_section(body: CreateSectionRequestBody):
     query = insert(SectionModel).values(**body.dict(by_alias=False))
     try:
@@ -93,8 +96,7 @@ async def create_section(body: CreateSectionRequestBody):
             status_code=400)
 
 
-@router.patch('/section/{id}', status_code=204,
-              dependencies=[Depends(RoleChecker('admin'))])
+@router.patch('/section/{id}', status_code=204, dependencies=[CheckAdmin])
 async def patch_section(id: int, body: PatchSectionRequestBody):
     if not (data := body.dict(exclude_none=True, by_alias=False)):
         raise NothingToPatchError()
@@ -108,7 +110,7 @@ async def patch_section(id: int, body: PatchSectionRequestBody):
 @router.post(
     '/section/{title_slug}/subsections',
     response_model=CreateSubSectionRequestBody,
-    dependencies=[Depends(RoleChecker('admin'))])
+    dependencies=[CheckAdmin])
 async def create_subsection(
     title_slug: str, body: CreateSubSectionRequestBody
 ):

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, status, HTTPException
 
 from sqlalchemy import insert, update
 from asyncpg.exceptions import UniqueViolationError
@@ -8,7 +8,7 @@ from serializers.user_serializer import (
     CreateUserRequestBody, UserResponseBody, PatchUserRequestBody
 )
 
-from .auth_router import async_get_current_user
+from .auth_router import CurrentUser
 
 from ..database.connection import database
 from ..database.models.user_model import UserModel
@@ -19,9 +19,7 @@ router = APIRouter()
 
 
 @router.post('/detail', response_model=UserResponseBody)
-async def user_detail(
-    current_user: UserModel = Depends(async_get_current_user)
-):
+async def user_detail(current_user: CurrentUser):
     return current_user
 
 
@@ -43,7 +41,7 @@ async def create_user(user: CreateUserRequestBody):
 @router.patch('', status_code=status.HTTP_204_NO_CONTENT)
 async def update_own_info(
     user_body: PatchUserRequestBody,
-    user: UserModel = Depends(async_get_current_user),
+    user: CurrentUser,
 ):
     data = user_body.dict(exclude_none=True)
     if not data:
