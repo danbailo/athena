@@ -1,3 +1,6 @@
+from contextlib import asynccontextmanager
+
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,17 +13,19 @@ from .database.connection import database
 
 from .routers import auth_router, admin_router, user_router, section_router
 
-api = FastAPI()
+from extensions.logger import logger
 
 
-@api.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.debug('started api')
     await database.connect()
-
-
-@api.on_event("shutdown")
-async def shutdown():
+    yield
+    logger.debug('shutdown api')
     await database.disconnect()
+
+
+api = FastAPI(lifespan=lifespan)
 
 api.add_middleware(
     CORSMiddleware,
@@ -55,5 +60,3 @@ api.include_router(
     prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.section],
     tags=['section']
 )
-# api.add_exception_handler(ValidationError, validation_error_handler)
-# TODO: rollback transactions
