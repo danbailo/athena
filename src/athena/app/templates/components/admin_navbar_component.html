@@ -1,5 +1,5 @@
 {% macro navbar_link(href, value) -%}
-    {% set is_active = 'active' if (request.url == href or href.startswith('#')) else ''%}
+    {% set is_active = 'active' if (request.url == href or (href | string).startswith('#')) else ''%}
     <li class="nav-item">
         <a class="nav-link {{ is_active }}" href="{{ href }}">{{ value }}</a>
     </li>

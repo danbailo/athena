@@ -51,8 +51,8 @@ class SectionResponseBody(CreateSectionRequestBody):
 
 class CreateSubSectionRequestBody(BaseModel):
     sub_title: str = Field(..., alias='sub_section_title')
-    sub_link_image: str | None = Field(None, alias='sub_section_link_image')
     sub_body: str = Field(..., alias='sub_section_body')
+    sub_link_image: str | None = Field(None, alias='sub_section_link_image')
 
     @root_validator
     @classmethod
@@ -64,6 +64,27 @@ class CreateSubSectionRequestBody(BaseModel):
 
     class Config:
         allow_population_by_field_name = True
+
+
+class PatchSubSectionRequestBody(BaseModel):
+    sub_title: str | None = Field(None, alias='sub_section_title')
+    sub_body: str | None = Field(None, alias='sub_section_body')
+    sub_link_image: str | None = Field(None, alias='sub_section_link_image')
+
+    @root_validator
+    @classmethod
+    def set_title_slug(cls, root: dict[str, str]):
+        if not root.get('sub_title'):
+            return root
+        root['sub_title_slug'] = slugify(root['sub_title'])
+        return root
+
+    @root_validator
+    @classmethod
+    def set_last_updated(cls, root: dict[str, str]):
+        if any(root.values()):
+            root['sub_last_updated'] = datetime.utcnow()
+        return root
 
 
 class SubSectionResponseBody(CreateSubSectionRequestBody):

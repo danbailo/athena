@@ -1,11 +1,15 @@
 {% set user_is_admin = request.scope.athena_user_is_admin %}
 
 {% macro navbar_link(href, value) -%}
-    {% set is_active = 'active' if (request.url == href or href.startswith('#')) else ''%}
+    {% set is_active = 'active' if (request.url == href or (href | string).startswith('#')) else ''%}
     <li class="nav-item">
         <a class="nav-link {{ is_active }}" href="{{ href }}">{{ value }}</a>
     </li>
 {%- endmacro %}
+
+{% if not about %}
+    {% set about = {'title': 'Sobre'} %}
+{% endif %}
 
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-shrink" id="mainNav">
@@ -19,7 +23,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                {{ navbar_link('#services' if request.url.path == '/' else '/#services', 'Services') }}
+                {{ navbar_link('#'~about.title if request.url.path == '/' else '/#'~about.title, about.title) }}
                 {% if not request.user.is_authenticated %}
                     {{ navbar_link(url_for('user_login_page'), 'Login') }}
                 {% else %}

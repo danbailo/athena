@@ -1,12 +1,30 @@
-<!-- Services-->
-<section class="page-section" id="services">
+{% macro render_section(section) %}
+    <div class="text-center">
+        <h2 class="section-heading text-uppercase">{{ section.title }}</h2>
+        <h3 class="section-subheading text-muted">{{ section.body }}</h3>
+    </div>
+{% endmacro %}
+
+{% macro render_subsection(subsection) %}
+    <div class="col-md-4">
+        <span class="fa-stack fa-4x">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <!-- <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i> -->
+            {{ subsection.sub_section_link_image | safe}}
+        </span>
+        <h4 class="my-3">{{ subsection.sub_section_title }}</h4>
+        <p class="text-muted">{{ subsection.sub_section_body }}</p>
+    </div>
+{% endmacro %}
+
+<section class="page-section" id="Sobre">
     <div class="container">
-        <div class="text-center">
-            <h2 class="section-heading text-uppercase">{{ section.title }}</h2>
-            <h3 class="section-subheading text-muted">{{ section.body }}</h3>
-        </div>
+        {{ render_section(about) }}
         <div class="row text-center">
-            <div class="col-md-4">
+            {% for about_subsection in about_subsections %}
+                {{ render_subsection(about_subsection) }}
+            {% endfor %}
+            <!-- <div class="col-md-4">
                 <span class="fa-stack fa-4x">
                     <i class="fas fa-circle fa-stack-2x text-primary"></i>
                     <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
@@ -29,7 +47,7 @@
                 </span>
                 <h4 class="my-3">Web Security</h4>
                 <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>

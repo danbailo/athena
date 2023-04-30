@@ -3,14 +3,14 @@ from asyncpg.exceptions import UniqueViolationError
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import Response
 
-from sqlalchemy import insert, select, delete, update
+from sqlalchemy import insert, select, delete, update, and_
 
 
 from extensions.logger import logger
 
 from serializers.section_serializer import (
     CreateSectionRequestBody, CreateSubSectionRequestBody,
-    PatchSectionRequestBody
+    PatchSectionRequestBody, PatchSubSectionRequestBody
 )
 from serializers.user_serializer import UserResponseBody
 
@@ -108,18 +108,56 @@ async def patch_section(id: int, body: PatchSectionRequestBody):
 
 
 @router.post(
-    '/section/{title_slug}/subsection',
+    '/section/{section_slug}/subsection',
     response_model=CreateSubSectionRequestBody,
     dependencies=[CheckAdmin])
 async def create_subsection(
-    title_slug: str, body: CreateSubSectionRequestBody
+    section_slug: str, body: CreateSubSectionRequestBody
 ):
-    query = select(SectionModel).where(SectionModel.title_slug == title_slug)
+    query = select(SectionModel).where(
+        SectionModel.section_slug == section_slug)
     if not (section := await database.fetch_one(query)):
         raise HTTPException(
-            400, detail=f'Section `{title_slug}` does not exists!')
+            400, detail=f'Section `{section_slug}` does not exists!')
     values = body.dict(by_alias=False)
     values.update({'section_id': section.id})
     query = insert(SubSectionModel).values(**values)
     await database.execute(query)
     return body
+
+
+@router.patch(
+    '/section/{section_slug}/subsection/{subsection_slug}',
+    dependencies=[CheckAdmin],
+    status_code=204)
+async def patch_subsection(
+    section_slug: str,
+    subsection_slug: str,
+    body: PatchSubSectionRequestBody,
+):
+    if not (data := body.dict(exclude_none=True, by_alias=False)):
+        raise NothingToPatchError()
+    query = update(SubSectionModel).where(and_(
+        SectionModel.title_slug == section_slug,
+        SubSectionModel.sub_title_slug == subsection_slug)).values(**data)
+    try:
+        await database.execute(query)
+    except Exception as err:
+        raise HTTPException(status_code=400, detail=err)
+
+
+@router.delete(
+    '/section/{section_slug}/subsection/{subsection_slug}',
+    dependencies=[CheckAdmin],
+    status_code=204)
+async def delete_subsection(section_slug: str, subsection_slug: str):
+    query = select(SubSectionModel).where(and_(
+        SectionModel.title_slug == section_slug,
+        SubSectionModel.sub_title_slug == subsection_slug))
+    if not await database.fetch_one(query):
+        raise HTTPException(
+            400, detail=f'Subsection `{subsection_slug}` does not exists!')
+    query = delete(SubSectionModel).where(and_(
+        SectionModel.title_slug == section_slug,
+        SubSectionModel.sub_title_slug == subsection_slug))
+    await database.execute(query)
