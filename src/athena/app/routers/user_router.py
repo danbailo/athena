@@ -131,11 +131,8 @@ async def user_register(
         return await async_render_template(
             'errors/404_error.html', request, 404
         )
-    await flash(request, 'User registered!', 'success')
-    return await async_render_template(
-        'register_template.html', request, 200,
-        {'form': RegisterForm.get_form_values()}
-    )
+    await flash(request, 'Usuário registrado com sucesso!', 'success')
+    return RedirectResponse(request.url_for('user_login'), status_code=302)
 
 
 @router.post('/patch')
@@ -173,9 +170,7 @@ async def user_patch(
 
 @router.get('/features', response_class=HTMLResponse | RedirectResponse)
 async def user_features_page(request: Request):
-    if request.user.is_authenticated:
-        return RedirectResponse(router.url_path_for('user_page'), 302)
-    return await async_render_template('features_template.html', request, 200)
+    raise NotImplementedError()
 
 
 @router.post('/features')

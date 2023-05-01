@@ -30,11 +30,11 @@
                 {{ navbar_link('#'~about.title_slug if request.url.path == '/' else '/#'~about.title_slug, about.title) }}
                 {{ navbar_link('#'~for_devs.title_slug if request.url.path == '/' else '/#'~for_devs.title_slug, for_devs.title) }}
                 {% if not request.user.is_authenticated %}
-                    {{ navbar_link(url_for('user_login_page'), 'Login') }}
+                    {{ navbar_link(url_for('user_login_page'), 'Entrar') }}
                 {% else %}
                     {#{ navbar_link(url_for('user_features_page'), 'Features') }#}
-                    {{ navbar_link(url_for('user_page'), 'User') }}
-                    {{ navbar_link(url_for('user_logout'), 'Logout') }}
+                    {{ navbar_link(url_for('user_page'), 'Usuário') }}
+                    {{ navbar_link(url_for('user_logout'), 'Sair') }}
                     {% if user_is_admin %}
                         {{ navbar_link(url_for('admin_home_page'), 'Admin') }}
                     {% endif %}

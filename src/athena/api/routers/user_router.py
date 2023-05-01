@@ -29,7 +29,7 @@ async def create_user(user: CreateUserRequestBody):
     try:
         await database.execute(query)
     except UniqueViolationError as err:
-        msg = "The {field} - {value} is already in use!"
+        msg = 'O {field} "{value}" já está sendo utilizado!'
         if 'username' in str(err):
             msg = msg.format(value=user.username, field='username')
         if 'email' in str(err):

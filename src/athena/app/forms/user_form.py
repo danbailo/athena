@@ -17,8 +17,8 @@ class LoginForm(BaseForm):
         * client_secret
     """
 
-    username: FormType[str] = Field(..., alias='username')
-    password: FormType[str] = Field(..., alias='password')
+    username: FormType[str] = Field(..., alias='username', title='Usuário')
+    password: FormType[str] = Field(..., alias='password', title='Senha')
     # remember_me: bool
 
     @classmethod
@@ -36,19 +36,19 @@ class LoginForm(BaseForm):
 
 
 class RegisterForm(BaseForm):
-    name: FormType[str] = Field(...,)
-    email: FormType[str] = Field(...,)
-    username: FormType[str] = Field(...,)
-    password: FormType[str] = Field(...,)
+    name: FormType[str] = Field(..., title='Nome')
+    email: FormType[str] = Field(..., title='E-mail')
+    username: FormType[str] = Field(..., title='Usuário')
+    password: FormType[str] = Field(..., title='Senha')
     password2: FormType[str] = Field(
-        ..., title='Repeat password', type='password'
+        ..., title='Repita a senha', type='password'
     )
 
     @root_validator
     @classmethod
     def check_if_passwords_are_equal(cls, root):
         if root['password'] != root['password2']:
-            raise ValueError('Passwords must be equal!')
+            raise ValueError('As senhas precisam ser iguais!')
         return root
 
     @classmethod

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+<!-- TODO: section precisa ser textarea -->
 {% macro render_form_fields(form) -%}
     {% for field, infos in form.items() %}
         <div class="form-floating mb-1">
@@ -64,7 +65,7 @@
 {% macro delete_item_form(method, action) %}
 <div class="d-flex justify-content-right">
     <form method={{ method }} action={{ action }}>
-        <button class="btn btn-danger text-uppercase mx-1" type="submit"><i class="fa-solid fa-trash"></i> Delete</a>
+        <button class="btn btn-danger text-uppercase mx-1" type="submit"><i class="fa-solid fa-trash"></i> Deletar</a>
     </form>
 </div>
 {% endmacro %}

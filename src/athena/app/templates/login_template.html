@@ -12,12 +12,12 @@
                 <div class="card-body">
                     <div class="form-signin w-100 m-auto">
                         <form method="POST" action="{{ url_for('user_login') }}">
-                            <h1 class="h3 mb-3 fw-bold text-center">Please sign in</h1>
+                            <h3 class="h3 mb-3 fw-bold text-center">Insira seus dados</h1>
                             {{ render_form_fields(form) }}
-                            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                            <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>
                         </form>
                     </div>
-                    <p>Does not have account? <a href="{{ url_for('user_register') }}">Create here!</a></p>
+                    <p>Não tem conta? <a href="{{ url_for('user_register') }}">Crie aqui!</a></p>
                 </div>
             </div>
         </div>
