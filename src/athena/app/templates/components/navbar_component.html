@@ -1,14 +1,18 @@
 {% set user_is_admin = request.scope.athena_user_is_admin %}
 
 {% macro navbar_link(href, value) -%}
-    {% set is_active = 'active' if (request.url == href or (href | string).startswith('#')) else ''%}
+    {% set is_active = 'athena-active' if (request.url | string == href | string) else 'inactive'%}
     <li class="nav-item">
-        <a class="nav-link {{ is_active }}" href="{{ href }}">{{ value }}</a>
+        <a id={{ is_active }} class="nav-link js-scroll-trigger {{ is_active }}" href="{{ href }}">{{ value }}</a>
     </li>
 {%- endmacro %}
 
 {% if not about %}
-    {% set about = {'title': 'Sobre'} %}
+    {% set about = {'title': 'Sobre', 'title_slug': 'sobre'} %}
+{% endif %}
+
+{% if not for_devs %}
+    {% set for_devs = {'title': 'Para desenvolvedores', 'title_slug': 'para-desenvolvedores'} %}
 {% endif %}
 
 <!-- Navigation-->
@@ -23,11 +27,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                {{ navbar_link('#'~about.title if request.url.path == '/' else '/#'~about.title, about.title) }}
+                {{ navbar_link('#'~about.title_slug if request.url.path == '/' else '/#'~about.title_slug, about.title) }}
+                {{ navbar_link('#'~for_devs.title_slug if request.url.path == '/' else '/#'~for_devs.title_slug, for_devs.title) }}
                 {% if not request.user.is_authenticated %}
                     {{ navbar_link(url_for('user_login_page'), 'Login') }}
                 {% else %}
-                    {{ navbar_link(url_for('user_features_page'), 'Features') }}
+                    {#{ navbar_link(url_for('user_features_page'), 'Features') }#}
                     {{ navbar_link(url_for('user_page'), 'User') }}
                     {{ navbar_link(url_for('user_logout'), 'Logout') }}
                     {% if user_is_admin %}
