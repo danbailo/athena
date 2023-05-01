@@ -115,7 +115,7 @@ async def create_subsection(
     section_slug: str, body: CreateSubSectionRequestBody
 ):
     query = select(SectionModel).where(
-        SectionModel.section_slug == section_slug)
+        SectionModel.title_slug == section_slug)
     if not (section := await database.fetch_one(query)):
         raise HTTPException(
             400, detail=f'Section `{section_slug}` does not exists!')
