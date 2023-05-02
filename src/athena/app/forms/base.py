@@ -14,6 +14,7 @@ class BaseForm(BaseModel, metaclass=ABCMeta):
         return cls.schema()['properties']
 
     @abstractmethod
+    @classmethod
     def as_form(cls):
         pass
 
@@ -22,6 +23,7 @@ class BaseForm(BaseModel, metaclass=ABCMeta):
 
 
 class FormType(Generic[TypeVar('T')]):
+
     @classmethod
     def __get_validators__(cls):
         yield cls.validate

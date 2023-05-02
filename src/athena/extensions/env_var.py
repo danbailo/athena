@@ -13,6 +13,6 @@ def get_env_var(key: str, raise_exception: bool = True) -> str | None:
         raise ValueError('variable does not exists in env!')
     elif value is None and raise_exception is False:
         logger.warning(
-            f'variable not declared in the environment - {key.upper()}'
+            'variable not declared in the environment - %s', key.upper()
         )
     return value

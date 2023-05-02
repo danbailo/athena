@@ -14,12 +14,18 @@ from serializers.auth_serializer import TokenRequestHeaders
 
 class AthenaUser(SimpleUser):
     def __init__(
-        self, username: str, name: str, email: str,
-        *args, **kwargs
+        self,
+        username: str,
+        name: str,
+        email: str,
+        identity: str | None = None,
+        *args, **kwargs,
     ) -> None:
         self._username = username
         self._name = name
         self._email = email
+        self._identity = identity
+        super().__init__(self._username, *args, **kwargs)
 
     @property
     def username(self) -> str:
@@ -32,6 +38,10 @@ class AthenaUser(SimpleUser):
     @property
     def email(self) -> str:
         return self._email
+
+    @property
+    def identity(self) -> str:
+        return self._identity
 
 
 class OAuth2Backend(AuthenticationBackend):

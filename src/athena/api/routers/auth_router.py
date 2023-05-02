@@ -51,8 +51,8 @@ async def async_get_current_user(
         username = payload.get('sub')
         if username is None:
             raise GetUserError()
-    except JWTError:
-        raise GetUserError()
+    except JWTError as exc:
+        raise GetUserError() from exc
 
     if not (user := await async_get_user_in_db(database, username)):
         raise GetUserError()

@@ -33,6 +33,7 @@ async def admin_home_page(request: Request):
 @requires('admin')
 async def admin_user_page(request: Request):
     base_url = get_env_var('ATHENA_API_BASE_URL')
+    data = {}
     try:
         response = await async_fetch(
             MethodEnum.get,
@@ -44,7 +45,7 @@ async def admin_user_page(request: Request):
         response.raise_for_status()
         data = response.json()
     except HTTPStatusError:
-        await flash(request, data['detail'], AlertTypeEnum.danger)
+        await flash(request, data.get('detail'), AlertTypeEnum.danger)
         return await async_render_template(
             'errors/403_error.html', request, 403,
         )
@@ -58,6 +59,7 @@ async def admin_user_page(request: Request):
 @requires('admin')
 async def admin_user_detail_page(request: Request, id: int):
     base_url = get_env_var('ATHENA_API_BASE_URL')
+    data = {}
     try:
         response = await async_fetch(
             MethodEnum.get,
@@ -69,7 +71,7 @@ async def admin_user_detail_page(request: Request, id: int):
         response.raise_for_status()
         data = response.json()
     except HTTPStatusError:
-        await flash(request, data['detail'], AlertTypeEnum.danger)
+        await flash(request, data.get('detail'), AlertTypeEnum.danger)
         return await async_render_template(
             'errors/403_error.html', request, 403,
         )

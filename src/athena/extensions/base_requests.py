@@ -15,16 +15,17 @@ class MethodEnum(StrEnum):
     delete = 'delete'
 
 
-# TODO: Apply tenancity
 async def async_fetch(
     method: MethodEnum, url: str,
     data: dict[str, Any] | BaseModel | None = None,
     json: dict[str, Any] | BaseModel | None = None,
     params: dict[str, Any] | BaseModel | None = None,
     cookies: dict[str, Any] | None = None,
-    headers: dict[str, Any] | BaseModel = {'Content-Type': 'application/json'},
+    headers: dict[str, Any] | BaseModel = None,
     *args, **kwargs
 ) -> Response:
+    if headers is None:
+        headers = {'Content-Type': 'application/json'}
     if isinstance(data, BaseModel):
         data = data.dict(by_alias=True)
     if isinstance(json, BaseModel):

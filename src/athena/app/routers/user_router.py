@@ -49,6 +49,7 @@ async def user_login(
     form_data: LoginForm = Depends(LoginForm.as_form)
 ):
     base_url = get_env_var('ATHENA_API_BASE_URL', raise_exception=True)
+    data = {}
     try:
         _response = await async_fetch(
             MethodEnum.post,
@@ -62,7 +63,7 @@ async def user_login(
         data = _response.json()
         _response.raise_for_status()
     except HTTPStatusError:
-        await flash(request, data['detail'], 'danger')
+        await flash(request, data.get('detail'), 'danger')
         return await async_render_template(
             'login_template.html', request, 401,
             {'form': form_data.get_form_values()}

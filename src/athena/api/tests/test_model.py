@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 
-from database.models.base import AthenaBase
+from ..database.models.base import AthenaBase
 
 
 class TestModel(TestCase):

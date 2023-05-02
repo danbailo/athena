@@ -16,9 +16,6 @@ from serializers.user_serializer import UserResponseBody
 
 from .auth_router import CurrentUser
 
-from .base_router import CommonQuery
-
-
 from ..database.connection import database
 from ..database.models.section_model import SectionModel, SubSectionModel
 from ..database.models.user_model import UserModel, RoleEnum
@@ -38,8 +35,7 @@ class RoleChecker:
     def __call__(self, user: CurrentUser):
         if user.role not in self.allowed_roles:
             logger.debug(
-                f'User with role {user.role} not in {self.allowed_roles}'
-            )
+                'User with role %s not in %s', user.role, self.allowed_roles)
             raise NotAuthorizedError()
 
 
@@ -53,10 +49,7 @@ CheckAdmin = Depends(RoleChecker(['admin']))
     response_model=list[UserResponseBody],
     dependencies=[CheckAdmin]
 )
-async def get_list_users(
-    username: str | None = None,
-    common: CommonQuery = None
-):
+async def get_list_users(username: str | None = None):
     if username:
         query = select(UserModel).where(UserModel.username == username)
     else:
@@ -90,10 +83,10 @@ async def create_section(body: CreateSectionRequestBody):
     query = insert(SectionModel).values(**body.dict(by_alias=False))
     try:
         await database.execute(query)
-    except UniqueViolationError:
+    except UniqueViolationError as exc:
         raise HTTPException(
             detail=f'The title `{body.title}` already is used!',
-            status_code=400)
+            status_code=400) from exc
 
 
 @router.patch('/section/{id}', status_code=204, dependencies=[CheckAdmin])
@@ -103,8 +96,8 @@ async def patch_section(id: int, body: PatchSectionRequestBody):
     query = update(SectionModel).where(SectionModel.id == id).values(**data)
     try:
         await database.execute(query)
-    except Exception as err:
-        raise HTTPException(status_code=400, detail=err)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=exc) from exc
 
 
 @router.post(
@@ -142,8 +135,8 @@ async def patch_subsection(
         SubSectionModel.sub_title_slug == subsection_slug)).values(**data)
     try:
         await database.execute(query)
-    except Exception as err:
-        raise HTTPException(status_code=400, detail=err)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=exc) from exc
 
 
 @router.delete(

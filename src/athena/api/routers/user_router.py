@@ -28,13 +28,13 @@ async def create_user(user: CreateUserRequestBody):
     query = insert(UserModel).values(**user.dict(by_alias=False))
     try:
         await database.execute(query)
-    except UniqueViolationError as err:
+    except UniqueViolationError as exc:
         msg = 'O {field} "{value}" já está sendo utilizado!'
-        if 'username' in str(err):
+        if 'username' in str(exc):
             msg = msg.format(value=user.username, field='username')
-        if 'email' in str(err):
+        if 'email' in str(exc):
             msg = msg.format(value=user.email, field='email')
-        raise HTTPException(status_code=400, detail=msg)
+        raise HTTPException(status_code=400, detail=msg) from exc
     return user
 
 

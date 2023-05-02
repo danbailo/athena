@@ -48,9 +48,11 @@ def get_flash_messages(request: Request):
 
 async def async_render_template(
     template_name: str, request: Request, status_code: int = 200,
-    context_request: dict[str, Any] = {},
+    context_request: dict[str, Any] = None,
     headers: dict[str, Any] | None = None
 ):
+    if context_request is None:
+        context_request = {}
     context_request['request'] = request
     return templates.TemplateResponse(
         template_name,
