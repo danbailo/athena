@@ -25,23 +25,39 @@ class AthenaUser(SimpleUser):
         self._name = name
         self._email = email
         self._identity = identity
-        super().__init__(self._username, *args, **kwargs)
+        super().__init__(self._username)
 
     @property
     def username(self) -> str:
         return self._username
 
+    @username.setter
+    def username(self, value):
+        self._username = value
+
     @property
     def name(self) -> str:
         return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
     @property
     def email(self) -> str:
         return self._email
 
+    @email.setter
+    def email(self, value):
+        self._email = value
+
     @property
     def identity(self) -> str:
         return self._identity
+
+    @identity.setter
+    def identity(self, value):
+        self._identity = value
 
 
 class OAuth2Backend(AuthenticationBackend):
