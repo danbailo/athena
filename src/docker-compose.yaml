@@ -1,24 +1,10 @@
 version: "3.9"
 services:
 
-  pylint:
-    build:
-      context: .
-      dockerfile: Dockerfile-full
-    image: athena-api
-    command: bash -c "python -m pylint /project/athena"
-
-  flake8:
-    build:
-      context: .
-      dockerfile: Dockerfile-full
-    image: athena-api
-    command: bash -c "python -m flake8 /project/athena"
-
   database:
     image: postgres:12
     restart: always
-    command: postgres -c 'max_connections=300'
+    # command: postgres -c 'max_connections=300'
     container_name: athena-database-container
     environment:
       POSTGRES_DB: postgres
@@ -33,30 +19,32 @@ services:
   alembic:
     build:
       context: .
-      dockerfile: Dockerfile-full  
+      dockerfile: Dockerfile
     container_name: athena-alembic-container
     env_file:
       - docker-compose.env
     depends_on:
       - database
-    image: athena-api
+    image: athena-project
     command: bash -c "
       sleep 1 &&\
       alembic upgrade head"
     volumes_from:
       - database
-
+    networks:
+      network:      
+    
   api:
     build:
       context: .
-      dockerfile: Dockerfile-full
+      dockerfile: Dockerfile
     container_name: athena-api-container
     # restart: on-failure
     env_file:
       - docker-compose.env
     depends_on:
       - alembic
-    image: athena-api
+    image: athena-project
     ports:
       - "8000:8000"
     volumes:
@@ -65,19 +53,19 @@ services:
       sleep 3 &&\
       uvicorn api.main:api --reload --workers 1 --host 0.0.0.0 --port 8000"
     networks:
-      network:      
+      network:
              
   app:
     build:
       context: .
-      dockerfile: Dockerfile-full
+      dockerfile: Dockerfile
     container_name: athena-app-container
     # restart: on-failure
     env_file:
       - docker-compose.env
     depends_on:
       - api
-    image: athena-app
+    image: athena-project
     ports:
       - "8001:8001"
     volumes:

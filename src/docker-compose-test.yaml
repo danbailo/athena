@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  pylint:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: athena-project
+    command: bash -c "python -m pylint athena"
+    container_name: athena-pylint-container
+
+  flake8:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: athena-project
+    command: bash -c "python -m flake8 athena"
+    container_name: athena-flake8-container
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: athena-project
+    command: bash -c "python -m unittest athena.api.tests.test_model"
+    container_name: athena-tests-container
