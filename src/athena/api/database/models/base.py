@@ -20,8 +20,8 @@ def pg_utcnow(element, compiler, **kwargs):
 @as_declarative()
 class AthenaBase:
 
-    @declared_attr
     @classmethod
+    @declared_attr
     def __tablename__(cls):
         if match := regex.search(r'(.+?)model', cls.__name__, flags=regex.I):
             return match.group(1).lower()

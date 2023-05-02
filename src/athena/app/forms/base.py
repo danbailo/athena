@@ -13,8 +13,8 @@ class BaseForm(BaseModel, metaclass=ABCMeta):
     def get_form_values(cls):
         return cls.schema()['properties']
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def as_form(cls):
         pass
 
