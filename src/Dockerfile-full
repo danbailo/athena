@@ -1,4 +1,4 @@
-FROM python:3.11.0-slim-buster
+FROM python:3.11.3-slim-buster
 
 RUN apt-get update && apt-get install \
         --no-install-recommends -qq -y \
@@ -12,10 +12,13 @@ RUN apt-get update && apt-get install \
 
 WORKDIR /project
 
+COPY ./pylintrc /project/pylintrc
+
 COPY ./requirements.txt /project/requirements.txt
+COPY ./requirements-dev.txt /project/requirements-dev.txt
 
 RUN pip install --upgrade pip
-RUN pip install -r /project/requirements.txt
+RUN pip install -r /project/requirements.txt -r /project/requirements-dev.txt
 
 COPY ./alembic.ini /project/alembic.ini
 COPY ./alembic /project/alembic
@@ -23,9 +26,6 @@ COPY ./alembic /project/alembic
 COPY ./athena/constants /project/athena/constants
 COPY ./athena/extensions /project/athena/extensions
 COPY ./athena/serializers /project/athena/serializers
-COPY ./athena/api /project/athena/api
 
-COPY ./athena/constants /project/athena/constants
-COPY ./athena/extensions /project/athena/extensions
-COPY ./athena/serializers /project/athena/serializers
+COPY ./athena/api /project/athena/api
 COPY ./athena/app /project/athena/app
