@@ -22,10 +22,4 @@ RUN pip install -r /project/requirements.txt -r /project/requirements-dev.txt
 
 COPY ./alembic.ini /project/alembic.ini
 COPY ./alembic /project/alembic
-
-COPY ./athena/constants /project/athena/constants
-COPY ./athena/extensions /project/athena/extensions
-COPY ./athena/serializers /project/athena/serializers
-
-COPY ./athena/api /project/athena/api
-COPY ./athena/app /project/athena/app
+COPY ./athena /project/athena
