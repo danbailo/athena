@@ -58,7 +58,8 @@ body {
   background-color: var(--bs-body-bg);
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  overflow-y: scroll; /* Show vertical scrollbar */
+  /* overflow-y: scroll; Show vertical scrollbar */
+  overflow-x: hidden;
 }
 
 main.body {
@@ -89,6 +90,15 @@ main.body .body-heading {
   line-height: 3.25rem;
   margin-bottom: 2rem;
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* ATHENA-ACTIVE */
+#mainNav .navbar-nav .nav-item .nav-link.athena-active, #mainNav .navbar-nav .nav-item .nav-link:hover {
+  color: var(--bs-primary);
+}
+
+.athena-color {
+  color: var(--bs-primary);
 }
 
 @media (min-width: 768px) {

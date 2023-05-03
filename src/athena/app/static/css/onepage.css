@@ -11271,12 +11271,11 @@ textarea.form-control-lg {
 html {
   scroll-padding-top: 4.5rem;
 }
-/* 
+
 body {
   position: relative;
   overflow-x: hidden;
-  overflow-y: visible;
-} */
+}
 
 p {
   line-height: 1.75;
