@@ -2,7 +2,7 @@
 
 {% macro render_section(section) %}
     <div class="text-center">
-        <h2 class="section-heading text-uppercase">{{ section.title }}</h2>
+        <h2 class="section-heading text-uppercase text-truncate">{{ section.title }}</h2>
         <h3 class="section-subheading text-muted">{{ section.body }}</h3>
     </div>
 {% endmacro %}
@@ -32,7 +32,7 @@
     {% include 'onepage/about_onepage.html' %}
     <hr style="width: 50%;" class="mx-auto">
 
-    {% include 'onepage/for_devs_onepage.html' %}
+    {% include 'onepage/devs_onepage.html' %}
     <hr style="width: 50%;" class="mx-auto">
 
     <!-- <hr style="width: 50%;" class="mx-auto"> -->

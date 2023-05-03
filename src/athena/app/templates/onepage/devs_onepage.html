@@ -1,0 +1,10 @@
+<section class="page-section" id="{{ devs_section.title_slug }}">
+    <div class="container">
+        {{ render_section(devs_section) }}
+        <div class="row text-center">
+            {% for for_devs_subsection in devs_subsections %}
+                {{ render_subsection(for_devs_subsection, devs_subsections | length) }}
+            {% endfor %}
+        </div>
+    </div>
+</section>
