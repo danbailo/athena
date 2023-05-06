@@ -1,6 +1,4 @@
-version: "3.9"
 services:
-
   database:
     image: postgres:12
     restart: always
@@ -12,9 +10,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
        - postgres:/var/lib/postgresql/data
-    networks:
-      network:
-        ipv4_address: 10.5.0.5       
+    ports:
+      - "7999:5432"
 
   alembic:
     build:
@@ -31,8 +28,6 @@ services:
       alembic upgrade head"
     volumes_from:
       - database
-    networks:
-      network:      
     
   api:
     build:
@@ -52,9 +47,7 @@ services:
     command: bash -c "
       sleep 3 &&\
       uvicorn api.main:api --reload --workers 1 --host 0.0.0.0 --port 8000"
-    networks:
-      network:
-             
+
   app:
     build:
       context: .
@@ -70,21 +63,9 @@ services:
       - "8001:8001"
     volumes:
     - ./athena:/project
-    extra_hosts:
-      - "host.docker.internal:host-gateway"    
     command: bash -c "
       sleep 4 &&\
       uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
-    networks:
-      network:      
-             
+
 volumes:
   postgres:
-
-networks:
-  network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.5.0.0/16
-          gateway: 10.5.0.1
