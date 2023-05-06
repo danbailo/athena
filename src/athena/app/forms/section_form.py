@@ -1,11 +1,14 @@
 from fastapi import Form
 
+from pydantic import Field
+
+
 from .base import BaseForm, FormType
 
 
 class CreateSectionForm(BaseForm):
     title: FormType[str]
-    body: FormType[str]
+    body: FormType[str] = Field(..., tag='textarea')
 
     @classmethod
     def as_form(

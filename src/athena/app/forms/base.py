@@ -37,6 +37,8 @@ class FormType(Generic[TypeVar('T')]):
             to_return['type'] = field.name
         if not field.field_info.extra.get('name'):
             to_return['name'] = field.name
+        if field.field_info.extra.get('tag'):
+            to_return['tag'] = field.field_info.extra['tag']
         return to_return
 
     @classmethod
