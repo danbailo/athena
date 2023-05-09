@@ -10,29 +10,27 @@ RUN apt-get update && apt-get install \
     pkg-config \
     libpq-dev
 
-WORKDIR /project
+WORKDIR /athena
 
-COPY ./pylintrc /project/pylintrc
+COPY ./pylintrc /athena/pylintrc
 
-COPY ./requirements.txt /project/requirements.txt
-COPY ./requirements-dev.txt /project/requirements-dev.txt
+COPY ./requirements.txt /athena/requirements.txt
+COPY ./requirements-dev.txt /athena/requirements-dev.txt
 
 RUN pip install --upgrade pip
-RUN pip install -r /project/requirements.txt -r /project/requirements-dev.txt
+RUN pip install -r /athena/requirements.txt -r /athena/requirements-dev.txt
 
-COPY ./alembic.ini /project/alembic.ini
-COPY ./alembic /project/alembic
+COPY ./alembic.ini /athena/alembic.ini
+COPY ./alembic /athena/alembic
 
-COPY ./athena/constants /project/athena/constants
-COPY ./athena/extensions /project/athena/extensions
-COPY ./athena/serializers /project/athena/serializers
-COPY ./athena/utils /project/athena/utils
-COPY ./athena/api /project/athena/api
+COPY ./athena/constants /athena/constants
+COPY ./athena/extensions /athena/extensions
+COPY ./athena/serializers /athena/serializers
+COPY ./athena/utils /athena/utils
+COPY ./athena/api /athena/api
 
 RUN rm requirements.txt \
     requirements-dev.txt \
     pylintrc
-
-WORKDIR /project/athena
 
 # CMD ["uvicorn", "api.main:api", "--host", "0.0.0.0", "--port", "8000"]

@@ -23,7 +23,6 @@ services:
       - database
     image: athena-project
     command: bash -c "
-      cd .. &&\
       sleep 1 &&\
       alembic upgrade head"
     volumes_from:
