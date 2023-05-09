@@ -9,10 +9,10 @@ parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                             os.path.pardir))
 sys.path.append(parentdir + '/athena')
 
-from athena.api.database.connection import get_engine
-from athena.api.database.models.base import AthenaBase
-from athena.api.database.models.user_model import *
-from athena.api.database.models.section_model import *
+from api.database.connection import get_engine
+from api.database.models.base import AthenaBase
+from api.database.models.user_model import *
+from api.database.models.section_model import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
