@@ -4,8 +4,6 @@ from starlette.authentication import (
     AuthCredentials, AuthenticationBackend, SimpleUser
 )
 
-from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
-
 from extensions.base_requests import async_fetch, MethodEnum
 from extensions.env_var import get_env_var
 
@@ -77,7 +75,7 @@ class OAuth2Backend(AuthenticationBackend):
         url = get_env_var("ATHENA_API_BASE_URL", raise_exception=True)
         response = await async_fetch(
             MethodEnum.post,
-            f'{url}{MAPPED_API_ENDPOINT_PREFIX["user"]}/detail', headers=auth
+            f'{url}/user/detail', headers=auth
         )
         response.raise_for_status()
         data = response.json()

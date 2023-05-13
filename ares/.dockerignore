@@ -1,5 +1,5 @@
 # ignore recursive
 # **/should_ignore.txt
-.env*
+**/.env
 **/__pycache__
 **/*.pyc

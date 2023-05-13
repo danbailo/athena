@@ -22,6 +22,7 @@ RUN pip install -r /project/requirements.txt -r /project/requirements-dev.txt
 
 COPY ./alembic.ini /project/alembic.ini
 COPY ./alembic /project/alembic
-COPY ./athena /project/athena
 
-# CMD ["uvicorn", "api.main:api", "--host", "0.0.0.0", "--port", "8000"]
+COPY ./src /project/
+
+RUN rm requirements.txt requirements-dev.txt

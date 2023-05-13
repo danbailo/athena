@@ -15,48 +15,50 @@ services:
 
   alembic:
     build:
-      context: .
-      dockerfile: Dockerfile-api
+      context: ./ares/
+      dockerfile: Dockerfile
     container_name: athena-alembic-container
     env_file: compose.env
     depends_on:
       - database
-    image: athena-project
+    image: athena-project-ares
     command: bash -c "
       sleep 1 &&\
       alembic upgrade head"
     volumes_from:
       - database
     
-  api:
+  ares:
     build:
-      context: .
-      dockerfile: Dockerfile-api
-    container_name: athena-api-container
+      context: ./ares/
+      dockerfile: Dockerfile
+    container_name: athena-ares-container
     # restart: on-failure
     env_file: compose.env
     depends_on:
       - alembic
-    image: athena-project
+    image: athena-project-ares
     ports:
       - "8000:8000"
     command: bash -c "
       sleep 3 &&\
-      uvicorn api.main:api --reload --workers 1 --host 0.0.0.0 --port 8000"
+      uvicorn ares.main:app --reload --workers 1 --host 0.0.0.0 --port 8000"
 
-  # app:
-  #   build: .
-  #   container_name: athena-app-container
-  #   # restart: on-failure
-  #   env_file: compose.env
-  #   depends_on:
-  #     - api
-  #   image: athena-project
-  #   ports:
-  #     - "8001:8001"
-  #   command: bash -c "
-  #     sleep 4 &&\
-  #     uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
+  apollo:
+    build:
+      context: ./apollo/
+      dockerfile: Dockerfile
+    container_name: athena-apollo-container
+    # restart: on-failure
+    env_file: compose.env
+    depends_on:
+      - ares
+    image: athena-project-apollo
+    ports:
+      - "8001:8001"
+    command: bash -c "
+      sleep 4 &&\
+      uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
 
 volumes:
   postgres:

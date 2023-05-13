@@ -13,8 +13,6 @@ from jose import JWTError, jwt
 from sqlalchemy import select
 
 
-from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
-
 from extensions.env_var import get_env_var
 
 from serializers.auth_serializer import TokenResponseBody
@@ -31,9 +29,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=f'{MAPPED_API_ENDPOINT_PREFIX["auth"]}/token'
-)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/token')
 
 
 async def async_get_user_in_db(

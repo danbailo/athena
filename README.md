@@ -75,3 +75,45 @@ cd src/athena
 dotenv run uvicorn api.main:api --reload --port 8001
 dotenv run uvicorn app.main:app --reload --port 8002
 ```
+
+## Optionals
+
+### Vscode Workspace
+```
+{
+	"folders": [
+		{
+			"name": "athena",
+			"path": "."
+		},
+		{
+			"name": "apollo-devops",
+			"path": "./apollo"
+		},
+		{
+			"name": "ares-devops",
+			"path": "./ares"
+		},
+		{
+			"name": "apollo",
+			"path": "./apollo/src",
+		},	
+		{
+			"name": "ares",
+			"path": "./ares/src"
+		},
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/__pycache__": true,
+			"src": true,
+		}		
+	}
+}
+```

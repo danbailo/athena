@@ -3,11 +3,6 @@ from pydantic import BaseModel, Field, validator
 import regex
 
 
-class TokenResponseBody(BaseModel):
-    access_token: str
-    token_type: str = 'bearer'
-
-
 class TokenRequestHeaders(BaseModel):
     access_token: str = Field(..., alias='Authorization')
 

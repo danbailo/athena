@@ -29,7 +29,7 @@ app.add_exception_handler(404, async_404_http_error_exception_handler)
 app.add_exception_handler(ValidationError,
                           async_validation_error_exception_handler)
 
-app.mount('/static', StaticFiles(directory='app/static'), name='static')
+app.mount('/static', StaticFiles(directory='apollo/static'), name='static')
 
 app.include_router(admin_router.router)
 app.include_router(home_router.router)

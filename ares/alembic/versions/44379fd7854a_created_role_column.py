@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-from api.database.models.user_model import RoleEnum
+from ares.database.models.user_model import RoleEnum
 
 
 # revision identifiers, used by Alembic.

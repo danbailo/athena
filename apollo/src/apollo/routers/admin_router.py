@@ -6,8 +6,6 @@ from httpx import HTTPStatusError
 from starlette.authentication import requires
 
 
-from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
-
 from extensions.env_var import get_env_var
 from extensions.base_requests import async_fetch, MethodEnum
 
@@ -37,7 +35,7 @@ async def admin_user_page(request: Request):
     try:
         response = await async_fetch(
             MethodEnum.get,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["admin"]}/user',
+            f'{base_url}/admin/user',
             headers=TokenRequestHeaders(
                 access_token=request.headers['cookie']
             )
@@ -63,7 +61,7 @@ async def admin_user_detail_page(request: Request, id: int):
     try:
         response = await async_fetch(
             MethodEnum.get,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["admin"]}/user/{id}',
+            f'{base_url}/admin/user/{id}',
             headers=TokenRequestHeaders(
                 access_token=request.headers['cookie']
             )
@@ -89,7 +87,7 @@ async def admin_delete_user(request: Request, id: int):
     try:
         response = await async_fetch(
             MethodEnum.delete,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["admin"]}/user/{id}',
+            f'{base_url}/admin/user/{id}',
             headers=TokenRequestHeaders(
                 access_token=request.headers['cookie']
             )
@@ -118,7 +116,7 @@ async def admin_section_page(request: Request, page: int = 1, limit: int = 5):
     try:
         response = await async_fetch(
             MethodEnum.get,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["section"]}',
+            f'{base_url}/section',
             headers=TokenRequestHeaders(
                 access_token=request.headers['cookie']
             ),
@@ -188,7 +186,7 @@ async def admin_section_detail_page(request: Request, id: int):
     try:
         response = await async_fetch(
             MethodEnum.get,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["section"]}/{id}',
+            f'{base_url}/section/{id}',
             headers=TokenRequestHeaders(
                 access_token=request.headers['cookie']
             )
@@ -223,7 +221,7 @@ async def admin_patch_section(
     try:
         response = await async_fetch(
             MethodEnum.patch,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["admin"]}/section/{id}',
+            f'{base_url}/admin/section/{id}',
             headers=TokenRequestHeaders(
                 access_token=request.headers['cookie']
             ),

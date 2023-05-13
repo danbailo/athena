@@ -4,11 +4,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-
-from constants.mapped_api_prefix import (
-    EndPointEnum, MAPPED_API_ENDPOINT_PREFIX
-)
-
 from .database.connection import database
 
 from .routers import auth_router, admin_router, user_router, section_router
@@ -25,9 +20,9 @@ async def lifespan(app: FastAPI):
     await database.disconnect()
 
 
-api = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan)
 
-api.add_middleware(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost",
@@ -40,23 +35,23 @@ api.add_middleware(
     allow_headers=['*']
 )
 
-api.include_router(
+app.include_router(
     admin_router.router,
-    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.admin],
+    prefix='/admin',
     tags=['admin']
 )
-api.include_router(
+app.include_router(
     auth_router.router,
-    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.auth],
+    prefix='/auth',
     tags=['auth']
 )
-api.include_router(
+app.include_router(
     user_router.router,
-    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.user],
+    prefix='/user',
     tags=['user']
 )
-api.include_router(
+app.include_router(
     section_router.router,
-    prefix=MAPPED_API_ENDPOINT_PREFIX[EndPointEnum.section],
+    prefix='/section',
     tags=['section']
 )

@@ -6,8 +6,6 @@ from httpx import HTTPStatusError
 from starlette.authentication import requires
 
 
-from constants.mapped_api_prefix import MAPPED_API_ENDPOINT_PREFIX
-
 from extensions.base_requests import async_fetch, MethodEnum
 from extensions.env_var import get_env_var
 
@@ -18,7 +16,7 @@ from ..forms.user_form import LoginForm, RegisterForm, UpdateUserForm
 from serializers.auth_serializer import TokenRequestHeaders
 
 router = APIRouter(
-    prefix=MAPPED_API_ENDPOINT_PREFIX['user']
+    prefix='/user'
 )
 
 
@@ -53,7 +51,7 @@ async def user_login(
     try:
         _response = await async_fetch(
             MethodEnum.post,
-            f'{base_url}{MAPPED_API_ENDPOINT_PREFIX["auth"]}/token',
+            f'{base_url}/auth/token',
             headers={
                 'accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
