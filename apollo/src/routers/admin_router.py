@@ -13,7 +13,7 @@ from serializers.auth_serializer import TokenRequestHeaders
 
 from .base_router import AlertTypeEnum, flash, async_render_template
 
-from ..forms.section_form import CreateSectionForm, UpdateSectionForm
+from forms.section_form import CreateSectionForm, UpdateSectionForm
 
 
 router = APIRouter(prefix='/admin')

@@ -11,7 +11,7 @@ from extensions.env_var import get_env_var
 
 from .base_router import async_render_template, flash, AlertTypeEnum
 
-from ..forms.user_form import LoginForm, RegisterForm, UpdateUserForm
+from forms.user_form import LoginForm, RegisterForm, UpdateUserForm
 
 from serializers.auth_serializer import TokenRequestHeaders
 

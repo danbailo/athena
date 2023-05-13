@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 from pydantic import ValidationError
 
 
-from ..routers.base_router import AlertTypeEnum, async_render_template, flash
+from routers.base_router import AlertTypeEnum, async_render_template, flash
 
 MAPPED_URL_TEMPLATE = {
     '/user/register': 'register_template.html',

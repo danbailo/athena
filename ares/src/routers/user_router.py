@@ -10,10 +10,10 @@ from serializers.user_serializer import (
 
 from .auth_router import CurrentUser
 
-from ..database.connection import database
-from ..database.models.user_model import UserModel
+from database.connection import database
+from database.models.user_model import UserModel
 
-from ..utils.exceptions import NothingToPatchError
+from utils.exceptions import NothingToPatchError
 
 router = APIRouter()
 

@@ -4,9 +4,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .database.connection import database
+from database.connection import database
 
-from .routers import auth_router, admin_router, user_router, section_router
+from routers import auth_router, admin_router, user_router, section_router
 
 from extensions.logger import logger
 

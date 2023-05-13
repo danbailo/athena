@@ -16,11 +16,11 @@ from serializers.user_serializer import UserResponseBody
 
 from .auth_router import CurrentUser
 
-from ..database.connection import database
-from ..database.models.section_model import SectionModel, SubSectionModel
-from ..database.models.user_model import UserModel, RoleEnum
+from database.connection import database
+from database.models.section_model import SectionModel, SubSectionModel
+from database.models.user_model import UserModel, RoleEnum
 
-from ..utils.exceptions import (
+from utils.exceptions import (
     NotAuthorizedError, NothingToPatchError, NotPossibleDeleteAdmin,
     UserNotFoundError
 )

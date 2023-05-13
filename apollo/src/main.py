@@ -9,11 +9,11 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from extensions.env_var import get_env_var
 
-from .middlewares.auth_backend_middleware import OAuth2Backend
+from middlewares.auth_backend_middleware import OAuth2Backend
 
-from .routers import home_router, user_router, admin_router
+from routers import home_router, user_router, admin_router
 
-from .utils.exception_handler_util import (
+from utils.exception_handler_util import (
     async_403_http_error_exception_handler,
     async_404_http_error_exception_handler,
     async_validation_error_exception_handler
@@ -29,7 +29,7 @@ app.add_exception_handler(404, async_404_http_error_exception_handler)
 app.add_exception_handler(ValidationError,
                           async_validation_error_exception_handler)
 
-app.mount('/static', StaticFiles(directory='apollo/static'), name='static')
+app.mount('/static', StaticFiles(directory='static'), name='static')
 
 app.include_router(home_router.router)
 app.include_router(admin_router.router)

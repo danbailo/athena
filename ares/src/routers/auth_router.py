@@ -17,11 +17,11 @@ from extensions.env_var import get_env_var
 
 from serializers.auth_serializer import TokenResponseBody
 
-from ..database.connection import database
-from ..database.models.user_model import UserModel
+from database.connection import database
+from database.models.user_model import UserModel
 
-from ..utils.auth_util import verify_password
-from ..utils.exceptions import GetUserError, LoginError
+from utils.auth_util import verify_password
+from utils.exceptions import GetUserError, LoginError
 
 SECRET_KEY = get_env_var('SECRET_KEY')
 ALGORITHM = get_env_var('ALGORITHM')

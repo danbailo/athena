@@ -4,8 +4,8 @@ from datetime import datetime
 from pydantic import BaseModel, Field, validator
 
 
-from ares.database.models.user_model import RoleEnum
-from ares.utils.auth_util import get_password_hash
+from database.models.user_model import RoleEnum
+from utils.auth_util import get_password_hash
 
 
 class BaseUserBody(BaseModel):

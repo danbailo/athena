@@ -9,12 +9,12 @@ from serializers.section_serializer import (
 
 from .base_router import CommonQuery
 
-from ..database.connection import database
-from ..database.models.section_model import SectionModel, SubSectionModel
-from ..database.models.base import select_database
+from database.connection import database
+from database.models.section_model import SectionModel, SubSectionModel
+from database.models.base import select_database
 
 
-from ..utils.exceptions import ItemNotFoundError
+from utils.exceptions import ItemNotFoundError
 
 router = APIRouter()
 

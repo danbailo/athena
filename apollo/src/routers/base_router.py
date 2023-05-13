@@ -25,7 +25,7 @@ class AlertTypeEnum(StrEnum):
     dark = 'dark'
 
 
-templates = Jinja2Templates(directory="apollo/templates")
+templates = Jinja2Templates(directory='templates')
 
 
 async def flash(
