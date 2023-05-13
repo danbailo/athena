@@ -1,6 +1,16 @@
+docker rm $(docker container ls -a | grep "athena" | awk "{print \$1}")
+docker rmi -f $(docker images -f "dangling=true" -q)
+
+https://github.com/tortoise
+
+https://docs.docker.com/compose/compose-file/03-compose-file/
+
 ## Using [Docker Compose](https://docs.docker.com/compose/)
 ```bash
 $ cd src/
+
+# to see config
+docker compose --env-file compose.env config
 
 # by steps
 $ docker compose down --remove-orphans # if needed to stop all running containers
@@ -8,7 +18,13 @@ $ docker compose build
 $ docker compose up --no-build
 
 # single line
-$ docker compose down --remove-orphans && docker compose build && docker compose up --no-build
+$ docker compose --env-file=compose.env down && \
+  docker compose --env-file=compose.env build && \
+  docker compose --env-file=compose.env up
+
+$ docker compose down --remove-orphans && \
+  docker compose build && \
+  docker compose up --no-build  
 ```
 ## Local config/unix-like
 

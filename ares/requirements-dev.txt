@@ -1,0 +1,4 @@
+flake8==6.0.0
+pylint==2.17.3
+ipdb==0.13.13
+alembic==1.8.1
