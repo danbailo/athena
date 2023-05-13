@@ -31,6 +31,6 @@ app.add_exception_handler(ValidationError,
 
 app.mount('/static', StaticFiles(directory='apollo/static'), name='static')
 
-app.include_router(admin_router.router)
 app.include_router(home_router.router)
+app.include_router(admin_router.router)
 app.include_router(user_router.router)

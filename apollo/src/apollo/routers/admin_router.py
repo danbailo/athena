@@ -16,10 +16,10 @@ from .base_router import AlertTypeEnum, flash, async_render_template
 from ..forms.section_form import CreateSectionForm, UpdateSectionForm
 
 
-router = APIRouter()
+router = APIRouter(prefix='/admin')
 
 
-@router.get('/admin')
+@router.get('')
 @requires('admin')
 async def admin_home_page(request: Request):
     return await async_render_template(
@@ -27,10 +27,10 @@ async def admin_home_page(request: Request):
     )
 
 
-@router.get('/admin/user')
+@router.get('/user')
 @requires('admin')
 async def admin_user_page(request: Request):
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     data = {}
     try:
         response = await async_fetch(
@@ -53,10 +53,10 @@ async def admin_user_page(request: Request):
     )
 
 
-@router.get('/admin/user/{id}')
+@router.get('/user/{id}')
 @requires('admin')
 async def admin_user_detail_page(request: Request, id: int):
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     data = {}
     try:
         response = await async_fetch(
@@ -79,11 +79,11 @@ async def admin_user_detail_page(request: Request, id: int):
     )
 
 
-@router.post('/admin/user/delete/{id}')
+@router.post('/user/delete/{id}')
 @requires('admin')
 async def admin_delete_user(request: Request, id: int):
     data = {}
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     try:
         response = await async_fetch(
             MethodEnum.delete,
@@ -108,11 +108,11 @@ async def admin_delete_user(request: Request, id: int):
                             status_code=302)
 
 
-@router.get('/admin/section')
+@router.get('/section')
 @requires('admin')
 async def admin_section_page(request: Request, page: int = 1, limit: int = 5):
     data = {}
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     try:
         response = await async_fetch(
             MethodEnum.get,
@@ -148,14 +148,13 @@ async def admin_section_page(request: Request, page: int = 1, limit: int = 5):
     )
 
 
-@router.post(
-    '/admin/section/create', response_class=HTMLResponse | RedirectResponse)
+@router.post('/section/create', response_class=HTMLResponse | RedirectResponse)
 @requires('admin')
 async def admin_create_section(
     request: Request,
     form_data: CreateSectionForm = Depends(CreateSectionForm.as_form)
 ):
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     try:
         _response = await async_fetch(
             MethodEnum.post, f'{base_url}/admin/section',
@@ -178,11 +177,11 @@ async def admin_create_section(
         request.url_for('admin_section_page'), status_code=302)
 
 
-@router.get('/admin/section/{id}')
+@router.get('/section/{id}')
 @requires('admin')
 async def admin_section_detail_page(request: Request, id: int):
     data = {}
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     try:
         response = await async_fetch(
             MethodEnum.get,
@@ -209,7 +208,7 @@ async def admin_section_detail_page(request: Request, id: int):
     )
 
 
-@router.post('/admin/section/patch/{id}')
+@router.post('/section/patch/{id}')
 @requires('admin')
 async def admin_patch_section(
     request: Request,
@@ -217,7 +216,7 @@ async def admin_patch_section(
     form_data: UpdateSectionForm = Depends(UpdateSectionForm.as_form)
 ):
     data = {}
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     try:
         response = await async_fetch(
             MethodEnum.patch,

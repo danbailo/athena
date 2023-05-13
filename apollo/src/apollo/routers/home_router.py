@@ -7,12 +7,12 @@ from extensions.env_var import get_env_var
 
 from .base_router import async_render_template
 
-router = APIRouter(prefix='/home')
+router = APIRouter()
 
 
 @router.get('/', response_class=HTMLResponse)
 async def home_page(request: Request):
-    url = get_env_var("ATHENA_API_BASE_URL")
+    url = get_env_var("ATHENA_ARES_BASE_URL")
     # TODO: melhorar rotas e respostas da api
 
     about_section_slug = 'sobre'

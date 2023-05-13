@@ -72,7 +72,7 @@ class OAuth2Backend(AuthenticationBackend):
         except (ExpiredSignatureError, JWTError):
             return
 
-        url = get_env_var("ATHENA_API_BASE_URL", raise_exception=True)
+        url = get_env_var("ATHENA_ARES_BASE_URL", raise_exception=True)
         response = await async_fetch(
             MethodEnum.post,
             f'{url}/user/detail', headers=auth

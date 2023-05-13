@@ -46,7 +46,7 @@ async def user_login(
     response: Response,
     form_data: LoginForm = Depends(LoginForm.as_form)
 ):
-    base_url = get_env_var('ATHENA_API_BASE_URL', raise_exception=True)
+    base_url = get_env_var('ATHENA_ARES_BASE_URL', raise_exception=True)
     data = {}
     try:
         _response = await async_fetch(
@@ -112,7 +112,7 @@ async def user_register(
     request: Request,
     form_data: RegisterForm = Depends(RegisterForm.as_form)
 ):
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     try:
         _response = await async_fetch(
             MethodEnum.post, f'{base_url}/user',
@@ -141,7 +141,7 @@ async def user_patch(
     form_data: UpdateUserForm = Depends(UpdateUserForm.as_form)
 ):
     data = {}
-    base_url = get_env_var('ATHENA_API_BASE_URL')
+    base_url = get_env_var('ATHENA_ARES_BASE_URL')
     try:
         response = await async_fetch(
             MethodEnum.patch,
