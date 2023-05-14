@@ -7,12 +7,12 @@ import sys
 
 parentdir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                             os.path.pardir))
-sys.path.append(parentdir + '/athena')
+sys.path.append(parentdir + '/src')
 
-from ares.database.connection import get_engine
-from ares.database.models.base import AthenaBase
-from ares.database.models.user_model import *
-from ares.database.models.section_model import *
+from src.database.connection import get_engine
+from src.database.models.base import AthenaBase
+from src.database.models.user_model import *
+from src.database.models.section_model import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
