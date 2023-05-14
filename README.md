@@ -1,18 +1,18 @@
 ## Using [Docker Compose](https://docs.docker.com/compose/)
 
-# to see config
+### to see config
 ```bash
 docker compose --env-file=compose.env config
 ```
 
-# tests
+### tests
 ```bash
 docker compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans && \
 docker compose --env-file=compose.env --file=compose-tests.yaml build && \
 docker compose --env-file=compose.env --file=compose-tests.yaml up
 ```
 
-# to run
+### to run
 ```bash
 docker compose --env-file=compose.env down --remove-orphans && \
 docker compose --env-file=compose.env build && \
