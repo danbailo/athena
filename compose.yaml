@@ -23,6 +23,7 @@ services:
       - database
     image: athena-project-ares
     command: bash -c "
+      cd .. &&\
       sleep 1 &&\
       alembic upgrade head"
     volumes_from:
@@ -42,7 +43,7 @@ services:
       - "8000:8000"
     command: bash -c "
       sleep 3 &&\
-      uvicorn ares.main:app --reload --workers 1 --host 0.0.0.0 --port 8000"
+      uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000"
 
   apollo:
     build:
@@ -58,7 +59,7 @@ services:
       - "8001:8001"
     command: bash -c "
       sleep 4 &&\
-      uvicorn apollo.main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
+      uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
 
 volumes:
   postgres:

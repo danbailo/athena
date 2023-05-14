@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install \
 
 WORKDIR /project
 
-COPY ./pylintrc /project/pylintrc
+COPY ../pylintrc /project/pylintrc
 
 COPY ./requirements.txt /project/requirements.txt
 COPY ./requirements-dev.txt /project/requirements-dev.txt
@@ -20,6 +20,10 @@ COPY ./requirements-dev.txt /project/requirements-dev.txt
 RUN pip install --upgrade pip
 RUN pip install -r /project/requirements.txt -r /project/requirements-dev.txt
 
-COPY ./src /project/
+COPY ./src /project/src
 
-RUN rm requirements.txt requirements-dev.txt
+RUN rm \
+    requirements.txt \
+    requirements-dev.txt
+
+WORKDIR /project/src

@@ -23,6 +23,10 @@ RUN pip install -r /project/requirements.txt -r /project/requirements-dev.txt
 COPY ./alembic.ini /project/alembic.ini
 COPY ./alembic /project/alembic
 
-COPY ./src /project/
+COPY ./src /project/src
 
-RUN rm requirements.txt requirements-dev.txt
+RUN rm \
+    requirements.txt \
+    requirements-dev.txt
+
+WORKDIR /project/src

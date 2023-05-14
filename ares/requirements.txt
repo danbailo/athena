@@ -10,3 +10,4 @@ passlib==1.7.4
 python_multipart==0.0.6
 python_slugify==8.0.1
 brotli==1.0.9
+bcrypt==4.0.1
