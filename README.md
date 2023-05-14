@@ -1,39 +1,32 @@
-docker rm $(docker container ls -a | grep "athena" | awk "{print \$1}")
-docker rmi -f $(docker images -f "dangling=true" -q)
-
-https://github.com/tortoise
-
-https://docs.docker.com/compose/compose-file/03-compose-file/
-
 ## Using [Docker Compose](https://docs.docker.com/compose/)
-```bash
-$ cd src/
 
 # to see config
-docker compose --env-file compose.env config
-
-# by steps
-$ docker compose down --remove-orphans # if needed to stop all running containers
-$ docker compose build
-$ docker compose up --no-build
-
-# single line
-$ docker compose --env-file=compose.env down && \
-  docker compose --env-file=compose.env build && \
-  docker compose --env-file=compose.env up
-
-$ docker compose down --remove-orphans && \
-  docker compose build && \
-  docker compose up --no-build  
+```bash
+docker compose --env-file=compose.env config
 ```
+
+# tests
+```bash
+docker compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans && \
+docker compose --env-file=compose.env --file=compose-tests.yaml build && \
+docker compose --env-file=compose.env --file=compose-tests.yaml up
+```
+
+# to run
+```bash
+docker compose --env-file=compose.env down --remove-orphans && \
+docker compose --env-file=compose.env build && \
+docker compose --env-file=compose.env up
+```
+
 ## Local config/unix-like
 
 ### Using [pyenv](https://github.com/pyenv/pyenv-installer)
 
 ```bash
 $ cd src/
-$ pyenv install 3.11.0
-$ pyenv virtualenv 3.11.0 athena-env
+$ pyenv install 3.11.3
+$ pyenv virtualenv 3.11.3 athena-env
 $ pyenv local athena-env # optional/recommended (auto active env)
 $ pyenv activate athena-env
 $ pip install --upgrade pip
@@ -113,6 +106,8 @@ dotenv run uvicorn app.main:app --reload --port 8002
 			"**/Thumbs.db": true,
 			"**/__pycache__": true,
 			"src": true,
+			"ares": true,
+			"apollo": true,
 		}		
 	}
 }
