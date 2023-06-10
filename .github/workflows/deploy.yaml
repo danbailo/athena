@@ -24,6 +24,8 @@ jobs:
         SCRIPT_BEFORE: |
           ls
           mkdir -p project
+          sudo service docker start
+          sleep 3
         SCRIPT_AFTER: |
           cd project
           docker-compose --env-file=compose.env down --remove-orphans
