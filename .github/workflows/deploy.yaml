@@ -28,6 +28,6 @@ jobs:
           cd project
           docker-compose --env-file=compose.env down --remove-orphans
           docker-compose --env-file=compose.env build
-          docker-compose --env-file=compose.env up
+          docker-compose --env-file=compose.env up -d
 
         EXCLUDE: "**/.env, **/__pycache__, **/*.pyc, **/.git, **/.code-workspace, **/.github, **/local_ssh_script-before.sh"
