@@ -12,5 +12,5 @@ class TestModel(TestCase):
                 pass
 
     def test_correct_model_name(self):
-        class ErrorModel(AthenaBase):
+        class ErrorMoadel(AthenaBase):
             pass
