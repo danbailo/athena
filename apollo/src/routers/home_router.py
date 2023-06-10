@@ -15,6 +15,11 @@ async def home_page(request: Request):
     url = get_env_var("ATHENA_ARES_BASE_URL")
     # TODO: melhorar rotas e respostas da api
 
+    about_section = []
+    about_subsections = []
+    devs_section = []
+    devs_subsections = []
+
     about_section_slug = 'sobre'
     if (response := await async_fetch(
         MethodEnum.get, f'{url}/section',
