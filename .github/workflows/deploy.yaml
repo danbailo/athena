@@ -22,6 +22,7 @@ jobs:
         SOURCE: "./"
 
         SCRIPT_BEFORE: |
+          ls
           mkdir -p project
           cd project
         SCRIPT_AFTER: |
