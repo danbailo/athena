@@ -1,0 +1,60 @@
+{
+    "version": 1,
+    "formatters": {
+        "defaultFormatter": {
+            "format": "%(asctime)s - %(threadName)s - %(levelname)s - %(filename)s:%(funcName)s:%(lineno)d - %(message)s"
+        },
+
+        "stackdriverFormatter": {
+            "()": "extensions.logger.StackdriverJsonFormatter",
+            "format": "%(asctime)s - %(threadName)s - %(levelname)s - %(filename)s:%(funcName)s:%(lineno)d - %(message)s"
+        }
+    },
+
+    "handlers": {
+        "consoleHandler": {
+            "formatter": "defaultFormatter",
+            "class": "logging.StreamHandler"
+        },
+
+        "fileHandler": {
+            "formatter": "defaultFormatter",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": "data.log",
+            "mode": "w",
+            "maxBytes": 100000,
+            "backupCount": 3,
+            "level": "WARNING"
+        },
+        "stackdriverHandler": {
+            "formatter": "stackdriverFormatter",
+            "class": "logging.StreamHandler"
+        }
+
+    },
+
+    "loggers": {
+        "root": {
+            "level": "WARNING",
+            "propagate": false
+        },
+        "debug": {
+            "level": "DEBUG",
+            "handlers": ["stackdriverHandler"]
+        }, 
+        "prod_local":{
+            "level": "INFO",
+            "propagate": false,
+            "handlers": ["consoleHandler", "fileHandler"]
+        },
+        "prod": {
+            "level": "INFO",
+            "handlers": ["stackdriverHandler"],
+            "propagate": false
+        },
+        "local": {
+            "level": "DEBUG",
+            "handlers": ["consoleHandler", "fileHandler"]
+        }
+    }
+}
