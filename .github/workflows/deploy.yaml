@@ -24,8 +24,8 @@ jobs:
         SCRIPT_BEFORE: |
           ls
           mkdir -p project
-          cd project
         SCRIPT_AFTER: |
+          cd project
           docker-compose --env-file=compose.env down --remove-orphans
           docker-compose --env-file=compose.env build
           docker-compose --env-file=compose.env up
