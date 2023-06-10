@@ -1,11 +1,18 @@
 from enum import StrEnum
 
+import logging
+
 from typing import Any
 
 
+from tenacity import retry, stop_after_attempt, wait_fixed, before_log
+
 from httpx import AsyncClient, Response
 
+
 from pydantic import BaseModel
+
+from extensions.logger import logger
 
 
 class MethodEnum(StrEnum):
@@ -15,6 +22,12 @@ class MethodEnum(StrEnum):
     delete = 'delete'
 
 
+@retry(
+    reraise=True,
+    stop=stop_after_attempt(3),
+    wait=wait_fixed(1),
+    before=before_log(logger, logging.DEBUG),
+)
 async def async_fetch(
     method: MethodEnum, url: str,
     data: dict[str, Any] | BaseModel | None = None,
@@ -22,6 +35,7 @@ async def async_fetch(
     params: dict[str, Any] | BaseModel | None = None,
     cookies: dict[str, Any] | None = None,
     headers: dict[str, Any] | BaseModel = None,
+    raise_for_status: bool = False,
     *args, **kwargs
 ) -> Response:
     if headers is None:
@@ -41,4 +55,6 @@ async def async_fetch(
             method, url, data=data, json=json, params=params,
             cookies=cookies, headers=headers, *args, **kwargs
         )
+    if raise_for_status is True:
+        response.raise_for_status()
     return response
