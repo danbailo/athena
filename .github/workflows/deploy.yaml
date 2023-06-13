@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and run
+        run: |
+          docker-compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans
+          docker-compose --env-file=compose.env --file=compose-tests.yaml build
+          docker-compose --env-file=compose.env --file=compose-tests.yaml up --abort-on-container-exit
+
+  deploy:
+    needs: run-tests
+    if: github.ref == 'refs/heads/main'
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the files
+      uses: actions/checkout@v3
+
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
+        ARGS: "-rltgoDzvO --delete"
+        SOURCE: "./"
+
+        SCRIPT_BEFORE: |
+          ls
+          mkdir -p project
+          sudo service docker start
+          sleep 3
+        SCRIPT_AFTER: |
+          cd project
+          docker-compose --env-file=compose.env down --remove-orphans
+          docker-compose --env-file=compose.env build
+          docker-compose --env-file=compose.env up -d
+
+        EXCLUDE: "**/.env, **/__pycache__, **/*.pyc, **/.git, **/.code-workspace, **/.github, **/local_ssh_script-before.sh"
