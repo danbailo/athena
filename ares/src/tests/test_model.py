@@ -14,3 +14,5 @@ class TestModel(TestCase):
     def test_correct_model_name(self):
         class ErrorModael(AthenaBase):
             pass
+
+asdasdasd
