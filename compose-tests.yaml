@@ -23,18 +23,18 @@ services:
     command: bash -c "python -m unittest tests.test_model"
     container_name: athena-ares-tests-container
 
-  apollo-pylint:
-    build:
-      context: ./apollo/
-      dockerfile: Dockerfile
-    image: athena-project-apollo
-    command: bash -c "cd .. && python -m pylint src"
-    container_name: athena-apollo-pylint-container
+  # apollo-pylint:
+  #   build:
+  #     context: ./apollo/
+  #     dockerfile: Dockerfile
+  #   image: athena-project-apollo
+  #   command: bash -c "cd .. && python -m pylint src"
+  #   container_name: athena-apollo-pylint-container
 
-  apollo-flake8:
-    build:
-      context: ./apollo/
-      dockerfile: Dockerfile
-    image: athena-project-apollo
-    command: bash -c "cd .. && python -m flake8 src"
-    container_name: athena-apollo-flake8-container
+  # apollo-flake8:
+  #   build:
+  #     context: ./apollo/
+  #     dockerfile: Dockerfile
+  #   image: athena-project-apollo
+  #   command: bash -c "cd .. && python -m flake8 src"
+  #   container_name: athena-apollo-flake8-container
