@@ -7,6 +7,7 @@ on:
 jobs:
   run-tests:
     name: Run tests
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,9 +19,10 @@ jobs:
 
   deploy:
     name: Deploy to EC2
+    timeout-minutes: 5
     needs: run-tests
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
     - name: Checkout the files
       uses: actions/checkout@v3
