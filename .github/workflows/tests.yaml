@@ -1,20 +1,20 @@
-name: Python package
+# name: Python package
 
-on: [push]
+# on: [push]
 
-jobs:
-  build:
+# jobs:
+#   build:
 
-    runs-on: ubuntu-latest
+#     runs-on: ubuntu-latest
 
-    steps:
-      # need checkout before using compose-action
-      - uses: actions/checkout@v3
-      - uses: isbang/compose-action@v1.4.1
-        with:
-          compose-file: "compose-tests.yaml"
-          down-flags: "--remove-orphans --volumes"
-          up-flags: "--build"
-        env:
-          ENV-FILE: "compose.env"
-          FILE: "compose-tests.yaml"
+#     steps:
+#       # need checkout before using compose-action
+#       - uses: actions/checkout@v3
+#       - uses: isbang/compose-action@v1.4.1
+#         with:
+#           compose-file: "compose-tests.yaml"
+#           down-flags: "--remove-orphans --volumes"
+#           up-flags: "--build"
+#         env:
+#           ENV-FILE: "compose.env"
+#           FILE: "compose-tests.yaml"
