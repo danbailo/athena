@@ -14,7 +14,7 @@ jobs:
         with:
           compose-file: "compose-tests.yaml"
           down-flags: "--remove-orphans --volumes"
-          up-flages: "--build"
+          up-flags: "--build"
         env:
           ENV-FILE: "compose.env"
           FILE: "compose-tests.yaml"
