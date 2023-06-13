@@ -15,4 +15,4 @@ class TestModel(TestCase):
         class ErrorModael(AthenaBase):
             pass
 
-asdasdasd
+asdasdasda
