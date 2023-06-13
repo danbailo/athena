@@ -27,6 +27,13 @@ jobs:
     - name: Checkout the files
       uses: actions/checkout@v3
 
+    - name: Get project secrets
+      env:
+        ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
+      run: |
+        mkdir -p project
+        echo $ATHENA_PROJECT_SECRETS | base64 -d > project/compose.env
+
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
       env:
