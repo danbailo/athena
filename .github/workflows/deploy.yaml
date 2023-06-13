@@ -13,7 +13,7 @@ jobs:
         run: |
           docker-compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans
           docker-compose --env-file=compose.env --file=compose-tests.yaml build
-          docker-compose --env-file=compose.env --file=compose-tests.yaml up      
+          docker-compose --env-file=compose.env --file=compose-tests.yaml up --abort-on-container-exit
 
   deploy:
     needs: run-tests
