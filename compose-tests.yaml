@@ -4,9 +4,7 @@ services:
       context: ./ares/
       dockerfile: Dockerfile
     image: athena-project-ares
-    command: bash -c "
-      cd .. &&\
-      python -m pylint src"
+    command: bash -c "cd .. && python -m pylint src"
     container_name: athena-ares-pylint-container
 
   ares-flake8:
@@ -14,9 +12,7 @@ services:
       context: ./ares/
       dockerfile: Dockerfile
     image: athena-project-ares
-    command: bash -c "
-      cd .. &&\
-      python -m flake8 src"
+    command: bash -c "cd .. && python -m flake8 src"
     container_name: athena-ares-flake8-container
 
   ares-tests:
@@ -32,9 +28,7 @@ services:
       context: ./apollo/
       dockerfile: Dockerfile
     image: athena-project-apollo
-    command: bash -c "
-      cd .. &&\
-      python -m pylint src"
+    command: bash -c "cd .. && python -m pylint src"
     container_name: athena-apollo-pylint-container
 
   apollo-flake8:
@@ -42,7 +36,5 @@ services:
       context: ./apollo/
       dockerfile: Dockerfile
     image: athena-project-apollo
-    command: bash -c "
-      cd .. &&\
-      python -m flake8 src"
+    command: bash -c "cd .. && python -m flake8 src"
     container_name: athena-apollo-flake8-container
