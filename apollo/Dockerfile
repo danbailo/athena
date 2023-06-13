@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install \
 
 WORKDIR /project
 
-COPY ../pylintrc /project/pylintrc
+COPY ./pylintrc /project/pylintrc
 
 COPY ./requirements.txt /project/requirements.txt
 COPY ./requirements-dev.txt /project/requirements-dev.txt
