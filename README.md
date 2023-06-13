@@ -2,21 +2,21 @@
 
 ### to see config
 ```bash
-docker compose --env-file=compose.env config
+docker-compose --env-file=compose.env config
 ```
 
 ### tests
 ```bash
-docker compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans && \
-docker compose --env-file=compose.env --file=compose-tests.yaml build && \
-docker compose --env-file=compose.env --file=compose-tests.yaml up
+docker-compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans && \
+docker-compose --env-file=compose.env --file=compose-tests.yaml build && \
+docker-compose --env-file=compose.env --file=compose-tests.yaml up
 ```
 
 ### to run
 ```bash
-docker compose --env-file=compose.env down --remove-orphans && \
-docker compose --env-file=compose.env build && \
-docker compose --env-file=compose.env up
+docker-compose --env-file=compose.env down --remove-orphans && \
+docker-compose --env-file=compose.env build && \
+docker-compose --env-file=compose.env up
 ```
 
 ## Local config/unix-like
@@ -70,6 +70,30 @@ dotenv run uvicorn app.main:app --reload --port 8002
 ```
 
 ## Optionals
+
+### AWS EC2 Deployment
+
+Works on free tier!
+
+Required options:
+* VM Image: **Amazon Linux**
+
+Add this config in advanced tab to init the instances with this config(or run after).
+
+```bash
+#!/bin/bash
+sudo yum install -y docker
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+After run above commands, run the commands bellow.
+```bash
+sudo usermod -aG docker ${USER}
+sudo reboot
+```
+
+---
 
 ### Vscode Workspace
 ```
