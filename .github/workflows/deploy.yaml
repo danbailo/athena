@@ -1,0 +1,35 @@
+# name: Push-to-EC2
+# on:
+#   push:
+#     branches:
+#       - main
+# jobs:
+#   deploy:
+#     name: Deploy to EC2
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout the files
+#       uses: actions/checkout@v3
+
+#     - name: Deploy to Server
+#       uses: easingthemes/ssh-deploy@main
+#       env:
+#         SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+#         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+#         REMOTE_USER: ${{ secrets.REMOTE_USER }}
+#         TARGET: ${{ secrets.REMOTE_TARGET }}
+#         ARGS: "-rltgoDzvO --delete"
+#         SOURCE: "./"
+
+#         SCRIPT_BEFORE: |
+#           ls
+#           mkdir -p project
+#           sudo service docker start
+#           sleep 3
+#         SCRIPT_AFTER: |
+#           cd project
+#           docker-compose --env-file=compose.env down --remove-orphans
+#           docker-compose --env-file=compose.env build
+#           docker-compose --env-file=compose.env up -d
+
+#         EXCLUDE: "**/.env, **/__pycache__, **/*.pyc, **/.git, **/.code-workspace, **/.github, **/local_ssh_script-before.sh"
