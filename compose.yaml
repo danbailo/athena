@@ -28,7 +28,20 @@ services:
       alembic upgrade head"
     volumes_from:
       - database
-    
+  
+  traefik:
+    image: traefik:v2.10.1
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
   ares:
     build:
       context: ./ares/
@@ -43,7 +56,7 @@ services:
       - "8000:8000"
     command: bash -c "
       sleep 3 &&\
-      uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000"
+      uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000"
 
   apollo:
     build:
@@ -54,12 +67,16 @@ services:
     env_file: compose.env
     depends_on:
       - ares
+      - traefik
     image: athena-project-apollo
     ports:
       - "8001:8001"
     command: bash -c "
       sleep 4 &&\
-      uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
+      uvicorn main:app --workers 1 --host 0.0.0.0 --port 8001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.apollo.rule=Host(`localhost`)"
 
 volumes:
   postgres:
