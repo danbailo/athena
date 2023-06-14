@@ -17,7 +17,6 @@ jobs:
       env:
         ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
       run: |
-        mkdir -p project
         echo $ATHENA_PROJECT_SECRETS | base64 -d > compose.env
     
     - name: Build test image and run
@@ -40,8 +39,7 @@ jobs:
       env:
         ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
       run: |
-        mkdir -p project
-        echo $ATHENA_PROJECT_SECRETS | base64 -d > project/compose.env
+        echo $ATHENA_PROJECT_SECRETS | base64 -d > compose.env
 
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
@@ -56,6 +54,7 @@ jobs:
         SCRIPT_BEFORE: |
           ls
           mkdir -p project
+          mv compose.env project/
           sudo service docker start
           sleep 3
         SCRIPT_AFTER: |
