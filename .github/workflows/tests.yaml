@@ -15,7 +15,6 @@ jobs:
       env:
         ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
       run: |
-        mkdir -p project
         echo $ATHENA_PROJECT_SECRETS | base64 -d > compose.env
     
     - name: Build test image and run
