@@ -1,16 +1,25 @@
-name: Tests
+name: Build test image
 
 on: [ pull_request ]
 
 jobs:
   run-tests:
     name: Run tests
-    runs-on: ubuntu-latest
     timeout-minutes: 5
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Build and run
-        run: |
-          docker-compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans
-          docker-compose --env-file=compose.env --file=compose-tests.yaml build
-          docker-compose --env-file=compose.env --file=compose-tests.yaml up --abort-on-container-exit
+    - name: Checkout the files
+      uses: actions/checkout@v3
+    
+    - name: Get project secrets
+      env:
+        ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
+      run: |
+        mkdir -p project
+        echo $ATHENA_PROJECT_SECRETS | base64 -d > compose.env
+    
+    - name: Build test image and run
+      run: |
+        docker-compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans
+        docker-compose --env-file=compose.env --file=compose-tests.yaml build
+        docker-compose --env-file=compose.env --file=compose-tests.yaml up --abort-on-container-exit
