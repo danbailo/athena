@@ -2,14 +2,14 @@
 
 ### to see config
 ```bash
-docker-compose --env-file=compose-local.env config
+docker compose --env-file=compose-local.env config
 ```
 
 ### tests
 ```bash
-docker-compose --env-file=compose-local.env --file=compose-tests.yaml down --remove-orphans && \
-docker-compose --env-file=compose-local.env --file=compose-tests.yaml build && \
-docker-compose --env-file=compose-local.env --file=compose-tests.yaml up
+docker compose --env-file=compose-local.env --file=compose-tests.yaml down --remove-orphans && \
+docker compose --env-file=compose-local.env --file=compose-tests.yaml build && \
+docker compose --env-file=compose-local.env --file=compose-tests.yaml up
 ```
 
 ### to run
@@ -35,13 +35,13 @@ $ pip install -r requirements.txt -r requirements-dev.txt
 
 ### Creating database/user
 
-*Obs: tested with PostgreSQL v12*
+*Obs: tested with PostgreSQL v12/15*
 
 ```bash
 $ sudo su postgres
 $ psql
 > CREATE DATABASE <your_database_name>;
-> CREATE USER <your_db_user> WITH PASSWORD '<your_db_password>';
+> CREATE USER <your_db_user> WITH PASSWORD '<your_db_password>'; - recommended generate a password with `htpasswd -nb user password`
 > GRANT ALL ON SCHEMA public TO <your_db_user>;
 > \q
 $ exit
