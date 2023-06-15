@@ -2,21 +2,21 @@
 
 ### to see config
 ```bash
-docker-compose --env-file=compose.env config
+docker-compose --env-file=compose-local.env config
 ```
 
 ### tests
 ```bash
-docker-compose --env-file=compose.env --file=compose-tests.yaml down --remove-orphans && \
-docker-compose --env-file=compose.env --file=compose-tests.yaml build && \
-docker-compose --env-file=compose.env --file=compose-tests.yaml up
+docker-compose --env-file=compose-local.env --file=compose-tests.yaml down --remove-orphans && \
+docker-compose --env-file=compose-local.env --file=compose-tests.yaml build && \
+docker-compose --env-file=compose-local.env --file=compose-tests.yaml up
 ```
 
 ### to run
 ```bash
-docker-compose --env-file=compose.env down --remove-orphans && \
-docker-compose --env-file=compose.env build && \
-docker-compose --env-file=compose.env up
+docker compose --env-file=compose-local.env --file=compose-local.yaml down --remove-orphans && \
+docker compose --env-file=compose-local.env --file=compose-local.yaml build && \
+docker compose --env-file=compose-local.env --file=compose-local.yaml up
 ```
 
 ## Local config/unix-like
@@ -75,6 +75,12 @@ dotenv run uvicorn app.main:app --reload --port 8002
 
 Works on free tier!
 
+Required files:
+* `compose-prod.yaml`
+* `traefik-prod.toml`
+
+[How to get project secrets using Github Actions](https://stackoverflow.com/questions/67964110/how-to-access-secrets-when-using-flutter-web-with-github-actions/67998780#67998780)
+
 Required options:
 * VM Image: **Amazon Linux**
 
@@ -82,13 +88,18 @@ Add this config in advanced tab to init the instances with this config(or run af
 
 ```bash
 #!/bin/bash
-sudo yum install -y docker
-sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+yum install -y docker
+systemctl start docker
+systemctl enable docker
 ```
 
 After run above commands, run the commands bellow.
 ```bash
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+mkdir -p $DOCKER_CONFIG/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
+chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+
 sudo usermod -aG docker ${USER}
 sudo reboot
 ```
