@@ -12,5 +12,7 @@ class TestModel(TestCase):
                 pass
 
     def test_correct_model_name(self):
-        class ErrorModel(AthenaBase):
+        class ErroarModel(AthenaBase):
             pass
+
+import os
