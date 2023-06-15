@@ -68,6 +68,8 @@ jobs:
           echo "items listed"
           mkdir -p project
           mv compose-prod.env traefik-prod.toml project/
+          echo "removing dangling images"
+          docker rmi -f $(docker images -f "dangling=true" -q)
           echo "script_before ended"
         SCRIPT_AFTER: |
           echo "starting script_after"
