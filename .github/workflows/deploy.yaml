@@ -17,13 +17,13 @@ jobs:
       env:
         ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
       run: |
-        echo $ATHENA_PROJECT_SECRETS | base64 -d > compose-prod.yaml
+        echo $ATHENA_PROJECT_SECRETS | base64 -d > compose-prod.env
     
     - name: Build test image and run
       run: |
-        docker-compose --env-file=compose-prod.yaml --file=compose-tests.yaml down --remove-orphans
-        docker-compose --env-file=compose-prod.yaml --file=compose-tests.yaml build
-        docker-compose --env-file=compose-prod.yaml --file=compose-tests.yaml up --abort-on-container-exit
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml down --remove-orphans
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml build
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml up --abort-on-container-exit
 
   deploy:
     name: Deploy to EC2
@@ -61,8 +61,8 @@ jobs:
           sleep 3
         SCRIPT_AFTER: |
           cd project
-          docker-compose --env-file=compose-prod.yaml down --remove-orphans
-          docker-compose --env-file=compose-prod.yaml build
-          docker-compose --env-file=compose-prod.yaml up -d
+          docker compose --env-file=compose-prod.env down --remove-orphans
+          docker compose --env-file=compose-prod.env build
+          docker compose --env-file=compose-prod.env up -d
 
         EXCLUDE: "**/.env, **/__pycache__, **/*.pyc, **/.git, **/.code-workspace, **/.github, **/local_ssh_script-before.sh"
