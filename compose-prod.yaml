@@ -28,28 +28,32 @@ services:
   
   traefik:
     image: traefik:v2.10.1
+    container_name: athena-traefik-container
     command:
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.http.address=:80"
+      - "--log.level=INFO"
+      - "--accesslog"
       - "--api.insecure=true"
-      - "--log.level=DEBUG"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=${CERT_EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
-      - "80:80"
+      - "443:443"
       - "8080:8080"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik-public-certificates:/certificates
-      - ./traefik-prod.toml:/etc/traefik/traefik.toml
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`dashboard-traefik.athena-project.dev`) && PathPrefix(`/`)"
-      - "traefik.http.routers.dashboard.tls=true"
-      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.middlewares=auth"
-      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.dashboard.rule=Host(`dashboard-traefik.athena-project.dev`) && PathPrefix(`/`)"
+    #   - "traefik.http.routers.dashboard.tls=true"
+    #   - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+    #   - "traefik.http.routers.dashboard.service=api@internal"
+    #   - "traefik.http.routers.dashboard.middlewares=auth"
+    #   - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
 
   ares:
     build:
@@ -61,11 +65,18 @@ services:
     depends_on:
       - alembic
     image: athena-project-ares
-    ports:
-      - "8000:8000"
     command: bash -c "
       sleep 3 &&\
       uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ares.entrypoints=web"
+      - "traefik.http.routers.ares.rule=(Host(`athena-project.dev`) || Host(`${STATIC_IP_INSTANCE}`)) && PathPrefix(`/api`)"
+      - "traefik.http.routers.ares.service=ares"
+      - "traefik.http.services.ares.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.ares.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.ares.stripprefix.forceslash=false"
+      - "traefik.http.routers.ares.middlewares=ares"      
 
   apollo:
     build:
@@ -78,16 +89,15 @@ services:
       - ares
       - traefik
     image: athena-project-apollo
-    ports:
-      - "8001:8001"
     command: bash -c "
       sleep 4 &&\
       uvicorn main:app --workers 1 --host 0.0.0.0 --port 8001"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.fastapi.rule=Host(`athena-project.dev`)"
-      - "traefik.http.routers.fastapi.tls=true"
-      - "traefik.http.routers.fastapi.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.apollo.entrypoints=web"
+      - "traefik.http.routers.apollo.rule=(Host(`athena-project.dev`) || Host(`${STATIC_IP_INSTANCE}`))"
+      - "traefik.http.routers.apollo.service=apollo"
+      - "traefik.http.services.apollo.loadbalancer.server.port=8001"
 
 volumes:
   postgres:
