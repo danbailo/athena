@@ -58,7 +58,6 @@ jobs:
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: ${{ secrets.REMOTE_TARGET }}
-        ARGS: "-rltgoDzvO --delete"
         SOURCE: "./"
 
         SCRIPT_BEFORE: |
@@ -79,4 +78,11 @@ jobs:
           docker compose --env-file=compose-prod.env --file=compose-prod.yaml up -d
           echo "script_after ended"
 
-        EXCLUDE: "**/.env, **/__pycache__, **/*.pyc, **/.git, **/.code-workspace, **/.github, **/local_ssh_script-before.sh"
+        EXCLUDE: |
+          **/.env
+          **/__pycache__
+          **/*.pyc
+          **/.git
+          **/.code-workspace
+          **/.github
+          **/local_ssh_script-before.sh
