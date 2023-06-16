@@ -8,7 +8,7 @@ services:
     volumes:
        - postgres:/var/lib/postgresql/data
     ports:
-      - "7999:5432"
+      - ${EXPOSED_DATABASE_PORT}:5432
 
   alembic:
     build:
@@ -28,11 +28,18 @@ services:
   
   traefik:
     image: traefik:v2.10.1
+    container_name: athena-traefik-container
+    command:
+      - "--log.level=DEBUG"
+      - "--accesslog"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
       - "8080:8080"
     volumes:
-      - ./traefik-local.toml:/etc/traefik/traefik.toml
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   ares:
@@ -45,11 +52,20 @@ services:
     depends_on:
       - alembic
     image: athena-project-ares
-    ports:
-      - "8000:8000"
+    # ports:
+      # - "8000:8000"
     command: bash -c "
       sleep 3 &&\
       uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ares.entrypoints=web"
+      - "traefik.http.routers.ares.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.ares.service=ares"
+      - "traefik.http.services.ares.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.ares.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.ares.stripprefix.forceslash=false"
+      - "traefik.http.routers.ares.middlewares=ares"      
 
   apollo:
     build:
@@ -62,14 +78,16 @@ services:
       - ares
       - traefik
     image: athena-project-apollo
-    ports:
-      - "8001:8001"
+    # ports:
+      # - "8001:8001"
     command: bash -c "
       sleep 4 &&\
       uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8001"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.apollo.rule=Host(`apollo.localhost`)"
-
+      - "traefik.http.routers.apollo.entrypoints=web"
+      - "traefik.http.routers.apollo.rule=Host(`localhost`)"
+      - "traefik.http.routers.apollo.service=apollo"
+      - "traefik.http.services.apollo.loadbalancer.server.port=8001"
 volumes:
   postgres:
