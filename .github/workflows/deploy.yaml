@@ -45,12 +45,6 @@ jobs:
       run: |
         echo $ATHENA_PROJECT_SECRETS | base64 -d > compose-prod.env
 
-    - name: Get traefik config from secret
-      env:
-        ATHENA_PROJECT_TRAEFIK: ${{ secrets.ATHENA_PROJECT_TRAEFIK }}
-      run: |
-        echo $ATHENA_PROJECT_TRAEFIK | base64 -d > traefik-prod.toml        
-
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
       env:
@@ -66,7 +60,6 @@ jobs:
           ls
           echo "items listed"
           mkdir -p project
-          mv compose-prod.env traefik-prod.toml project/
           echo "script_before ended"
         SCRIPT_AFTER: |
           echo "starting script_after"
