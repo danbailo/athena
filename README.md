@@ -77,9 +77,12 @@ Works on free tier!
 
 Required files:
 * `compose-prod.yaml`
-* `traefik-prod.toml`
 
-[How to get project secrets using Github Actions](https://stackoverflow.com/questions/67964110/how-to-access-secrets-when-using-flutter-web-with-github-actions/67998780#67998780)
+The variables that you need to set is the same as `compose-local.yaml`, but we will add this values in GitHub Actions Secrets, because this file contains sensitive credentials.
+
+After we add the secrets on GitHub Actions enviroment(in this project as configured as `ATHENA_PROJECT_SECRETS`), the `deploy.yaml` will automatic generate the file `compose-prod.yaml`.
+
+[How to get project secrets using GitHub Actions](https://stackoverflow.com/questions/67964110/how-to-access-secrets-when-using-flutter-web-with-github-actions/67998780#67998780)
 
 Required options:
 * VM Image: **Amazon Linux**
@@ -103,6 +106,25 @@ chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
 sudo usermod -aG docker ${USER}
 sudo reboot
 ```
+
+---
+
+### Traefik configuration
+
+*(Optional) Install lib to generate password:*
+```bash
+sudo apt install apache2-utils
+```
+
+Generating passwords
+```bash
+htpasswd -nb my-user my-password
+```
+
+Utils links:
+* https://doc.traefik.io/traefik/routing/providers/docker/
+* https://doc.traefik.io/traefik/reference/dynamic-configuration/docker/
+* https://doc.traefik.io/traefik/user-guides/docker-compose/acme-tls/
 
 ---
 
