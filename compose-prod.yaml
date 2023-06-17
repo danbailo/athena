@@ -35,17 +35,19 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email=${CERT_EMAIL}"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      # - "--entrypoints.web.address=:443"
+      # - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      # - "--certificatesresolvers.myresolver.acme.email=${CERT_EMAIL}"
+      # - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
-      - "443:443"
+      - "80:80"
+      # - "443:443"
       - "8080:8080"
     volumes:
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     # labels:
     #   - "traefik.enable=true"
     #   - "traefik.http.routers.dashboard.rule=Host(`dashboard-traefik.athena-project.dev`) && PathPrefix(`/`)"
@@ -71,7 +73,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ares.entrypoints=web"
-      - "traefik.http.routers.ares.rule=(Host(`athena-project.dev`) || Host(`${STATIC_IP_INSTANCE}`)) && PathPrefix(`/api`)"
+      - "traefik.http.routers.ares.rule=(Host(`athena-project.dev`, `www.athena-project.dev`) || Host(`${STATIC_IP_INSTANCE}`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.ares.service=ares"
       - "traefik.http.services.ares.loadbalancer.server.port=8000"
       - "traefik.http.middlewares.ares.stripprefix.prefixes=/api"
@@ -95,10 +97,14 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.apollo.entrypoints=web"
-      - "traefik.http.routers.apollo.rule=(Host(`athena-project.dev`) || Host(`${STATIC_IP_INSTANCE}`))"
+      - "traefik.http.routers.apollo.rule=Host(`athena-project.dev`, `www.athena-project.dev`) || Host(`${STATIC_IP_INSTANCE}`)"
       - "traefik.http.routers.apollo.service=apollo"
       - "traefik.http.services.apollo.loadbalancer.server.port=8001"
+      - "traefik.http.routers.apollo.middlewares=redirect-www-to-non-www"
+      - "traefik.http.middlewares.redirect-www-to-non-www.redirectregex.permanent=true"
+      - "traefik.http.middlewares.redirect-www-to-non-www.redirectregex.regex=^https?://www.athena-project.dev/(.*)"
+      - "traefik.http.middlewares.redirect-www-to-non-www.redirectregex.replacement=https?://athena-project.dev/$${1}"
 
 volumes:
   postgres:
-  traefik-public-certificates:
+  # traefik-public-certificates:
