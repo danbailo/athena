@@ -3,6 +3,7 @@
 {% block title %} - Login {% endblock title %}
 
 {% block content %}
+
     <main class="body">
 
         {% include 'components/flash_message_component.html' %}
@@ -11,13 +12,13 @@
             <div class="card mx-auto">
                 <div class="card-body">
                     <div class="form-signin w-100 m-auto">
-                        <form method="POST" action="{{ url_for('user_login') }}">
+                        <form method="POST" action="{{ url_for_path(request, 'user_login') }}">
                             <h3 class="h3 mb-3 fw-bold text-center">Insira seus dados</h1>
                             {{ render_form_fields(form) }}
                             <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>
                         </form>
                     </div>
-                    <p>Não tem conta? <a href="{{ url_for('user_register') }}">Crie aqui!</a></p>
+                    <p>Não tem conta? <a href="{{ url_for_path(request, 'user_register') }}">Crie aqui!</a></p>
                 </div>
             </div>
         </div>

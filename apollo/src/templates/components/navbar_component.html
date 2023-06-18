@@ -18,7 +18,7 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-shrink" id="mainNav">
     <div class="container">
-        <a class="navbar-brand" href="/"><img src="{{ url_for('static', path='img/navbar-logo.svg') }}"
+        <a class="navbar-brand" href="/"><img src="{{ url_for_path(request, 'static', path='img/navbar-logo.svg') }}"
                 alt="..." /></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
             aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,13 +30,13 @@
                 {{ navbar_link('#'~about.title_slug if request.url.path == '/' else '/#'~about.title_slug, about.title) }}
                 {{ navbar_link('#'~for_devs.title_slug if request.url.path == '/' else '/#'~for_devs.title_slug, for_devs.title) }}
                 {% if not request.user.is_authenticated %}
-                    {{ navbar_link(url_for('user_login_page'), 'Entrar') }}
+                    {{ navbar_link(url_for_path(request, 'user_login_page'), 'Entrar') }}
                 {% else %}
-                    {#{ navbar_link(url_for('user_features_page'), 'Features') }#}
-                    {{ navbar_link(url_for('user_page'), 'Usuário') }}
-                    {{ navbar_link(url_for('user_logout'), 'Sair') }}
+                    {#{ navbar_link(url_for_path(request, 'user_features_page'), 'Features') }#}
+                    {{ navbar_link(url_for_path(request, 'user_page'), 'Usuário') }}
+                    {{ navbar_link(url_for_path(request, 'user_logout'), 'Sair') }}
                     {% if user_is_admin %}
-                        {{ navbar_link(url_for('admin_home_page'), 'Admin') }}
+                        {{ navbar_link(url_for_path(request, 'admin_home_page'), 'Admin') }}
                     {% endif %}
                 {% endif%}
             </ul>

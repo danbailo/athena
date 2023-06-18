@@ -14,8 +14,8 @@
                 <ul class="list-group list-group-flush rounded-3">
                     {% for item in data %}
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                        <p class="mb-0"><a href="{{ url_for('admin_user_detail_page', id=item.id) }}">{{ item.name }}</a></p>
-                        {{ delete_item_form('post', url_for('admin_delete_user', id=item.id)) }}
+                        <p class="mb-0"><a href="{{ url_for_path(request, 'admin_user_detail_page', id=item.id) }}">{{ item.name }}</a></p>
+                        {{ delete_item_form('post', url_for_path(request, 'admin_delete_user', id=item.id)) }}
                     </li>
                     {% endfor %}
                 </ul>
