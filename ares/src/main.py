@@ -10,6 +10,7 @@ from database.connection import database
 from routers import auth_router, admin_router, user_router, section_router
 
 from extensions.logger import logger
+from extensions.env_var import get_env_var
 
 
 @asynccontextmanager
@@ -21,8 +22,8 @@ async def lifespan(app: FastAPI):
     await database.disconnect()
 
 
-app = FastAPI(lifespan=lifespan, root_path='/api')
-
+root_path = get_env_var("API_ROOT_PATH", raise_exception=False) or ""
+app = FastAPI(lifespan=lifespan, root_path=root_path)
 # app.add_middleware(
 #     CORSMiddleware,
 #     allow_origins=[
