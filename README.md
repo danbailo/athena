@@ -19,7 +19,7 @@ docker compose --env-file=compose-local.env --file=compose-local.yaml build && \
 docker compose --env-file=compose-local.env --file=compose-local.yaml up
 ```
 
-## Local config/unix-like
+## Local config/Debian-based
 
 ### Using [pyenv](https://github.com/pyenv/pyenv-installer)
 
@@ -60,24 +60,27 @@ exit
 ### Enviroment variables
 
 * `DATABASE_CONN_STRING`=`<your_db_user>`:`<your_db_password>`@`<host:port>`/`<your_database_name>`
-* `SECRET_KEY`=`<your_key>` - recommended generate a key with - `openssl rand -hex 32`
-* `ALGORITHM`=HS256
+* `SECRET_KEY`=`<your_key>` # recommended generate a key with - `openssl rand -hex 32`
+* `ALGORITHM`=HS256 # tested
+* `ATHENA_ARES_BASE_URL`=http://localhost:<port> # `8000` for example
+* `ATHENA_APOLLO_BASE_URL`=http://localhost:<port> # `8001` for example
 * `PYTHONBREAKPOINT`=ipdb.set_trace # optional/recommended
 
-### running alembic
+### running Ares(backend)
 ```bash
-cd src/
+cd ares/
 alembic upgrade head
+cd src/
+dotenv run uvicorn main:app --reload --port 8000
 ```
 
-## To run
+### running Apollo(frontend)
 
 ```bash
-cd src/athena
-
-dotenv run uvicorn api.main:api --reload --port 8001
-dotenv run uvicorn app.main:app --reload --port 8002
+cd apollo/src
+dotenv run uvicorn main:app --reload --port 8001
 ```
+
 
 ## Optionals
 
