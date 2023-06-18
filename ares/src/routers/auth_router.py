@@ -29,7 +29,8 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 router = APIRouter()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/token')
+root_path = get_env_var("API_ROOT_PATH", raise_exception=False) or ""
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{root_path}/auth/token')
 
 
 async def async_get_user_in_db(
