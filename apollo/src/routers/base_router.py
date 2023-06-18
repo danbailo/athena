@@ -77,8 +77,13 @@ def get_last_page(total_itens: int, limit: int):
     return ceil(total_itens/limit)
 
 
+def url_for_path(request: Request, route: str, **params: str):
+    return request.url_for(route, **params).path
+
+
 templates.env.globals['get_flash_messages'] = get_flash_messages
 templates.env.globals['get_endpoint'] = get_endpoint
 templates.env.globals['get_last_page'] = get_last_page
 templates.env.globals['url_for_query'] = url_for_query
 templates.env.globals['dir'] = dir
+templates.env.globals['url_for_path'] = url_for_path

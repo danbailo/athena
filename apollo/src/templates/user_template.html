@@ -14,7 +14,7 @@
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <img src="{{ url_for('static', path='img/avatar2.png') }}"
+                        <img src="{{ url_for_path(request, 'static', path='img/avatar2.png') }}"
                             alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
                         <h5 class="my-3">{{user.name}}</h5>
                     </div>
@@ -24,7 +24,7 @@
         <div class="row d-flex justify-content-center">
             <div class="col-lg-6">
                 <div class="card mb-4">
-                    <form method="post" action="{{ url_for('user_patch') }}">
+                    <form method="post" action="{{ url_for_path(request, 'user_patch') }}">
                     <div class="card-body">
                         <div class="row">
                         {{ render_list_row_input('Usuário', user.username, 'user-username', False) }}

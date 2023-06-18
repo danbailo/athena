@@ -12,13 +12,13 @@
             <div class="card mx-auto">
                 <div class="card-body">
                     <div class="form-signin w-100 m-auto">
-                        <form method="POST" action="{{ url_for('user_register') }}">
+                        <form method="POST" action="{{ url_for_path(request, 'user_register') }}">
                             <h1 class="h3 mb-3 fw-bold text-center">Preencha os campos</h1>
                             {{ render_form_fields(form) }}
                             <button class="w-100 btn btn-lg btn-primary" type="submit">Registrar</button>
                         </form>
                     </div>
-                    <p>Você já tem conta? <a href="{{ url_for('user_login') }}">Entre aqui!</a></p>
+                    <p>Você já tem conta? <a href="{{ url_for_path(request, 'user_login') }}">Entre aqui!</a></p>
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-shrink rounded-3 p-2 mb-4" id="mainNav">
-    <a class="navbar-brand" href="/admin"><img src="{{ url_for('static', path='img/navbar-logo.svg') }}"/></a>
+    <a class="navbar-brand" href="/admin"><img src="{{ url_for_path(request, 'static', path='img/navbar-logo.svg') }}"/></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#admin_navbar"
         aria-controls="admin_navbar" aria-expanded="false" aria-label="Toggle navigation">
         Admin
@@ -16,8 +16,8 @@
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="admin_navbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {{ navbar_link(url_for('admin_user_page'), 'USERS') }}
-                {{ navbar_link(url_for('admin_section_page'), 'SECTIONS') }}
+                {{ navbar_link(url_for_path(request, 'admin_user_page'), 'USERS') }}
+                {{ navbar_link(url_for_path(request, 'admin_section_page'), 'SECTIONS') }}
             </ul>
         </div>
     </div>

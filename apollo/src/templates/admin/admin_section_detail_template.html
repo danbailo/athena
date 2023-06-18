@@ -16,7 +16,7 @@
                             <div class="col-md-12">
                                 <div class="table-responsive">
                                     <div class="form-group">
-                                        <form method="post" action="{{ url_for('admin_patch_section', id=data.id) }}">
+                                        <form method="post" action="{{ url_for_path(request, 'admin_patch_section', id=data.id) }}">
                                             <table class="table table-user-information">
                                                 <tbody>
                                                     {{ render_table_row_input('Identification', data.id, 'section-identification', False)}}
