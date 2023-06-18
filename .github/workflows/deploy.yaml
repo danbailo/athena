@@ -60,13 +60,9 @@ jobs:
         TARGET: ${{ secrets.REMOTE_TARGET }}
         SOURCE: "./"
 
-        SCRIPT_BEFORE: |
-          echo "starting script_before"
-          cd project
-          echo "script_before ended"
-
         SCRIPT_AFTER: |
           echo "starting script_after"
+          cd project
           docker compose --env-file=compose-prod.env --file=compose-prod.yaml down --remove-orphans
           docker compose --env-file=compose-prod.env --file=compose-prod.yaml build
           docker compose --env-file=compose-prod.env --file=compose-prod.yaml up -d
