@@ -62,8 +62,8 @@ exit
 * `DATABASE_CONN_STRING`=`<your_db_user>`:`<your_db_password>`@`<host:port>`/`<your_database_name>`
 * `SECRET_KEY`=`<your_key>` # recommended generate a key with - `openssl rand -hex 32`
 * `ALGORITHM`=HS256 # tested
-* `ATHENA_ARES_BASE_URL`=http://localhost:<port> # `8000` for example
-* `ATHENA_APOLLO_BASE_URL`=http://localhost:<port> # `8001` for example
+* `ATHENA_ARES_BASE_URL`=http://localhost:`<port>` # `8000` for example
+* `ATHENA_APOLLO_BASE_URL`=http://localhost:`<port>` # `8001` for example
 * `PYTHONBREAKPOINT`=ipdb.set_trace # optional/recommended
 
 ### running Ares(backend)
