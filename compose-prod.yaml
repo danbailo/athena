@@ -30,8 +30,9 @@ services:
     image: traefik:v2.10.1
     container_name: athena-traefik-container
     command:
-      - "--log.level=INFO"
+      - "--log.level=DEBUG"
       - "--api.insecure=false"
+      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       # - "--entrypoints.web.address=:80"
@@ -50,12 +51,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`dashboard-traefik.athena-project.dev`)"
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard-traefik.athena-project.dev`, `www.dashboard-traefik.athena-project.dev`)"
+      - "traefik.http.routers.ares.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
       - "traefik.http.routers.dashboard.middlewares=dashboard-redirect-www-to-non-www"
       - "traefik.http.middlewares.dashboard-redirect-www-to-non-www.redirectregex.permanent=true"
       - "traefik.http.middlewares.dashboard-redirect-www-to-non-www.redirectregex.regex=^https?://www.dashboard-traefik.athena-project.dev/(.*)"
       - "traefik.http.middlewares.dashboard-redirect-www-to-non-www.redirectregex.replacement=https://dashboard-traefik.athena-project.dev/$$1"         
-      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.middlewares=auth"
       - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
@@ -76,9 +78,9 @@ services:
     labels:
       - "traefik.enable=true"
       # - "traefik.http.routers.ares.entrypoints=web"
+      - "traefik.http.routers.ares.rule=(Host(`athena-project.dev`, `www.athena-project.dev`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.ares.entrypoints=websecure"
       - "traefik.http.routers.ares.tls.certresolver=myresolver"
-      - "traefik.http.routers.ares.rule=(Host(`athena-project.dev`, `www.athena-project.dev`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.ares.middlewares=ares-redirect-www-to-non-www"
       - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.permanent=true"
       - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.regex=^https?://www.athena-project.dev/(.*)"
@@ -106,9 +108,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.apollo.rule=Host(`athena-project.dev`, `www.athena-project.dev`)"
-      # - "traefik.http.routers.apollo.entrypoints=web"
       - "traefik.http.routers.apollo.entrypoints=websecure"
       - "traefik.http.routers.apollo.tls.certresolver=myresolver"
+      # - "traefik.http.routers.apollo.entrypoints=web"
       - "traefik.http.routers.apollo.service=apollo"
       - "traefik.http.services.apollo.loadbalancer.server.port=8001"
       - "traefik.http.routers.apollo.middlewares=apollo-redirect-www-to-non-www"
