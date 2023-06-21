@@ -26,9 +26,9 @@ services:
     volumes_from:
       - database
   
-  traefik:
+  proxy:
     image: traefik:v2.10.1
-    container_name: athena-traefik-container
+    container_name: athena-proxy-container
     command:
       - "--log.level=DEBUG"
       - "--api.insecure=false"
@@ -80,7 +80,13 @@ services:
       - "traefik.http.middlewares.ares-strippefix.stripprefix.prefixes=/api"
       - "traefik.http.middlewares.ares-strippefix.stripprefix.forceslash=false"
 
-      - "traefik.http.routers.ares.middlewares=ares-redirectscheme,ares-redirect-www-to-non-www,ares-strippefix"
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolallowmethods=GET,POST,PATCH,DELETE"
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolalloworiginlist=https://athena-project.dev"
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolmaxage=600"
+      - "traefik.http.middlewares.ares-cors.headers.addvaryheader=true"
+
+      - "traefik.http.routers.ares.middlewares=ares-redirectscheme,ares-redirect-www-to-non-www,ares-strippefix,ares-cors"
 
       - "traefik.http.services.ares-loadbalander.loadbalancer.server.port=8000"
       - "traefik.http.routers.ares.service=ares-loadbalander"
@@ -117,7 +123,13 @@ services:
       - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.regex=^https?://(?:www.)?(.+)"
       - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.replacement=https://$${1}"
 
-      - "traefik.http.routers.apollo.middlewares=apollo-redirectscheme,apollo-redirect-www-to-non-www"
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolallowmethods=GET,POST"
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolalloworiginlist=https://athena-project.dev"
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolmaxage=600"
+      - "traefik.http.middlewares.apollo-cors.headers.addvaryheader=true"
+
+      - "traefik.http.routers.apollo.middlewares=apollo-redirectscheme,apollo-redirect-www-to-non-www,apollo-cors"
 
       - "traefik.http.services.apollo-loadbalander.loadbalancer.server.port=8001"
       - "traefik.http.routers.apollo.service=apollo-loadbalander"
