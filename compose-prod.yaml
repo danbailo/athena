@@ -32,35 +32,22 @@ services:
     command:
       - "--log.level=DEBUG"
       - "--api.insecure=false"
-      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       # - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.myresolver.acme.email=${CERT_EMAIL}"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
-      # - "80:80"
       - "443:443"
+      # - "80:80"
       # directly linked with api.insecure(expose it if api.insecure=true)
       # - "8080:8080"
     volumes:
       - ./letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`dashboard-traefik.athena-project.dev`, `www.dashboard-traefik.athena-project.dev`)"
-      - "traefik.http.routers.ares.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
-      - "traefik.http.routers.dashboard.middlewares=dashboard-redirect-www-to-non-www"
-      - "traefik.http.middlewares.dashboard-redirect-www-to-non-www.redirectregex.permanent=true"
-      - "traefik.http.middlewares.dashboard-redirect-www-to-non-www.redirectregex.regex=^https?://www.dashboard-traefik.athena-project.dev/(.*)"
-      - "traefik.http.middlewares.dashboard-redirect-www-to-non-www.redirectregex.replacement=https://dashboard-traefik.athena-project.dev/$$1"         
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.middlewares=auth"
-      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USER}:${TRAEFIK_PASSWORD}"
+
 
   ares:
     build:
@@ -77,19 +64,29 @@ services:
       uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000"
     labels:
       - "traefik.enable=true"
-      # - "traefik.http.routers.ares.entrypoints=web"
-      - "traefik.http.routers.ares.rule=(Host(`athena-project.dev`, `www.athena-project.dev`)) && PathPrefix(`/api`)"
+
+      - "traefik.http.routers.ares.rule=Host(`athena-project.dev`, `www.athena-project.dev`) && PathPrefix(`/api`)"
+
       - "traefik.http.routers.ares.entrypoints=websecure"
-      - "traefik.http.routers.ares.tls.certresolver=myresolver"
-      - "traefik.http.routers.ares.middlewares=ares-redirect-www-to-non-www"
+
+      - "traefik.http.middlewares.ares-redirectscheme.redirectscheme.permanent=true"  
+      - "traefik.http.middlewares.ares-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.ares-redirectscheme.redirectscheme.port=443"
+
       - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.permanent=true"
-      - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.regex=^https?://www.athena-project.dev/(.*)"
-      - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.replacement=https://athena-project.dev/$$1"      
-      - "traefik.http.routers.ares.service=ares"
-      - "traefik.http.services.ares.loadbalancer.server.port=8000"
-      - "traefik.http.middlewares.ares.stripprefix.prefixes=/api"
-      - "traefik.http.middlewares.ares.stripprefix.forceslash=false"
-      - "traefik.http.routers.ares.middlewares=ares"      
+      - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.regex=^https?://(?:www.)?(.+)"
+      - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.replacement=https://$${1}"
+
+      - "traefik.http.middlewares.ares-strippefix.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.ares-strippefix.stripprefix.forceslash=false"
+
+      - "traefik.http.routers.ares.middlewares=ares-redirectscheme,ares-redirect-www-to-non-www,ares-strippefix"
+
+      - "traefik.http.services.ares-loadbalander.loadbalancer.server.port=8000"
+      - "traefik.http.routers.ares.service=ares-loadbalander"
+
+      - "traefik.http.routers.ares.tls.certresolver=myresolver"
+
 
   apollo:
     build:
@@ -107,16 +104,26 @@ services:
       uvicorn main:app --workers 1 --host 0.0.0.0 --port 8001"
     labels:
       - "traefik.enable=true"
+
       - "traefik.http.routers.apollo.rule=Host(`athena-project.dev`, `www.athena-project.dev`)"
+      
       - "traefik.http.routers.apollo.entrypoints=websecure"
-      - "traefik.http.routers.apollo.tls.certresolver=myresolver"
-      # - "traefik.http.routers.apollo.entrypoints=web"
-      - "traefik.http.routers.apollo.service=apollo"
-      - "traefik.http.services.apollo.loadbalancer.server.port=8001"
-      - "traefik.http.routers.apollo.middlewares=apollo-redirect-www-to-non-www"
+
+      - "traefik.http.middlewares.apollo-redirectscheme.redirectscheme.permanent=true"  
+      - "traefik.http.middlewares.apollo-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.apollo-redirectscheme.redirectscheme.port=443"
+
       - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.permanent=true"
-      - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.regex=^https?://www.athena-project.dev/(.*)"
-      - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.replacement=https://athena-project.dev/$$1"
+      - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.regex=^https?://(?:www.)?(.+)"
+      - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.replacement=https://$${1}"
+
+      - "traefik.http.routers.apollo.middlewares=apollo-redirectscheme,apollo-redirect-www-to-non-www"
+
+      - "traefik.http.services.apollo-loadbalander.loadbalancer.server.port=8001"
+      - "traefik.http.routers.apollo.service=apollo-loadbalander"
+
+      - "traefik.http.routers.apollo.tls.certresolver=myresolver"
+      
 
 volumes:
   postgres:
