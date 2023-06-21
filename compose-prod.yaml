@@ -103,7 +103,7 @@ services:
     env_file: compose-prod.env
     depends_on:
       - ares
-      - traefik
+      - proxy
     image: athena-project-apollo
     command: bash -c "
       sleep 4 &&\
