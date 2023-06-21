@@ -1,6 +1,4 @@
 from fastapi import FastAPI
-# from fastapi.middleware.cors import CORSMiddleware
-# from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from pydantic import ValidationError
@@ -22,22 +20,6 @@ from utils.exception_handler_util import (
 )
 
 app = FastAPI(docs_url=None, redoc_url=None)
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=[
-#         'http://localhost',
-#         'http://localhost:8001',
-#         'https://localhost',
-#         'https://localhost:8001',
-#         'http://athena-project.dev',
-#         'https://athena-project.dev',
-#     ],
-#     allow_credentials=True,
-#     allow_methods=['*'],
-#     allow_headers=['*']
-# )
-# app.add_middleware(HTTPSRedirectMiddleware)
 
 app.add_middleware(SessionMiddleware, secret_key=get_env_var('SECRET_KEY'))
 app.add_middleware(AuthenticationMiddleware, backend=OAuth2Backend())
