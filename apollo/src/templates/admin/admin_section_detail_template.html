@@ -16,17 +16,8 @@
                             <div class="col-md-12">
                                 <div class="table-responsive">
                                     <div class="form-group">
-                                        <form method="post" action="{{ url_for_path(request, 'admin_patch_section', id=data.id) }}">
-                                            <table class="table table-user-information">
-                                                <tbody>
-                                                    {{ render_table_row_input('Identification', data.id, 'section-identification', False)}}
-                                                    {{ render_table_row_input('Title', data.title, 'section-title', True)}}
-                                                    {{ render_table_row_input('Title-slug', data.title_slug, 'section-title_slug', False)}}
-                                                    {{ render_table_row_text_area('Body', data.body, 'section-body', True)}}
-                                                    {{ render_table_row_input('Created at', data.created_at, 'section-created_at', False)}}
-                                                    {{ render_table_row_input('Last updated', data.last_updated, 'section-last_updated', False)}}
-                                                </tbody>
-                                            </table>
+                                        <form method="post" action="{{ url_for_path(request, 'admin_patch_section', id=data.id.value) }}">
+                                        {{ render_form_to_update_data(data) }}
                                         <div class="d-flex justify-content-center">
                                             <button class="btn btn-primary text-uppercase mx-1 mb-3" type="submit"><i class="fa-solid fa-arrows-rotate"></i> Update</button>
                                         </div>

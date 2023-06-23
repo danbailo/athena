@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% macro render_form_to_create_data(form) -%}
+    {% for field, infos in form.items() %}
+        <div class="form-floating mb-1">
+            {% if infos.tag == 'textarea' %}
+                <textarea {% for key, value in infos.items() %} {{ key }}="{{ value }}" {% endfor %}></textarea>                        
+            {% else%}
+                <input {% for key, value in infos.items() %} {{ key }}="{{ value }}" {% endfor %}>
+            {% endif %}
+            <label for="floatingInput">{{ infos.title }}</label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro render_form_to_update_data(form) -%}
+    <table class="table table-user-information">
+        <tbody>
+            {% for field, infos in form.items() %}
+                <tr>
+                    <td>
+                        <strong>{{ infos.form.title }}</strong>
+                        {% if infos.form.is_editable is not false %}
+                            <button class="btn btn-primary btn-sm" type="button" onclick=editItem('{{ field }}')>
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                        {% endif %}
+                    </td>
+                    <td class="text-primary">
+                        {% if infos.form.tag == 'textarea' %}
+                            <textarea {% for key, value in infos.form.items() %} {{ key }}="{{ value }}" {% endfor %}>{{ infos.value }}</textarea>                        
+                        {% else%}
+                            <input value="{{ infos.value }}" {{ 'checked' if infos.value is true}}
+                                   {% for key, value in infos.form.items() %} {{ key }}="{{ value }}" {% endfor %}>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{%- endmacro %}
+
+{% macro delete_item_form(action) %}
+<div class="d-flex justify-content-right">
+    <form method=post action={{ action }}>
+        <button class="btn btn-danger text-uppercase mx-1" type="submit"><i class="fa-solid fa-trash"></i> Deletar</a>
+    </form>
+</div>
+{% endmacro %}
+
+{% block style %}
+    <link href="{{ url_for_path(request, 'static', path='css/templates.css') }}" rel="stylesheet" />
+{% endblock style %}

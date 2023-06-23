@@ -1,12 +1,5 @@
 {% extends 'base.html' %}
 
-{% macro render_section(section) %}
-    <div class="text-center">
-        <h2 class="section-heading text-uppercase text-truncate">{{ section.title }}</h2>
-        <h3 class="section-subheading text-muted">{{ section.body }}</h3>
-    </div>
-{% endmacro %}
-
 {% macro render_subsection(subsection, len_subsections) %}
     {% if len_subsections % 3 == 0 %}
         {% set col_numbers = 4 %}
@@ -26,16 +19,32 @@
     </div>
 {% endmacro %}
 
+{% macro render_section(section) %}
+    <section class="page-section" id="{{ section.title_slug }}">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase text-truncate">{{ section.title }}</h2>
+                <h3 class="section-subheading text-muted">{{ section.body }}</h3>
+            </div>        
+            <div class="row text-center">
+                {% for subsection in section.subsections %}
+                    {{ render_subsection(subsection, section.subsections | length) }}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <hr style="width: 50%;" class="mx-auto">
+{% endmacro %}
+
+
 {% block content %}
     {% include 'components/header_component.html' %}
 
-    {% include 'onepage/about_onepage.html' %}
-    <hr style="width: 50%;" class="mx-auto">
+    {% for section in sections %}
+    
+        {{ render_section(section) }}
 
-    {% include 'onepage/devs_onepage.html' %}
-    <hr style="width: 50%;" class="mx-auto">
-
-    <!-- <hr style="width: 50%;" class="mx-auto"> -->
+    {% endfor %}
 
     {% include 'components/footer_component.html' %}
 {% endblock content %}

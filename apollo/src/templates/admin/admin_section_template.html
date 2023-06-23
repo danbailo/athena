@@ -16,7 +16,7 @@
                     <div class="form-signin w-100 m-auto">
                         <form method="POST" action="{{ url_for_path(request, 'admin_create_section') }}">
                             <h1 class="h3 mb-3 fw-bold text-center">New section</h1>
-                            {{ render_form_fields(create_section_form) }}
+                            {{ render_form_to_create_data(create_section_form) }}
                             <button class="w-100 btn btn-lg btn-primary" type="submit">Create section</button>
                         </form>
                     </div>
@@ -33,7 +33,7 @@
                         <p class="mb-0"><a
                                 href="{{ url_for_path(request, 'admin_section_detail_page', id=item.id) }}">{{ item.title }}</a></p>
 
-                        {{ delete_item_form('post', '') }}
+                        {{ delete_item_form('') }}
                     </li>
                     {% endfor %}
                 </ul>

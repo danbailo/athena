@@ -1,4 +1,4 @@
-{% extends 'base_template.html' %}
+{% extends 'user/base_user.html' %}
 
 {% block title %} - Login {% endblock title %}
 
@@ -14,7 +14,7 @@
                     <div class="form-signin w-100 m-auto">
                         <form method="POST" action="{{ url_for_path(request, 'user_login') }}">
                             <h3 class="h3 mb-3 fw-bold text-center">Insira seus dados</h1>
-                            {{ render_form_fields(form) }}
+                            {{ render_form_to_create_data(form) }}
                             <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>
                         </form>
                     </div>
