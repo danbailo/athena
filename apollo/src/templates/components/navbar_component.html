@@ -27,8 +27,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                {{ navbar_link('#'~about.title_slug if request.url.path == '/' else '/#'~about.title_slug, about.title) }}
-                {{ navbar_link('#'~for_devs.title_slug if request.url.path == '/' else '/#'~for_devs.title_slug, for_devs.title) }}
+                {% for section in get_nav_visible_sections() %}
+                    {{ navbar_link('#'~section.title_slug if request.url.path == '/' else '/#'~section.title_slug, section.title) }}
+                {% endfor %}
+
                 {% if not request.user.is_authenticated %}
                     {{ navbar_link(url_for_path(request, 'user_login_page'), 'Entrar') }}
                 {% else %}
