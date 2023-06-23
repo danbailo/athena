@@ -1,8 +1,10 @@
 from sqlalchemy import Column, BigInteger, DateTime, and_, select
-from sqlalchemy.sql import expression
 from sqlalchemy.ext.declarative import as_declarative
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.sql.expression import ColumnOperators
+from sqlalchemy.sql import expression
+
 
 import regex
 
@@ -35,7 +37,8 @@ def select_database(
     model: type[AthenaBase],
     query_params: list[dict[str, any]] | None = None,
     page: int = 1,
-    limit: int = 30
+    limit: int = 30,
+    order_by: list[ColumnOperators] | None = None,
 ):
     """select onde sempre compara igualdade"""
     offset = (page-1) * limit
@@ -48,6 +51,14 @@ def select_database(
         if (getattr(model, key, None) is not None and value is not None)
     ]
     if filter_args:
-        return select(model).where(and_(*filter_args))\
-                            .offset(offset).limit(limit)
-    return select(model).offset(offset).limit(limit)
+        query = select(model).where(and_(*filter_args))\
+                             .offset(offset).limit(limit)
+    else:
+        query = select(model).offset(offset).limit(limit)
+
+    if order_by is not None:
+        if not isinstance(order_by, list):
+            order_by = [order_by]
+        query = query.order_by(*order_by)
+
+    return query
