@@ -82,24 +82,33 @@ function backToTop() {
 }
 //
 
-MAPPED_ITEM_NAME_BY_ID = {
-    'section-title': 'title',
-    'section-title_slug': 'title_slug',
-    'section-body': 'body',
-
-    'user-name': 'name',
-    'user-password': 'password',
-    'user-email': 'email',
-}
-
 function editItem(item) {
     element = document.getElementById(item);
-    element.removeAttribute('name');
-    if (element.readOnly) {
-        element.readOnly = false;
-        element.setAttribute('name', MAPPED_ITEM_NAME_BY_ID[element.id])
-    }
-    else {
-        element.readOnly = true;
-    }
+    if (element.disabled === true)
+        element.disabled = false;
+    else
+        element.disabled = true;
+
+    if (element.children.length == 1 && element.children[0].id == element.id)
+        element.children[0].disabled = element.disabled;
 };
+
+function sendValueCheckboxUsingHide(clicked_id){
+    element = document.getElementById(clicked_id)
+    to_return = element.cloneNode()
+    to_return.setAttribute('name', clicked_id)
+    to_return.setAttribute('hidden', true)
+    to_return.setAttribute('type', 'text')
+    if (!element.disabled){
+        if (element.checked === false){
+            element.value=false
+            to_return.setAttribute('value', false)
+        }
+        else{
+            element.value=true
+            to_return.setAttribute('value', true)
+        }
+        element.innerHTML='';
+        element.append(to_return)
+    }
+}
