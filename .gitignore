@@ -1,4 +1,5 @@
-*compose-prod.env
+*prod.env
+*staging.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
