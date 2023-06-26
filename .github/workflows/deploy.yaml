@@ -9,7 +9,7 @@ on:
 
 jobs:
   run-tests-on-staging:
-    name: Run tests
+    name: Build project and run tests
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment:
