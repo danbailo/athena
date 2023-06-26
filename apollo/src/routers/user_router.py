@@ -25,8 +25,8 @@ async def user_login_page(request: Request):
     if request.user.is_authenticated:
         return RedirectResponse(router.url_path_for('user_page'), 302)
     return await async_render_template(
-        'login_template.html', request, 200,
-        {'form': LoginForm.get_form_values()}
+        'user/login_user.html', request, 200,
+        {'form': LoginForm.get_form_fields()}
     )
 
 
@@ -34,8 +34,8 @@ async def user_login_page(request: Request):
 @requires('authenticated', redirect='user_login_page')
 async def user_page(request: Request):
     return await async_render_template(
-        'user_template.html', request, 200, context_request={
-            'user': request.user
+        'user/index_user.html', request, 200, context_request={
+            'form': UpdateUserForm(**request.user.as_dict()).get_form_values()
         }
     )
 
@@ -63,14 +63,14 @@ async def user_login(
     except HTTPStatusError:
         await flash(request, data.get('detail'), 'danger')
         return await async_render_template(
-            'login_template.html', request, 401,
-            {'form': form_data.get_form_values()}
+            'user/login_user.html', request, 401,
+            {'form': form_data.get_form_fields()}
         )
     except Exception as exc:
         await flash(request, f'Unexpected error! - {str(exc)}', 'danger')
         return await async_render_template(
             'errors/404_error.html', request, 404,
-            {'form': form_data.get_form_values()}
+            {'form': form_data.get_form_fields()}
         )
     response.set_cookie(
         key='access_token',
@@ -102,8 +102,8 @@ async def user_register_page(request: Request):
     if request.user.is_authenticated:
         return RedirectResponse(router.url_path_for('user_page'), 302)
     return await async_render_template(
-        'register_template.html', request, 200,
-        {'form': RegisterForm.get_form_values()}
+        '/user/register_user.html', request, 200,
+        {'form': RegisterForm.get_form_fields()}
     )
 
 
@@ -122,8 +122,8 @@ async def user_register(
     except HTTPStatusError:
         await flash(request, _response.json()['detail'], 'danger')
         return await async_render_template(
-            'register_template.html', request, 401,
-            {'form': form_data.get_form_values()}
+            '/user/register_user.html', request, 401,
+            {'form': form_data.get_form_fields()}
         )
     except Exception as exc:
         await flash(request, f'Unexpected error! - {str(exc)}', 'danger')
