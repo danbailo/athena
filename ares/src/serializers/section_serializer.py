@@ -1,7 +1,7 @@
 from datetime import datetime
 
 
-from pydantic import BaseModel, root_validator, Field
+from pydantic import BaseModel, root_validator, Field, validator
 
 from slugify import slugify
 
@@ -13,6 +13,8 @@ class CountSectionResponseBody(BaseModel):
 class CreateSectionRequestBody(BaseModel):
     title: str
     body: str
+    visible: bool = False
+    order_to_show: int = 0
 
     @root_validator
     @classmethod
@@ -26,6 +28,8 @@ class CreateSectionRequestBody(BaseModel):
 class PatchSectionRequestBody(BaseModel):
     title: str | None = None
     body: str | None = None
+    visible: bool | None = None
+    order_to_show: int | None = None
 
     @root_validator
     @classmethod
@@ -43,17 +47,12 @@ class PatchSectionRequestBody(BaseModel):
         return root
 
 
-class SectionResponseBody(CreateSectionRequestBody):
-    id: int
-    title_slug: str
-    created_at: datetime
-    last_updated: datetime
-
-
 class CreateSubSectionRequestBody(BaseModel):
-    sub_title: str = Field(..., alias='sub_section_title')
-    sub_body: str = Field(..., alias='sub_section_body')
-    sub_link_image: str | None = Field(None, alias='sub_section_link_image')
+    sub_title: str = Field(..., alias='sub_title')
+    sub_body: str = Field(..., alias='sub_body')
+    sub_link_image: str | None = Field(None, alias='sub_link_image')
+    sub_visible: bool = False
+    sub_order_to_show: int = 0
 
     @root_validator
     @classmethod
@@ -71,6 +70,8 @@ class PatchSubSectionRequestBody(BaseModel):
     sub_title: str | None = Field(None, alias='sub_section_title')
     sub_body: str | None = Field(None, alias='sub_section_body')
     sub_link_image: str | None = Field(None, alias='sub_section_link_image')
+    sub_visible: bool | None = None
+    sub_order_to_show: int | None = None
 
     @root_validator
     @classmethod
@@ -87,8 +88,32 @@ class PatchSubSectionRequestBody(BaseModel):
             root['sub_last_updated'] = datetime.utcnow()
         return root
 
+    class Config:
+        allow_population_by_field_name = True
+
 
 class SubSectionResponseBody(CreateSubSectionRequestBody):
+    section_id: int
     id: int
     created_at: datetime
+    sub_order_to_show: int
+    sub_visible: bool
     sub_last_updated: datetime
+
+
+class SectionResponseBody(CreateSectionRequestBody):
+    id: int
+    title_slug: str
+    created_at: datetime
+    order_to_show: int
+    visible: bool
+    last_updated: datetime
+
+    subsections: list[SubSectionResponseBody] = []
+
+    @validator('subsections', pre=True)
+    @classmethod
+    def validate_subsections(cls, value):
+        if not isinstance(value, list):
+            return [value]
+        return value

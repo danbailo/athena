@@ -22,7 +22,7 @@ from database.models.user_model import UserModel, RoleEnum
 
 from utils.exceptions import (
     NotAuthorizedError, NothingToPatchError, NotPossibleDeleteAdmin,
-    UserNotFoundError
+    UserNotFoundError, ItemNotFoundError
 )
 
 
@@ -58,22 +58,22 @@ async def get_list_users(username: str | None = None):
     return result
 
 
-@router.get('/user/{id}', response_model=UserResponseBody)
-async def get_user(id: int):
-    query = select(UserModel).where(UserModel.id == id)
+@router.get('/user/{user_id}', response_model=UserResponseBody)
+async def get_user(user_id: int):
+    query = select(UserModel).where(UserModel.id == user_id)
     if result := await database.fetch_one(query):
         return result
     raise UserNotFoundError()
 
 
-@router.delete('/user/{id}', response_class=Response)
-async def delete_user(id: int):
-    query = select(UserModel).where(UserModel.id == id)
+@router.delete('/user/{user_id}', response_class=Response)
+async def delete_user(user_id: int):
+    query = select(UserModel).where(UserModel.id == user_id)
     if not (user := await database.fetch_one(query)):
         raise UserNotFoundError()
     if user.role == RoleEnum.admin:
         raise NotPossibleDeleteAdmin()
-    query = delete(UserModel).where(UserModel.id == id)
+    query = delete(UserModel).where(UserModel.id == user_id)
     await database.execute(query)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -89,29 +89,42 @@ async def create_section(body: CreateSectionRequestBody):
             status_code=400) from exc
 
 
-@router.patch('/section/{id}', status_code=204, dependencies=[CheckAdmin])
-async def patch_section(id: int, body: PatchSectionRequestBody):
+@router.patch('/section/{section_id}', status_code=204,
+              dependencies=[CheckAdmin])
+async def patch_section(section_id: int, body: PatchSectionRequestBody):
     if not (data := body.dict(exclude_none=True, by_alias=False)):
         raise NothingToPatchError()
-    query = update(SectionModel).where(SectionModel.id == id).values(**data)
+    query = update(SectionModel).where(
+        SectionModel.id == section_id).values(**data)
     try:
         await database.execute(query)
     except Exception as exc:
         raise HTTPException(status_code=400, detail=exc) from exc
 
 
+@router.delete('/section/{section_id}', status_code=204,
+               dependencies=[CheckAdmin])
+async def delete_section(section_id: int):
+    query = select(SectionModel).where(SectionModel.id == section_id)
+    if not await database.fetch_one(query):
+        raise ItemNotFoundError()
+    query = delete(SectionModel).where(SectionModel.id == section_id)
+    await database.execute(query)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 @router.post(
-    '/section/{section_slug}/subsection',
+    '/section/{section_id}/subsection',
     response_model=CreateSubSectionRequestBody,
     dependencies=[CheckAdmin])
 async def create_subsection(
-    section_slug: str, body: CreateSubSectionRequestBody
+    section_id: int, body: CreateSubSectionRequestBody
 ):
     query = select(SectionModel).where(
-        SectionModel.title_slug == section_slug)
+        SectionModel.id == section_id)
     if not (section := await database.fetch_one(query)):
         raise HTTPException(
-            400, detail=f'Section `{section_slug}` does not exists!')
+            400, detail=f'Section `{section_id}` does not exists!')
     values = body.dict(by_alias=False)
     values.update({'section_id': section.id})
     query = insert(SubSectionModel).values(**values)
@@ -120,19 +133,19 @@ async def create_subsection(
 
 
 @router.patch(
-    '/section/{section_slug}/subsection/{subsection_slug}',
+    '/section/{section_id}/subsection/{subsection_id}',
     dependencies=[CheckAdmin],
     status_code=204)
 async def patch_subsection(
-    section_slug: str,
-    subsection_slug: str,
+    section_id: int,
+    subsection_id: int,
     body: PatchSubSectionRequestBody,
 ):
     if not (data := body.dict(exclude_none=True, by_alias=False)):
         raise NothingToPatchError()
     query = update(SubSectionModel).where(and_(
-        SectionModel.title_slug == section_slug,
-        SubSectionModel.sub_title_slug == subsection_slug)).values(**data)
+        SectionModel.id == section_id,
+        SubSectionModel.id == subsection_id)).values(**data)
     try:
         await database.execute(query)
     except Exception as exc:
@@ -140,17 +153,17 @@ async def patch_subsection(
 
 
 @router.delete(
-    '/section/{section_slug}/subsection/{subsection_slug}',
+    '/section/{section_id}/subsection/{subsection_id}',
     dependencies=[CheckAdmin],
     status_code=204)
-async def delete_subsection(section_slug: str, subsection_slug: str):
+async def delete_subsection(section_id: int, subsection_id: int):
     query = select(SubSectionModel).where(and_(
-        SectionModel.title_slug == section_slug,
-        SubSectionModel.sub_title_slug == subsection_slug))
+        SectionModel.id == section_id,
+        SubSectionModel.id == subsection_id))
     if not await database.fetch_one(query):
         raise HTTPException(
-            400, detail=f'Subsection `{subsection_slug}` does not exists!')
+            400, detail=f'Subsection `{subsection_id}` does not exists!')
     query = delete(SubSectionModel).where(and_(
-        SectionModel.title_slug == section_slug,
-        SubSectionModel.sub_title_slug == subsection_slug))
+        SectionModel.id == section_id,
+        SubSectionModel.id == subsection_id))
     await database.execute(query)
