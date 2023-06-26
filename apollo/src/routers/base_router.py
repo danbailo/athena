@@ -11,6 +11,8 @@ from fastapi.templating import Jinja2Templates
 import regex
 
 
+from extensions.env_var import get_env_var
+from extensions.base_requests import _fetch, MethodEnum
 from extensions.logger import logger
 
 
@@ -68,17 +70,35 @@ def get_endpoint(request: Request):
     return ''
 
 
-def url_for_query(request: Request, name: str, **params: str) -> str:
-    url = request.url_for(name)
-    return url.include_query_params(**params)
+def url_for_query(
+    request: Request,
+    route: str,
+    path_params: dict[str, any] | None = None,
+    **query_params: str
+) -> str:
+    if path_params is None:
+        path_params = {}
+    url = request.url_for(route, **path_params)
+    return url.include_query_params(**query_params)
 
 
 def get_last_page(total_itens: int, limit: int):
     return ceil(total_itens/limit)
 
 
-def url_for_path(request: Request, route: str, **params: str):
-    return request.url_for(route, **params).path
+def url_for_path(request: Request, route: str, **path_params: str):
+    return request.url_for(route, **path_params).path
+
+
+def get_nav_visible_sections():
+    url = get_env_var('ATHENA_ARES_BASE_URL')
+    if (response := _fetch(
+        MethodEnum.get, f'{url}/section', params={'is_visible': True}
+    )) and response.is_success:
+        sections = response.json()
+    else:
+        sections = []
+    return filter(lambda x: x['visible'] is True, sections)
 
 
 templates.env.globals['get_flash_messages'] = get_flash_messages
@@ -87,3 +107,4 @@ templates.env.globals['get_last_page'] = get_last_page
 templates.env.globals['url_for_query'] = url_for_query
 templates.env.globals['dir'] = dir
 templates.env.globals['url_for_path'] = url_for_path
+templates.env.globals['get_nav_visible_sections'] = get_nav_visible_sections
