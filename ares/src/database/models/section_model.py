@@ -16,7 +16,7 @@ class SubSectionModel(AthenaBase):
     sub_visible = Column(Boolean, nullable=False, server_default=false())
     sub_last_updated = Column(DateTime(), nullable=False,
                               server_default=utcnow())
-    section_id = Column(Integer, ForeignKey('section.id'))
+    section_id = Column(Integer, ForeignKey('section.id', ondelete='CASCADE'))
     section = relationship('SectionModel', back_populates='subsections')
 
 
