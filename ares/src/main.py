@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
     await database.disconnect()
 
 
-root_path = get_env_var("API_ROOT_PATH", raise_exception=False) or ""
+root_path = get_env_var('API_ROOT_PATH', raise_exception=False) or ''
 app = FastAPI(lifespan=lifespan, root_path=root_path)
 
 app.include_router(
