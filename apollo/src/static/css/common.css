@@ -67,7 +67,7 @@ main.body {
   padding-bottom: 6rem;
   text-align: center;
   /* color: #fff; */
-  background-color: gainsboro;
+  background-color: white;
   background-image: url('../img/background.jpg');
   background-repeat: no-repeat;
   background-attachment: scroll;
@@ -180,4 +180,24 @@ main.body .body-heading {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: var(--bs-primary);
   --bs-btn-disabled-border-color: var(--bs-primary);
+}
+
+.active-links-pages {
+  background-color: var(--bs-primary);
+}
+
+.active-links-pages a {
+  color: white;
+  font-weight: bold;
+}
+
+/* p {
+  word-wrap: break-word;      /* IE 5.5-7 */
+  /* white-space: -moz-pre-wrap; Firefox 1.0-2.0 */
+  /* white-space: pre-wrap;      current browsers */
+/* } */
+
+/* auto break line */
+p,h1,h2,h3,h4,h5 {
+  word-break: break-all;
 }
