@@ -1,36 +1,73 @@
-{% extends 'admin/admin_base_template.html' %}
+{% extends 'admin/admin_base_section_detail.html' %}
 
-{% block admin_content %}
+{% block form %}
+    <form method="post" action="{{ url_for_path(request, 'admin_patch_section', id=data.id.value) }}">
+        {{ render_form_to_update_data(data) }}
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-primary text-uppercase mx-1 mb-3" type="submit"><i class="fa-solid fa-arrows-rotate"></i> Atualizar</button>
+        </div>
+    </form>
+{% endblock form %}
 
-<div class="row">
-    <div class="col-lg-12">
+{% block subsections %}
+    <h4>Subseções</h4><br>
+
+    <div class="row">
         <div class="d-flex justify-content-center align-items-center">
             {% include 'components/flash_message_component.html' %}
         </div>
-        <div class="card mb-4 mb-lg-0">
-            <div class="card-body p-0">
-                <div class="container bootstrap snippets bootdey">
-                    <div class="panel-body inf-content">
-                        <h3>Information</h3><br>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="table-responsive">
-                                    <div class="form-group">
-                                        <form method="post" action="{{ url_for_path(request, 'admin_patch_section', id=data.id.value) }}">
-                                        {{ render_form_to_update_data(data) }}
-                                        <div class="d-flex justify-content-center">
-                                            <button class="btn btn-primary text-uppercase mx-1 mb-3" type="submit"><i class="fa-solid fa-arrows-rotate"></i> Update</button>
-                                        </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+        
+        <div class="col-lg-6">
+            <div class="container d-flex pb-5">
+                <div class="card mx-auto">
+                    <div class="card-body">
+                        <div class="form-signin w-100 m-auto">
+                            <form method="POST" action="{{ url_for_path(request, 'admin_create_subsection', section_id=data.id.value) }}">
+                                <h1 class="h3 mb-3 fw-bold text-center">Nova subseção</h1>
+                                {{ render_form_to_create_data(create_subsection_form) }}
+                                <button class="w-100 btn btn-lg btn-primary" type="submit">Criar subseção</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-{% endblock admin_content %}
+        <div class="col-lg-6">
+        {% if not data.subsections.value %}
+            <h6 class="text-center">Não existem subseções</h6>
+        {% else %}
+            <div class="card mb-4 mb-lg-0">
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush rounded-3">
+                        {% for subsection in data.subsections.value %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <p class="mb-0"><a
+                                    href="{{ url_for_path(request, 'admin_subsection_detail_page', section_id=subsection.section_id, subsection_id=subsection.id) }}">{{ subsection.sub_title_slug }}</a></p>
+                            {{ delete_item_form(url_for_path(request, 'admin_delete_subsection', section_id=subsection.section_id, subsection_id=subsection.id)) }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+    
+            {% set current_url = request.url | string %}
+
+            <div class="d-flex justify-content-center">
+                <div class="list-group list-group-horizontal mt-1">
+                    {% for page in range(1, get_last_page(count.count, limit)+1) %}
+                        <li class="list-group-item
+                        {%- if page == request.query_params.get('page')|int %} active-links-pages
+                        {%- elif page == 1 and '?' not in current_url %} active-links-pages
+                        {%- endif -%}"
+                        ><a class="text-decoration-none" href="{{ url_for_query(request, 'admin_section_detail_page', path_params={'id': data.id.value}, page=page, limit=limit) }}">{{ page }}</a></li>
+                    {% endfor -%}
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+{% endblock subsections %}

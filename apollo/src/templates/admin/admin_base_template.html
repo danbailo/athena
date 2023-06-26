@@ -8,14 +8,17 @@
 <section class="py-5">
     <div class="container py-5">
         <div class="row">
-            <div class="col">
-                {% include 'components/admin_navbar_component.html' %}
-            </div>
         </div>
-
-        <div class="row">
-            {% block admin_content %}
-            {% endblock admin_content %}
+        
+        <div class="card card-body border-0">
+            <div class="row">
+                    <div class="col">
+                        {% include 'components/admin_navbar_component.html' %}
+                    </div>
+                    {% block admin_content %}
+                    {% endblock admin_content %}
+                </div>
+            </div>
         </div>
     </div>
 </section>

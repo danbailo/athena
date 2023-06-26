@@ -12,10 +12,10 @@
     <div class="col-md-{{ col_numbers }}">
         <span class="fa-stack fa-4x">
             <i class="fas fa-circle fa-stack-2x text-primary"></i>
-            {{ subsection.sub_section_link_image | safe}}
+            {{ subsection.sub_link_image | safe}}
         </span>
-        <h4 class="my-3">{{ subsection.sub_section_title }}</h4>
-        <p class="text-muted">{{ subsection.sub_section_body }}</p>
+        <h4 class="my-3">{{ subsection.sub_title }}</h4>
+        <p class="text-muted">{{ subsection.sub_body }}</p>
     </div>
 {% endmacro %}
 
@@ -23,12 +23,13 @@
     <section class="page-section" id="{{ section.title_slug }}">
         <div class="container">
             <div class="text-center">
-                <h2 class="section-heading text-uppercase text-truncate">{{ section.title }}</h2>
-                <h3 class="section-subheading text-muted">{{ section.body }}</h3>
+                <!-- section-heading text-uppercase text-truncate -->
+                <h2 class="section-heading text-uppercase">{{ section.title }}</h2>
+                <h3 class="section-subheading text-muted">{{ section.body | safe }}</h3>
             </div>        
             <div class="row text-center">
-                {% for subsection in section.subsections %}
-                    {{ render_subsection(subsection, section.subsections | length) }}
+                {% for subsection in section.subsections if subsection.sub_visible is true %}
+                    {{ render_subsection(subsection, section.subsections | map(attribute='sub_visible') | sum) }}
                 {% endfor %}
             </div>
         </div>

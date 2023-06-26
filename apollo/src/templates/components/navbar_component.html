@@ -1,7 +1,7 @@
 {% set user_is_admin = request.scope.athena_user_is_admin %}
 
 {% macro navbar_link(href, value) -%}
-    {% set is_active = 'athena-active' if (request.url | string == href | string) else 'inactive'%}
+    {% set is_active = 'athena-active' if (request.path | string == href | string) else 'inactive'%}
     <li class="nav-item">
         <a id={{ is_active }} class="nav-link js-scroll-trigger {{ is_active }}" href="{{ href }}">{{ value }}</a>
     </li>

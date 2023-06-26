@@ -2,8 +2,6 @@
 
 {% block admin_content %}
 
-<h1>Section</h1>
-
 <div class="row">
     <div class="d-flex justify-content-center align-items-center">
         {% include 'components/flash_message_component.html' %}
@@ -15,9 +13,9 @@
                 <div class="card-body">
                     <div class="form-signin w-100 m-auto">
                         <form method="POST" action="{{ url_for_path(request, 'admin_create_section') }}">
-                            <h1 class="h3 mb-3 fw-bold text-center">New section</h1>
+                            <h1 class="h3 mb-3 fw-bold text-center">Nova seção</h1>
                             {{ render_form_to_create_data(create_section_form) }}
-                            <button class="w-100 btn btn-lg btn-primary" type="submit">Create section</button>
+                            <button class="w-100 btn btn-lg btn-primary" type="submit">Criar seção</button>
                         </form>
                     </div>
                 </div>
@@ -32,8 +30,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                         <p class="mb-0"><a
                                 href="{{ url_for_path(request, 'admin_section_detail_page', id=item.id) }}">{{ item.title }}</a></p>
-
-                        {{ delete_item_form('') }}
+                        {{ delete_item_form(url_for_path(request, 'admin_delete_section', id=item.id)) }}
                     </li>
                     {% endfor %}
                 </ul>
@@ -45,13 +42,12 @@
         <div class="d-flex justify-content-center">
             <div class="list-group list-group-horizontal mt-1">
                 {% for page in range(1, get_last_page(count.count, limit)+1) %}
-                    <li class="list-group-item"
-                    {% if page == request.query_params.get('page')|int %}
-                        style="background-color: gray"
-                    {% elif current_url.split('/')[-1] == 'section' and page == 1 %}
-                        style="background-color: gray"                    
-                    {% endif %}
-                    ><a href="{{ url_for_query(request, 'admin_section_page', page=page, limit=limit) }}">{{ page }}</a></li>
+                    <li class="list-group-item
+                    {%- if page == request.query_params.get('page')|int %} active-links-pages
+                    {%- elif page == 1 and '?' not in current_url %} active-links-pages
+                    {%- endif -%}
+                    "
+                    ><a class="text-decoration-none" href="{{ url_for_query(request, 'admin_section_page', page=page, limit=limit) }}">{{ page }}</a></li>
                 {% endfor -%}
             </div>
         </div>
