@@ -1,0 +1,14 @@
+{% extends 'admin/admin_base_section_detail.html' %}
+
+{% block form %}
+    <form method="post" action="{{ url_for_path(request, 'admin_patch_subsection', section_id=data.section_id.value, subsection_id=data.id.value) }}">
+        {{ render_form_to_update_data(data) }}
+        <div class="d-flex justify-content-center">
+            <button class="btn btn-primary text-uppercase mx-1 mb-3" type="submit"><i class="fa-solid fa-arrows-rotate"></i> Atualizar</button>
+        </div>
+    </form>  
+
+    <div class="d-flex justify-content-left">
+        <a class="btn btn-info text-uppercase mx-1 mb-3" href="{{ url_for_path(request, 'admin_section_detail_page', id=data.section_id.value) }}"><i class="fa-solid fa-left-long"></i> Voltar para seção</a>
+    </div>    
+{% endblock form %}

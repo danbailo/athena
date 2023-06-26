@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 
 {% macro render_form_to_create_data(form) -%}
-    {% for field, infos in form.items() %}
-        <div class="form-floating mb-1">
+    {% for field, infos in form.items() if infos.form_value is true %}
+        {% if infos.type == 'checkbox' %}
+            <div class="form-check form-check-inline">
+        {% else %}
+            <div class="form-floating mb-1">
+        {% endif %}
             {% if infos.tag == 'textarea' %}
                 <textarea {% for key, value in infos.items() %} {{ key }}="{{ value }}" {% endfor %}></textarea>                        
             {% else%}
@@ -11,13 +15,14 @@
             <label for="floatingInput">{{ infos.title }}</label>
         </div>
     {% endfor %}
+    <div class="mb-3"></div>
 {%- endmacro %}
 
 
 {% macro render_form_to_update_data(form) -%}
     <table class="table table-user-information">
         <tbody>
-            {% for field, infos in form.items() %}
+            {% for field, infos in form.items() if infos.form.form_value is true %}
                 <tr>
                     <td>
                         <strong>{{ infos.form.title }}</strong>
