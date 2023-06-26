@@ -1,0 +1,141 @@
+services:
+  database:
+    image: postgres:15
+    restart: always
+    # command: postgres -c 'max_connections=300'
+    container_name: athena-database-container
+    env_file: compose-prod.env
+    volumes:
+       - postgres:/var/lib/postgresql/data
+    ports:
+      - ${EXPOSED_DATABASE_PORT}:5432
+
+  alembic:
+    build:
+      context: ./ares/
+      dockerfile: Dockerfile
+    container_name: athena-alembic-container
+    env_file: compose-prod.env
+    depends_on:
+      - database
+    image: athena-project-ares
+    command: bash -c "
+      cd .. &&\
+      sleep 1 &&\
+      alembic upgrade head"
+    volumes_from:
+      - database
+  
+  proxy:
+    image: traefik:v2.10.1
+    container_name: athena-proxy-container
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      # - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=${CERT_EMAIL}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "443:443"
+      # - "80:80"
+      # directly linked with api.insecure(expose it if api.insecure=true)
+      # - "8080:8080"
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+
+  ares:
+    build:
+      context: ./ares/
+      dockerfile: Dockerfile
+    container_name: athena-ares-container
+    restart: on-failure
+    env_file: compose-prod.env
+    depends_on:
+      - alembic
+    image: athena-project-ares
+    command: bash -c "
+      sleep 3 &&\
+      uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000"
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.ares.rule=Host(`test.athena-project.dev`, `www.test.athena-project.dev`) && PathPrefix(`/api`)"
+
+      - "traefik.http.routers.ares.entrypoints=websecure"
+
+      - "traefik.http.middlewares.ares-redirectscheme.redirectscheme.permanent=true"  
+      - "traefik.http.middlewares.ares-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.ares-redirectscheme.redirectscheme.port=443"
+
+      - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.permanent=true"
+      - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.regex=^https?://(?:www.)?(.+)"
+      - "traefik.http.middlewares.ares-redirect-www-to-non-www.redirectregex.replacement=https://$${1}"
+
+      - "traefik.http.middlewares.ares-strippefix.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.ares-strippefix.stripprefix.forceslash=false"
+
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolallowmethods=GET,POST,PATCH,DELETE"
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolalloworiginlist=https://test.athena-project.dev"
+      - "traefik.http.middlewares.ares-cors.headers.accesscontrolmaxage=600"
+      - "traefik.http.middlewares.ares-cors.headers.addvaryheader=true"
+
+      - "traefik.http.routers.ares.middlewares=ares-redirectscheme,ares-redirect-www-to-non-www,ares-strippefix,ares-cors"
+
+      - "traefik.http.services.ares-loadbalander.loadbalancer.server.port=8000"
+      - "traefik.http.routers.ares.service=ares-loadbalander"
+
+      - "traefik.http.routers.ares.tls.certresolver=myresolver"
+
+
+  apollo:
+    build:
+      context: ./apollo/
+      dockerfile: Dockerfile
+    container_name: athena-apollo-container
+    restart: on-failure
+    env_file: compose-prod.env
+    depends_on:
+      - ares
+      - proxy
+    image: athena-project-apollo
+    command: bash -c "
+      sleep 4 &&\
+      uvicorn main:app --workers 1 --host 0.0.0.0 --port 8001"
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.apollo.rule=Host(`test.athena-project.dev`, `www.test.athena-project.dev`)"
+      
+      - "traefik.http.routers.apollo.entrypoints=websecure"
+
+      - "traefik.http.middlewares.apollo-redirectscheme.redirectscheme.permanent=true"  
+      - "traefik.http.middlewares.apollo-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.apollo-redirectscheme.redirectscheme.port=443"
+
+      - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.permanent=true"
+      - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.regex=^https?://(?:www.)?(.+)"
+      - "traefik.http.middlewares.apollo-redirect-www-to-non-www.redirectregex.replacement=https://$${1}"
+
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolallowmethods=GET,POST"
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolalloworiginlist=https://test.athena-project.dev"
+      - "traefik.http.middlewares.apollo-cors.headers.accesscontrolmaxage=600"
+      - "traefik.http.middlewares.apollo-cors.headers.addvaryheader=true"
+
+      - "traefik.http.routers.apollo.middlewares=apollo-redirectscheme,apollo-redirect-www-to-non-www,apollo-cors"
+
+      - "traefik.http.services.apollo-loadbalander.loadbalancer.server.port=8001"
+      - "traefik.http.routers.apollo.service=apollo-loadbalander"
+
+      - "traefik.http.routers.apollo.tls.certresolver=myresolver"
+      
+
+volumes:
+  postgres:
