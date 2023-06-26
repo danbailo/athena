@@ -7,8 +7,8 @@ from pydantic import ValidationError
 from routers.base_router import AlertTypeEnum, async_render_template, flash
 
 MAPPED_URL_TEMPLATE = {
-    '/user/register': 'register_template.html',
-    '/user/login': 'login_template.html'
+    '/user/register': '/user/register_user.html',
+    '/user/login': 'user/login_user.html'
 }
 
 
@@ -34,5 +34,5 @@ async def async_validation_error_exception_handler(
         await flash(request, error['msg'], AlertTypeEnum.danger)
     return await async_render_template(
         MAPPED_URL_TEMPLATE[request.url.path], request, 400,
-        {'form': exc.model.get_form_values()}
+        {'form': exc.model.get_form_fields()}
     )
