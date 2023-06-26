@@ -57,6 +57,13 @@ class AthenaUser(SimpleUser):
     def identity(self, value):
         self._identity = value
 
+    def as_dict(self):
+        return {
+            'username': self.username,
+            'name': self.name,
+            'email': self.email,
+        }
+
 
 class OAuth2Backend(AuthenticationBackend):
     async def authenticate(self, conn):
