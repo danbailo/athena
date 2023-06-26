@@ -2,7 +2,7 @@ from fastapi import Form
 
 from pydantic import Field, root_validator
 
-from .base import BaseForm, FormType
+from .base import BaseForm, StringType
 
 
 class LoginForm(BaseForm):
@@ -17,8 +17,12 @@ class LoginForm(BaseForm):
         * client_secret
     """
 
-    username: FormType[str] = Field(..., alias='username', title='Usuário')
-    password: FormType[str] = Field(..., alias='password', title='Senha')
+    username: StringType = Field(
+        ..., title='Usuário', id='floatingInput', placeholder='Usuário',
+        required=True)
+    password: StringType = Field(
+        ..., title='Senha', id='floatingInput', placeholder='Senha',
+        type='password', required=True)
     # remember_me: bool
 
     @classmethod
@@ -36,12 +40,21 @@ class LoginForm(BaseForm):
 
 
 class RegisterForm(BaseForm):
-    name: FormType[str] = Field(..., title='Nome')
-    email: FormType[str] = Field(..., title='E-mail')
-    username: FormType[str] = Field(..., title='Usuário')
-    password: FormType[str] = Field(..., title='Senha')
-    password2: FormType[str] = Field(
-        ..., title='Repita a senha', type='password'
+    name: StringType = Field(
+        ..., title='Nome', id='floatingInput', placeholder='Nome',
+        required=True)
+    email: StringType = Field(
+        ..., title='E-mail', id='floatingInput', placeholder='E-mail',
+        type='email', required=True)
+    username: StringType = Field(
+        ..., title='Usuário', id='floatingInput', placeholder='Usuário',
+        required=True)
+    password: StringType = Field(
+        ..., title='Senha', id='floatingInput', placeholder='Senha',
+        type='password', required=True)
+    password2: StringType = Field(
+        ..., title='Repita a senha', type='password', id='floatingInput',
+        placeholder='Repita a senha', required=True
     )
 
     @root_validator
@@ -70,19 +83,20 @@ class RegisterForm(BaseForm):
 
 
 class UpdateUserForm(BaseForm):
-    name: FormType[str] | None
-    email: FormType[str] | None
-    username: FormType[str] | None
+    username: StringType | None = Field(
+        None, title='Usuário', is_editable=False, disabled=True)
+    name: StringType | None = Field(None, title='Nome', disabled=True)
+    email: StringType | None = Field(None, title='E-mail', disabled=True)
 
     @classmethod
     def as_form(
         cls,
         name: str | None = Form(None),
         email: str | None = Form(None),
-        username: str | None = Form(None),
+        # username: str | None = Form(None),
     ) -> 'UpdateUserForm':
         return cls(
             name=name,
             email=email,
-            username=username,
+            # username=username,
         )
