@@ -1,10 +1,10 @@
-name: Build test image
+name: Run tests
 
 on: [ pull_request ]
 
 jobs:
   run-tests:
-    name: Run tests
+    name: Build test image and run tests
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
