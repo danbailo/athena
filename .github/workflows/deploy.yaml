@@ -89,3 +89,85 @@ jobs:
           **/.code-workspace
           **/.github
           **/local_ssh_script-before.sh
+
+  run-tests-on-production:
+    name: Build project and run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: deploy-staging
+    environment:
+      name: Production
+    steps:
+    - name: Checkout the files
+      uses: actions/checkout@v3
+    
+    - name: Get project secrets
+      env:
+        ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
+      run: |
+        echo $ATHENA_PROJECT_SECRETS | base64 -d > compose-prod.env
+    
+    - name: Build test image and run
+      run: |
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml down --remove-orphans
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml build
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml run ares-pylint
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml run ares-flake8
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml run ares-tests
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml run apollo-pylint
+        docker compose --env-file=compose-prod.env --file=compose-tests.yaml run apollo-flake8
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: run-tests-on-production
+    environment:
+      name: Production
+      url: https://athena-project.dev  
+    steps:
+    - name: Pre-checkout files
+      run: |
+        rm -rf project/ares
+        rm -rf project/apollo
+
+    - name: Checkout the files
+      uses: actions/checkout@v3
+
+    - name: Get project secrets from secret
+      env:
+        ATHENA_PROJECT_SECRETS: ${{ secrets.ATHENA_PROJECT_SECRETS }}
+      run: |
+        echo $ATHENA_PROJECT_SECRETS | base64 -d > compose-prod.env
+        ls
+
+    - name: Deploy to EC2 Instance
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ${{ secrets.REMOTE_TARGET }}
+        SOURCE: "./"
+
+        SCRIPT_AFTER: |
+          echo "starting script_after"
+          cd project
+          docker compose --env-file=compose-prod.env --file=compose-prod.yaml down --remove-orphans
+          docker compose --env-file=compose-prod.env --file=compose-prod.yaml build
+          docker compose --env-file=compose-prod.env --file=compose-prod.yaml up -d
+          echo "removing dangling images"
+          docker rmi -f $(docker images -f "dangling=true" -q)
+          echo "removing unused files"
+          rm *local*
+          rm *staging*
+          echo "script_after ended"
+
+        EXCLUDE: |
+          **/.env
+          **/__pycache__
+          **/*.pyc
+          **/.git
+          **/.code-workspace
+          **/.github
+          **/local_ssh_script-before.sh
