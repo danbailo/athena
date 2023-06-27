@@ -85,4 +85,7 @@ jobs:
           **/.git
           **/.code-workspace
           **/.github
+          **/*local*
+          **/*prod*
+          **/README.md          
           **/local_ssh_script-before.sh
