@@ -76,6 +76,11 @@ jobs:
           docker compose --env-file=compose-staging.env --file=compose-staging.yaml up -d
           echo "removing dangling images"
           docker rmi -f $(docker images -f "dangling=true" -q)
+          echo "removing unused files"
+          rm *local*
+          rm *tests*
+          rm *prod*
+          rm README.md
           echo "script_after ended"
 
         EXCLUDE: |
@@ -85,7 +90,4 @@ jobs:
           **/.git
           **/.code-workspace
           **/.github
-          **/*local*
-          **/*prod*
-          **/README.md          
           **/local_ssh_script-before.sh
