@@ -51,6 +51,7 @@ services:
     env_file: compose-local.env
     depends_on:
       - alembic
+      - proxy
     image: athena-project-ares
     # ports:
       # - "8000:8000"
