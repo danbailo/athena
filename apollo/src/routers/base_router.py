@@ -101,10 +101,11 @@ def get_nav_visible_sections():
     return filter(lambda x: x['visible'] is True, sections)
 
 
-templates.env.globals['get_flash_messages'] = get_flash_messages
-templates.env.globals['get_endpoint'] = get_endpoint
-templates.env.globals['get_last_page'] = get_last_page
-templates.env.globals['url_for_query'] = url_for_query
 templates.env.globals['dir'] = dir
-templates.env.globals['url_for_path'] = url_for_path
+templates.env.globals['get_endpoint'] = get_endpoint
+templates.env.globals['get_env_var'] = get_env_var
+templates.env.globals['get_flash_messages'] = get_flash_messages
+templates.env.globals['get_last_page'] = get_last_page
 templates.env.globals['get_nav_visible_sections'] = get_nav_visible_sections
+templates.env.globals['url_for_query'] = url_for_query
+templates.env.globals['url_for_path'] = url_for_path
