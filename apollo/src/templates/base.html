@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
+        {% set enviroment = get_env_var('ENVIROMENT', False)%}
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="Daniel Bailo" />
-        <title>Athena Project{% block title %}{% endblock title %}</title>
+        <title>{{ enviroment ~ ' - ' if enviroment else '' }}Athena Project{% block title %}{% endblock title %}</title>
 
         <!-- Favicon-->
         <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for_path(request, 'static', path='img/apple-touch-icon.png') }}">

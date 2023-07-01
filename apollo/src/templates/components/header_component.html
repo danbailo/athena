@@ -2,9 +2,12 @@
 <main class="body text-white">
     <div class="container">
         <div class="body-heading text-uppercase">Athena Project</div>
-        <div class="body-subheading borda-texto"><br><br></div>
+        {% if enviroment %}
+            <div class="body-heading text-uppercase">{{ enviroment }}</div>
+        {% endif %}        
+        <!-- <div class="body-subheading borda-texto"><br><br></div> -->
 
-        <div class="body-heading text-uppercase"></div>
+        <!-- <div class="body-heading text-uppercase"></div> -->
         <!-- <a class="btn btn-primary btn-lg" href="#services">O que é?</a> -->
     </div>
 </main>
